@@ -1,0 +1,21 @@
+
+*{
+    margin: 0px;
+    padding: 0px;
+}
+
+.content{
+    background-color: cadetblue;
+
+}
+
+.content h2{
+    color:green;
+}
+.content h3{
+    color:gray;
+}
+
+.content p{
+    color:lightslategrey;
+}
