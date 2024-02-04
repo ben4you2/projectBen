@@ -19,3 +19,10 @@
 .content p{
     color:lightslategrey;
 }
+
+div {
+    color: lightblue;
+    font-family: arial 12px;
+    display:center;
+}
+
