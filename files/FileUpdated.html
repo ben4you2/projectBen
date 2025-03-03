@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en" x-data="voterApp()" x-cloak>
+<head>
+    <!-- ... (head content remains the same) ... -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voter Registration</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="text/javascript" src="cdn_modules/sweetalert2@11.15.10/sweetalert2.min.js"></script>
+    <!-- Add jsPDF library to head section -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🗳️</text></svg>">
+    <!--
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .avatar-preview { height: 100px; width: 100px; object-fit: cover; }
+    </style>-->
+  <style>
+        [x-cloak] { display: none !important; }
+        .avatar-preview { height: 100px; width: 100px; object-fit: cover; }
+        .voter-enter-active { transition: all 0.3s ease-out; }
+        .voter-enter-from { opacity: 0; transform: translateY(-20px); }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        <!-- Header (unchanged) ... -->
+                <!-- Header -->
+        <header class="mb-12 text-center animate__animated animate__fadeIn">
+          <div class="mb-6 inline-flex items-center gap-3">
+            <span class="text-4xl">🗳️</span>
+            <h1 class="text-3xl font-bold text-gray-800">National Voter Registry</h1>
+          </div>
+        </header>
+
+        <!-- Registration Form (unchanged) ... -->
+        
+        
+                <!-- Registration Form -->
+        <section class="bg-white rounded-xl shadow-lg p-6 mb-8 animate__animated animate__fadeInUp">
+            <form @submit.prevent="registerVoter" class="space-y-4" id="registrationForm">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Photo Upload -->
+                    <div class="space-y-4">
+                        <label class="block text-sm font-medium text-gray-700">Voter Photo</label>
+                        <div class="relative group">
+                            <input type="file" id="photo" accept="image/*" required 
+                                class="hidden" @change="previewImage">
+                            <label for="photo" class="cursor-pointer block">
+                                <div class="border-2 border-dashed border-gray-200 rounded-xl p-4 text-center hover:border-blue-500 transition-all duration-300">
+                                    <template x-if="!state.photoPreview">
+                                        <div class="space-y-2">
+                                            <i class="fas fa-camera text-3xl text-gray-400"></i>
+                                            <p class="text-sm text-gray-600 mt-2">Click to upload photo</p>
+                                            <p class="text-xs text-gray-400">JPEG/PNG (max 2MB)</p>
+                                        </div>
+                                    </template>
+                                    <img :src="state.photoPreview" x-show="state.photoPreview" 
+                                         class="avatar-preview rounded-xl mx-auto shadow-sm">
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Personal Info -->
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                            <input type="text" x-model="state.formData.name" required
+                                class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all">
+                        </div>
+
+                        <div class="grid grid-cols-1 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">National ID</label>
+                                <input type="text" x-model="state.formData.idNumber" required
+                                    class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-400 transition-all">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Age</label>
+                                <input type="number" x-model="state.formData.age" min="18" required
+                                    class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-400 transition-all">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Info -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                        <input type="email" x-model="state.formData.email" required
+                            class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-400 transition-all">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Address</label>
+                        <input type="text" x-model="state.formData.address" required
+                            class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-400 transition-all">
+                    </div>
+                </div>
+
+                <button type="submit" 
+                    class="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-[1.02] shadow-md">
+                    <i class="fas fa-user-check mr-2"></i>Register Voter
+                </button>
+            </form>
+        </section>
+
+        <!-- Search and Filter Section -->
+        <div class="mb-6 flex flex-col md:flex-row gap-4 items-center justify-between">
+            <!-- ... (search/filter content remains the same) ... -->
+          <div class="w-full md:w-64 relative">
+        <input type="text" 
+               x-model="searchQuery" 
+               placeholder="Search voters..." 
+               class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-400 transition-all"
+               @input.debounce.300ms="applyFilters">
+        <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+    </div>
+    
+        <button @click="generatePDFReport" 
+            class="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors">
+        <i class="fas fa-file-pdf mr-2"></i>Generate Full Report
+    </button>
+</div>
+    
+    
+    <div class="flex items-center gap-4 w-full md:w-auto">
+        <select x-model="sortBy" 
+                @change="applyFilters"
+                class="px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-400 transition-all">
+            <option value="name">Sort by Name</option>
+            <option value="age">Sort by Age</option>
+            <option value="idNumber">Sort by ID</option>
+        </select>
+        
+        <span class="text-sm text-gray-600">
+            Showing <span x-text="filteredVoters.length"></span> voters
+        </span>
+    </div>
+        </div>
+
+        <!-- Single Voters List Section -->
+     <section class="bg-white rounded-xl shadow-lg p-6 animate__animated animate__fadeInUp">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">Registered Voters</h2>
+            <div id="votersList" class="space-y-4" x-data="{ selected: null }">
+                <!-- ... (enhanced voters list content remains) ... -->
+       <template x-for="(voter, index) in filteredVoters" :key="voter.idNumber">
+        <div class="voter-item bg-white rounded-lg p-4 flex items-start gap-4 transition-all hover:shadow-md border border-gray-100"
+            x-intersect.once="$el.classList.add('animate__fadeIn')">
+            <!-- Profile Image -->
+            <div class="relative">
+                <img :src="voter.photo" 
+                     class="w-16 h-16 rounded-xl object-cover shadow-sm cursor-pointer"
+                     @click="selected = selected === index ? null : index">
+                <div x-show="selected === index" 
+                     @click.away="selected = null"
+                     class="absolute z-10 -top-4 -left-4 bg-white p-4 rounded-lg shadow-xl border border-gray-100 animate__animated animate__fadeIn">
+                    <img :src="voter.photo" class="w-48 h-48 object-cover rounded-lg">
+                </div>
+            </div>
+
+            <!-- Voter Details -->
+            <div class="flex-1">
+                <div class="flex items-center justify-between mb-2">
+                    <div>
+                        <h3 class="font-semibold text-gray-800 text-lg" x-text="voter.name"></h3>
+                        <p class="text-sm text-gray-500">ID: <span x-text="voter.idNumber"></span></p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                      
+              <button @click="generatePDFReport" 
+            class="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors">
+        <i class="fas fa-file-pdf mr-2"></i>Generate Full Report
+                </button>
+                      
+                        <button @click="exportVoter(voter)" 
+                                class="text-blue-500 hover:text-blue-600 transition-colors"
+                                title="Export as PDF">
+                            <i class="fas fa-file-pdf"></i>
+                        </button>
+                        <button @click="deleteVoter(index)" 
+                                class="text-red-500 hover:text-red-600 transition-colors"
+                                title="Delete voter">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                        
+                    </div>
+                </div>
+
+                <!-- Collapsible Details -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-600">
+                    <div>
+                        <p><i class="fas fa-envelope mr-2 text-blue-500"></i><span x-text="voter.email"></span></p>
+                        <p class="mt-1"><i class="fas fa-map-marker-alt mr-2 text-green-500"></i>
+                            <span x-text="voter.address"></span>
+                        </p>
+                    </div>
+                    <div>
+                        <p><i class="fas fa-birthday-cake mr-2 text-purple-500"></i>
+                            <span x-text="voter.age + ' years old'"></span>
+                        </p>
+                        <p class="mt-1"><i class="fas fa-calendar-alt mr-2 text-orange-500"></i>
+                            Registered on <span x-text="new Date().toLocaleDateString()"></span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- Empty State -->
+    <div x-show="filteredVoters.length === 0" 
+         class="text-center py-12 text-gray-500 animate__animated animate__fadeIn">
+        <i class="fas fa-user-slash text-4xl mb-4"></i>
+        <p class="text-lg">No voters found matching your criteria</p>
+    </div>
+</div>
+
+        <!-- Voters List -->
+     <section class="bg-white rounded-xl shadow-lg p-6 animate__animated animate__fadeInUp">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">Registered Voters</h2>
+      <div id="votersList" class="space-y-4" x-data="{ selected: null }">
+                <template x-for="(voter, index) in voters" :key="voter.idNumber">
+                    <div class="voter-item bg-gray-50 rounded-lg p-4 flex items-start gap-4 transition-all hover:bg-blue-50"
+                        x-intersect.once="$el.classList.add('voter-enter-active')">
+                        <img :src="voter.photo" class="w-16 h-16 rounded-xl object-cover shadow-sm">
+                        <div class="flex-1">
+                            <div class="flex items-center justify-between mb-1">
+                                <h3 class="font-semibold text-gray-800" x-text="voter.name"></h3>
+                                <button @click="deleteVoter(index)" 
+                                    class="text-red-500 hover:text-red-600 transition-colors">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </div>
+                            <div class="text-sm text-gray-600">
+                                <p>ID: <span x-text="voter.idNumber"></span></p>
+                                <p><span x-text="voter.age"></span> years · <span x-text="voter.email"></span></p>
+                                <p class="text-gray-500" x-text="voter.address"></p>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+                
+            </div>
+        </section>
+
+        <!-- Footer (unchanged) ... -->
+        
+        
+                <!-- Footer -->
+        <footer class="mt-12 text-center animate__animated animate__fadeIn">
+          <p class="text-sm text-gray-500">
+            © <span x-text="new Date().getFullYear()"></span> National Electoral Commission. All rights reserved.
+          </p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('voterApp', () => ({
+                // Added filtering/sorting properties
+                searchQuery: '',
+                sortBy: 'name',
+        isEditMode: false,
+       currentEditIndex: -1,
+                
+                voters: JSON.parse(localStorage.getItem('voters')) || [],
+                state: {
+                    formData: { name: '', idNumber: '', age: '', email: '', address: '', photo: '' },
+                    photoPreview: null
+                },
+
+                // Added computed property for filtered voters
+                get filteredVoters() {
+                    let filtered = this.voters.filter(voter => 
+                        voter.name.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+                        voter.idNumber.includes(this.searchQuery)
+                    );
+
+                    return filtered.sort((a, b) => {
+                        if (this.sortBy === 'age') return a.age - b.age;
+                        if (this.sortBy === 'idNumber') return a.idNumber.localeCompare(b.idNumber);
+                        return a.name.localeCompare(b.name);
+                    });
+                },
+
+                initApp() {
+                    this.$watch('voters', value => {
+                        localStorage.setItem('voters', JSON.stringify(value));
+                    });
+                },
+                
+                        
+        // Modified registerVoter method
+        async registerVoter() {
+            if (!this.validateForm()) return;
+
+            if (this.isEditMode) {
+                // Update existing voter
+                this.voters[this.currentEditIndex] = {...this.state.formData};
+                this.isEditMode = false;
+                this.currentEditIndex = -1;
+            } else {
+                // Add new voter with registration date
+                this.voters.unshift({ 
+                    ...this.state.formData,
+                    registrationDate: new Date().toISOString()
+                });
+            }
+
+            await Swal.fire({
+                icon: 'success',
+                title: `Registration ${this.isEditMode ? 'Updated' : 'Successful'}!`,
+                text: `Voter has been ${this.isEditMode ? 'updated' : 'registered'}`,
+                showConfirmButton: false,
+                timer: 1500
+            });
+
+            this.resetForm();
+        },
+
+        // Add editVoter method
+        editVoter(filteredIndex) {
+            const actualIndex = this.voters.indexOf(this.filteredVoters[filteredIndex]);
+            const voter = this.voters[actualIndex];
+            
+            this.state.formData = { ...voter };
+            this.state.photoPreview = voter.photo;
+            this.isEditMode = true;
+            this.currentEditIndex = actualIndex;
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        },
+
+        // Add PDF report generation
+        async generatePDFReport() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // Report Header
+            doc.setFontSize(18);
+            doc.text("National Voter Registry Report", 14, 22);
+            doc.setFontSize(12);
+            doc.setTextColor(100);
+            doc.text(`Generated on ${new Date().toLocaleDateString()}`, 14, 30);
+            
+            // Voter Data
+            const columns = [
+                { title: "Name", dataKey: "name" },
+                { title: "ID Number", dataKey: "idNumber" },
+                { title: "Age", dataKey: "age" },
+                { title: "Email", dataKey: "email" },
+                { title: "Registered", dataKey: "registrationDate" }
+            ];
+            
+            const rows = this.filteredVoters.map(voter => ({
+                ...voter,
+                registrationDate: new Date(voter.registrationDate).toLocaleDateString()
+            }));
+
+            doc.autoTable({
+                head: [columns.map(col => col.title)],
+                body: rows.map(row => columns.map(col => row[col.dataKey])),
+                startY: 40,
+                theme: 'grid',
+                styles: { fontSize: 10 },
+                headStyles: { fillColor: [41, 128, 185], textColor: 255 },
+                columnStyles: {
+                    0: { cellWidth: 30 },
+                    1: { cellWidth: 35 },
+                    2: { cellWidth: 15 },
+                    3: { cellWidth: 50 },
+                    4: { cellWidth: 30 }
+                }
+            });
+
+            // Add footer
+            const pageCount = doc.internal.getNumberOfPages();
+            for(let i = 1; i <= pageCount; i++) {
+                doc.setPage(i);
+                doc.setFontSize(10);
+                doc.text(`Page ${i} of ${pageCount}`, 
+                    doc.internal.pageSize.width - 50,
+                    doc.internal.pageSize.height - 10
+                );
+            }
+
+            doc.save(`voter-report-${new Date().toISOString().slice(0,10)}.pdf`);
+        },
+
+        // Modified resetForm to handle edit mode
+        resetForm() {
+            this.state.formData = { name: '', idNumber: '', age: '', email: '', address: '', photo: '' };
+            this.state.photoPreview = null;
+            document.getElementById('photo').value = '';
+            this.isEditMode = false;
+            this.currentEditIndex = -1;
+        },
+
+        // Update validateForm to handle ID uniqueness
+        validateForm() {
+            // Existing validations...
+
+            // Check ID uniqueness (skip check in edit mode)
+            if (!this.isEditMode && this.voters.some(v => v.idNumber === this.state.formData.idNumber)) {
+                Swal.fire('Error', 'ID Number already exists in system', 'error');
+                return false;
+            }
+
+            return true;
+        },
+                
+
+                // ... (other methods remain the same until deleteVoter) ...
+
+                async deleteVoter(index) {
+                    // Changed to use filteredVoters index
+                    const actualIndex = this.voters.indexOf(this.filteredVoters[index]);
+                    const result = await Swal.fire({
+                        // ... (rest of delete logic remains) ...
+                        if (result.isConfirmed) {
+                            this.voters.splice(actualIndex, 1);
+                            // ... (rest remains) ...
+                        }
+                    });
+                },
+
+                // Removed animateList method as we're using intersect
+            }));
+        });
+    </script>
+</body>
+</html>

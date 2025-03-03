@@ -1,0 +1,152 @@
+<!-- Add jsPDF library to head section -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<!-- In the voters list template, modify the buttons section -->
+<div class="flex items-center gap-3">
+    <!-- Add Edit Button -->
+    <button @click="editVoter(index)" 
+            class="text-yellow-500 hover:text-yellow-600 transition-colors"
+            title="Edit voter">
+        <i class="fas fa-edit"></i>
+    </button>
+    <!-- Existing buttons... -->
+</div>
+
+<!-- Add Report Button next to the search/filter section -->
+<div class="mb-6 flex flex-col md:flex-row gap-4 items-center justify-between">
+    <!-- Existing search/filter elements... -->
+    <button @click="generatePDFReport" 
+            class="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors">
+        <i class="fas fa-file-pdf mr-2"></i>Generate Full Report
+    </button>
+</div>
+
+<script>
+document.addEventListener('alpine:init', () => {
+    Alpine.data('voterApp', () => ({
+        // Add edit mode state
+        isEditMode: false,
+        currentEditIndex: -1,
+        
+        // Existing properties...
+        
+        // Modified registerVoter method
+        async registerVoter() {
+            if (!this.validateForm()) return;
+
+            if (this.isEditMode) {
+                // Update existing voter
+                this.voters[this.currentEditIndex] = {...this.state.formData};
+                this.isEditMode = false;
+                this.currentEditIndex = -1;
+            } else {
+                // Add new voter with registration date
+                this.voters.unshift({ 
+                    ...this.state.formData,
+                    registrationDate: new Date().toISOString()
+                });
+            }
+
+            await Swal.fire({
+                icon: 'success',
+                title: `Registration ${this.isEditMode ? 'Updated' : 'Successful'}!`,
+                text: `Voter has been ${this.isEditMode ? 'updated' : 'registered'}`,
+                showConfirmButton: false,
+                timer: 1500
+            });
+
+            this.resetForm();
+        },
+
+        // Add editVoter method
+        editVoter(filteredIndex) {
+            const actualIndex = this.voters.indexOf(this.filteredVoters[filteredIndex]);
+            const voter = this.voters[actualIndex];
+            
+            this.state.formData = { ...voter };
+            this.state.photoPreview = voter.photo;
+            this.isEditMode = true;
+            this.currentEditIndex = actualIndex;
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        },
+
+        // Add PDF report generation
+        async generatePDFReport() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // Report Header
+            doc.setFontSize(18);
+            doc.text("National Voter Registry Report", 14, 22);
+            doc.setFontSize(12);
+            doc.setTextColor(100);
+            doc.text(`Generated on ${new Date().toLocaleDateString()}`, 14, 30);
+            
+            // Voter Data
+            const columns = [
+                { title: "Name", dataKey: "name" },
+                { title: "ID Number", dataKey: "idNumber" },
+                { title: "Age", dataKey: "age" },
+                { title: "Email", dataKey: "email" },
+                { title: "Registered", dataKey: "registrationDate" }
+            ];
+            
+            const rows = this.filteredVoters.map(voter => ({
+                ...voter,
+                registrationDate: new Date(voter.registrationDate).toLocaleDateString()
+            }));
+
+            doc.autoTable({
+                head: [columns.map(col => col.title)],
+                body: rows.map(row => columns.map(col => row[col.dataKey])),
+                startY: 40,
+                theme: 'grid',
+                styles: { fontSize: 10 },
+                headStyles: { fillColor: [41, 128, 185], textColor: 255 },
+                columnStyles: {
+                    0: { cellWidth: 30 },
+                    1: { cellWidth: 35 },
+                    2: { cellWidth: 15 },
+                    3: { cellWidth: 50 },
+                    4: { cellWidth: 30 }
+                }
+            });
+
+            // Add footer
+            const pageCount = doc.internal.getNumberOfPages();
+            for(let i = 1; i <= pageCount; i++) {
+                doc.setPage(i);
+                doc.setFontSize(10);
+                doc.text(`Page ${i} of ${pageCount}`, 
+                    doc.internal.pageSize.width - 50,
+                    doc.internal.pageSize.height - 10
+                );
+            }
+
+            doc.save(`voter-report-${new Date().toISOString().slice(0,10)}.pdf`);
+        },
+
+        // Modified resetForm to handle edit mode
+        resetForm() {
+            this.state.formData = { name: '', idNumber: '', age: '', email: '', address: '', photo: '' };
+            this.state.photoPreview = null;
+            document.getElementById('photo').value = '';
+            this.isEditMode = false;
+            this.currentEditIndex = -1;
+        },
+
+        // Update validateForm to handle ID uniqueness
+        validateForm() {
+            // Existing validations...
+
+            // Check ID uniqueness (skip check in edit mode)
+            if (!this.isEditMode && this.voters.some(v => v.idNumber === this.state.formData.idNumber)) {
+                Swal.fire('Error', 'ID Number already exists in system', 'error');
+                return false;
+            }
+
+            return true;
+        }
+    }));
+});

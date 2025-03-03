@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en" x-data="voterApp()" x-cloak>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voter Registration System</title>
+    
+    <!-- Libraries -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🗳️</text></svg>">
+    
+    <style>
+        [x-cloak] { display: none !important; }
+        .avatar-preview { height: 100px; width: 100px; object-fit: cover; }
+        .voter-enter-active { transition: all 0.3s ease-out; }
+        .voter-enter-from { opacity: 0; transform: translateY(-20px); }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-4xl" x-effect="initApp">
+        <!-- Header -->
+        <header class="mb-12 text-center animate__animated animate__fadeIn">
+            <div class="mb-6 inline-flex items-center gap-3">
+                <span class="text-4xl">🗳️</span>
+                <h1 class="text-3xl font-bold text-gray-800">National Voter Registry</h1>
+            </div>
+        </header>
+
+        <!-- Registration Form -->
+        <section class="bg-white rounded-xl shadow-lg p-6 mb-8 animate__animated animate__fadeInUp">
+            <form @submit.prevent="registerVoter" class="space-y-4" id="registrationForm">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Photo Upload -->
+                    <div class="space-y-4">
+                        <label class="block text-sm font-medium text-gray-700">Voter Photo</label>
+                        <div class="relative group">
+                            <input type="file" id="photo" accept="image/*" required 
+                                class="hidden" @change="previewImage">
+                            <label for="photo" class="cursor-pointer block">
+                                <div class="border-2 border-dashed border-gray-200 rounded-xl p-4 text-center hover:border-blue-500 transition-all duration-300">
+                                    <template x-if="!state.photoPreview">
+                                        <div class="space-y-2">
+                                            <i class="fas fa-camera text-3xl text-gray-400"></i>
+                                            <p class="text-sm text-gray-600 mt-2">Click to upload photo</p>
+                                            <p class="text-xs text-gray-400">JPEG/PNG (max 2MB)</p>
+                                        </div>
+                                    </template>
+                                    <img :src="state.photoPreview" x-show="state.photoPreview" 
+                                         class="avatar-preview rounded-xl mx-auto shadow-sm">
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Personal Info -->
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                            <input type="text" x-model="state.formData.name" required
+                                class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all">
+                        </div>
+
+                        <div class="grid grid-cols-1 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">National ID</label>
+                                <input type="text" x-model="state.formData.idNumber" required
+                                    class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-400 transition-all">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Age</label>
+                                <input type="number" x-model="state.formData.age" min="18" required
+                                    class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-400 transition-all">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Info -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                        <input type="email" x-model="state.formData.email" required
+                            class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-400 transition-all">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Address</label>
+                        <input type="text" x-model="state.formData.address" required
+                            class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-400 transition-all">
+                    </div>
+                </div>
+
+                <button type="submit" 
+                    class="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-[1.02] shadow-md">
+                    <i class="fas fa-user-check mr-2"></i>Register Voter
+                </button>
+            </form>
+        </section>
+        
+        
+        <!--Search and filter-->
+        
+        
+        <!-- Add this search and filter bar above the voters list -->
+<div class="mb-6 flex flex-col md:flex-row gap-4 items-center justify-between">
+    <div class="w-full md:w-64 relative">
+        <input type="text" 
+               x-model="searchQuery" 
+               placeholder="Search voters..." 
+               class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-400 transition-all"
+               @input.debounce.300ms="applyFilters">
+        <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+    </div>
+    
+    <div class="flex items-center gap-4 w-full md:w-auto">
+        <select x-model="sortBy" 
+                @change="applyFilters"
+                class="px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-400 transition-all">
+            <option value="name">Sort by Name</option>
+            <option value="age">Sort by Age</option>
+            <option value="idNumber">Sort by ID</option>
+        </select>
+        
+        <span class="text-sm text-gray-600">
+            Showing <span x-text="filteredVoters.length"></span> voters
+        </span>
+    </div>
+</div>
+
+<!-- Enhanced Voters List -->
+<div id="votersList" class="space-y-4" x-data="{ selected: null }">
+    <template x-for="(voter, index) in filteredVoters" :key="voter.idNumber">
+        <div class="voter-item bg-white rounded-lg p-4 flex items-start gap-4 transition-all hover:shadow-md border border-gray-100"
+            x-intersect.once="$el.classList.add('animate__fadeIn')">
+            <!-- Profile Image -->
+            <div class="relative">
+                <img :src="voter.photo" 
+                     class="w-16 h-16 rounded-xl object-cover shadow-sm cursor-pointer"
+                     @click="selected = selected === index ? null : index">
+                <div x-show="selected === index" 
+                     @click.away="selected = null"
+                     class="absolute z-10 -top-4 -left-4 bg-white p-4 rounded-lg shadow-xl border border-gray-100 animate__animated animate__fadeIn">
+                    <img :src="voter.photo" class="w-48 h-48 object-cover rounded-lg">
+                </div>
+            </div>
+
+            <!-- Voter Details -->
+            <div class="flex-1">
+                <div class="flex items-center justify-between mb-2">
+                    <div>
+                        <h3 class="font-semibold text-gray-800 text-lg" x-text="voter.name"></h3>
+                        <p class="text-sm text-gray-500">ID: <span x-text="voter.idNumber"></span></p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <button @click="exportVoter(voter)" 
+                                class="text-blue-500 hover:text-blue-600 transition-colors"
+                                title="Export as PDF">
+                            <i class="fas fa-file-pdf"></i>
+                        </button>
+                        <button @click="deleteVoter(index)" 
+                                class="text-red-500 hover:text-red-600 transition-colors"
+                                title="Delete voter">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Collapsible Details -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-600">
+                    <div>
+                        <p><i class="fas fa-envelope mr-2 text-blue-500"></i><span x-text="voter.email"></span></p>
+                        <p class="mt-1"><i class="fas fa-map-marker-alt mr-2 text-green-500"></i>
+                            <span x-text="voter.address"></span>
+                        </p>
+                    </div>
+                    <div>
+                        <p><i class="fas fa-birthday-cake mr-2 text-purple-500"></i>
+                            <span x-text="voter.age + ' years old'"></span>
+                        </p>
+                        <p class="mt-1"><i class="fas fa-calendar-alt mr-2 text-orange-500"></i>
+                            Registered on <span x-text="new Date().toLocaleDateString()"></span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- Empty State -->
+    <div x-show="filteredVoters.length === 0" 
+         class="text-center py-12 text-gray-500 animate__animated animate__fadeIn">
+        <i class="fas fa-user-slash text-4xl mb-4"></i>
+        <p class="text-lg">No voters found matching your criteria</p>
+    </div>
+</div>
+
+        <!-- Voters List -->
+        <section class="bg-white rounded-xl shadow-lg p-6 animate__animated animate__fadeInUp">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">Registered Voters</h2>
+            <div id="votersList" class="space-y-4" x-data="{ selected: null }">
+                <template x-for="(voter, index) in voters" :key="voter.idNumber">
+                    <div class="voter-item bg-gray-50 rounded-lg p-4 flex items-start gap-4 transition-all hover:bg-blue-50"
+                        x-intersect.once="$el.classList.add('voter-enter-active')">
+                        <img :src="voter.photo" class="w-16 h-16 rounded-xl object-cover shadow-sm">
+                        <div class="flex-1">
+                            <div class="flex items-center justify-between mb-1">
+                                <h3 class="font-semibold text-gray-800" x-text="voter.name"></h3>
+                                <button @click="deleteVoter(index)" 
+                                    class="text-red-500 hover:text-red-600 transition-colors">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </div>
+                            <div class="text-sm text-gray-600">
+                                <p>ID: <span x-text="voter.idNumber"></span></p>
+                                <p><span x-text="voter.age"></span> years · <span x-text="voter.email"></span></p>
+                                <p class="text-gray-500" x-text="voter.address"></p>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="mt-12 text-center animate__animated animate__fadeIn">
+            <p class="text-sm text-gray-500">
+                © <span x-text="new Date().getFullYear()"></span> National Electoral Commission. All rights reserved.
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('voterApp', () => ({
+    
+                voters: JSON.parse(localStorage.getItem('voters')) || [],
+                state: {
+                    formData: { name: '', idNumber: '', age: '', email: '', address: '', photo: '' },
+                    photoPreview: null
+                },
+                
+      searchQuery: '',
+      sortBy: 'name',
+      filteredVoters: [],
+
+                initApp() {
+                    this.$watch('voters', value => {
+                        localStorage.setItem('voters', JSON.stringify(value));
+                        this.animateList();
+                    });
+                },
+                
+                
+                  
+  applyFilters() {
+    this.filteredVoters = this.voters.filter(voter => {
+      const search = this.searchQuery.toLowerCase();
+      return Object.values(voter).some(value =>
+        String(value).toLowerCase().includes(search)
+      );
+    }).sort((a, b) => {
+      if (this.sortBy === 'name') return a.name.localeCompare(b.name);
+      if (this.sortBy === 'age') return a.age - b.age;
+      return a.idNumber.localeCompare(b.idNumber);
+    });
+  },
+  
+  async exportVoter(voter) {
+    // Add PDF export functionality here
+    await Swal.fire({
+      icon: 'info',
+      title: 'Export Feature',
+      text: 'PDF export implementation would go here',
+      confirmButtonText: 'OK'
+    });
+  },
+
+                previewImage(event) {
+                    const file = event.target.files[0];
+                    if (!file) return;
+
+                    if (file.size > 2 * 1024 * 1024) {
+                        Swal.fire('Error', 'Image size must be less than 2MB', 'error');
+                        return;
+                    }
+
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        this.state.photoPreview = e.target.result;
+                        this.state.formData.photo = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                },
+
+                async registerVoter() {
+                    if (!this.validateForm()) return;
+
+                    this.voters.unshift({ ...this.state.formData });
+                    
+                    await Swal.fire({
+                        icon: 'success',
+                        title: 'Registration Successful!',
+                        text: 'Voter has been registered',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+
+                    this.resetForm();
+                },
+
+                validateForm() {
+                    const { name, idNumber, age, email, address, photo } = this.state.formData;
+                    
+                    if (!name || !idNumber || !age || !email || !address || !photo) {
+                        Swal.fire('Error', 'All fields are required', 'error');
+                        return false;
+                    }
+
+                    if (age < 18) {
+                        Swal.fire('Error', 'Voter must be at least 18 years old', 'error');
+                        return false;
+                    }
+
+                    if (!/^\d{10,20}$/.test(idNumber)) {
+                        Swal.fire('Error', 'ID Number must be 10-20 digits', 'error');
+                        return false;
+                    }
+
+                    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                        Swal.fire('Error', 'Invalid email address', 'error');
+                        return false;
+                    }
+
+                    return true;
+                },
+
+                async deleteVoter(index) {
+                    const result = await Swal.fire({
+                        title: 'Confirm Deletion',
+                        text: "You won't be able to revert this!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes, delete it!'
+                    });
+
+                    if (result.isConfirmed) {
+                        this.voters.splice(index, 1);
+                        Swal.fire('Deleted!', 'Voter record has been removed.', 'success');
+                    }
+                },
+
+                resetForm() {
+                    this.state.formData = { name: '', idNumber: '', age: '', email: '', address: '', photo: '' };
+                    this.state.photoPreview = null;
+                    document.getElementById('photo').value = '';
+                },
+
+                animateList() {
+                    const list = document.getElementById('votersList');
+                    list.classList.add('animate__animated', 'animate__fadeInUp');
+                    setTimeout(() => {
+                        list.classList.remove('animate__animated', 'animate__fadeInUp');
+                    }, 500);
+                }
+            }));
+        });
+    </script>
+</body>
+</html>

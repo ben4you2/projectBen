@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voter Registration</title>
+    <link rel="stylesheet" href="/AppFor/style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 p-4">
+  
+  <div class="min-h-screen flex items-center justify-center bg-gray-50">
+  <div class="max-w-lg w-full bg-white p-6 rounded-lg shadow-lg">
+    <h2 class="text-2xl font-semibold mb-4 text-center">Voter Registration System</h2>
+    
+    <!--<form id="voterLookupForm" class="space-y-4">
+      <input type="text" id="voterId" class="w-full p-2 border rounded-md" placeholder="Enter your ID number" required />
+      
+      <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 transition duration-300">Check Registration< <i class="fas fa-check-circle mr-2"></i></button>
+      
+      <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 transition duration-300">
+  <i class="fas fa-check-circle mr-2"></i> Check Registration
+</button>
+    </form>-->
+
+    <!--Animation for the form-->
+    <!--
+    <form id="voterLookupForm" class="space-y-4 transition-all duration-500 ease-in-out opacity-100 hover:opacity-90">
+  <input type="text" id="voterId" class="w-full p-2 border rounded-md" placeholder="Enter your ID number" required />
+  <button type="submit" class="w-full bg-primary text-white p-2 rounded-md hover:bg-secondary transition duration-300">
+    <i class="fas fa-check-circle mr-2"></i> Check Registration
+  </button>
+</form> -->
+
+<!--<h2 class="text-2xl font-bold mb-4">Voter Registration</h2>
+        
+        <form id="voterForm" class="space-y-4">
+          <input type="text" id="name" placeholder="Full Name" class="w-full p-2 border rounded">
+          <input type="text" id="idNumber" placeholder="ID Number" class="w-full p-2 border rounded">
+          <input type="email" id="email" placeholder="Email" class="w-full p-2 border rounded">
+          <input type="text" id="address" placeholder="Address" class="w-full p-2 border rounded">
+          <input type="file" id="photo" class="w-full p-2 border rounded">
+          <button type="submit" class="bg-blue-500 text-white p-2 rounded w-full">Register Voter</button>
+          
+        </form>
+        <button class="bg-primary text-white hover:bg-secondary transition duration-300"> Submit
+        </button>
+    
+    <!--<div id="voterDetails" class="mt-6 text-center">
+      <!-- Voter details will appear here 
+    </div>-->
+  </div>
+</div>
+
+    <div class="max-w-2xl mx-auto bg-white p-6 rounded shadow">
+        <h2 class="text-2xl font-bold mb-4">Voter Registration</h2>
+
+        <form id="voterForm" class="space-y-4">
+            <input type="text" id="name" placeholder="Full Name" class="w-full p-2 border rounded">
+            <input type="text" id="idNumber" placeholder="ID Number" class="w-full p-2 border rounded">
+            <input type="email" id="email" placeholder="Email" class="w-full p-2 border rounded">
+            <input type="text" id="address" placeholder="Address" class="w-full p-2 border rounded">
+            <input type="file" id="photo" class="w-full p-2 border rounded">
+            <button type="submit" class="bg-blue-500 text-white p-2 rounded w-full">Register Voter</button>
+            
+        </form>
+        <button class="bg-primary text-white hover:bg-secondary transition duration-300"> Submit
+     </button>
+  </div> 
+
+    <div class="max-w-2xl mx-auto mt-6">
+        <input type="text" id="search" placeholder="Search Voter..." class="w-full p-2 border rounded">
+        <ul id="voterList" class="mt-4"></ul>
+    </div>
+
+    <div class="max-w-2xl mx-auto mt-6">
+        <canvas id="voterChart"></canvas>
+    </div>
+
+    <div class="max-w-2xl mx-auto mt-6">
+        <button id="generatePdf" class="bg-green-500 text-white p-2 rounded w-full">Generate PDF</button>
+    </div>
+    
+    <!--Clean code for a better card format and more structured-->
+ <div class="max-w-md w-full bg-white shadow-md rounded-lg p-6 mt-6 mx-auto">
+  <h3 class="text-xl font-semibold text-center">Voter Details</h3>
+  <p class="text-gray-700">Name: <strong>John Doe</strong></p>
+  <p class="text-gray-700">Email: <strong>johndoe@example.com</strong></p>
+  <p class="text-gray-700">Address: <strong>123 Main St, City, Country</strong></p>
+  <p class="text-green-500">Registration Status: Registered</p>
+  
+  
+  <!--animation for buttons and interactive feel-->
+  <button class="bg-primary text-white py-2 px-4 rounded-lg transition-all duration-300 ease-in-out hover:bg-accent hover:scale-105">
+  <i class="fas fa-check-circle mr-2"></i> Register
+</button>
+
+<!--Insert font awesome next to fields-->
+<div class="flex items-center border-b border-gray-300 mb-4">
+  <i class="fas fa-id-card mr-3 text-gray-500"></i>
+  <input type="text" id="voterId" class="w-full p-2 outline-none focus:ring-2 focus:ring-primary rounded-md" placeholder="Enter your ID number" required />
+</div>
+
+</div>
+
+    <script src="app.js"></script>
+
+
+<script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-auth.js"></script>
+</body>
+</html>

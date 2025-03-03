@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voter Registration</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="text/javascript" src="cdn_modules/sweetalert2@11.15.10/sweetalert2.min.js"></script>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🗳️</text></svg>">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .avatar-preview { height: 100px; width: 100px; object-fit: cover; }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-3xl">
+        <header class="mb-12 text-center">
+            <div class="mb-6 inline-flex items-center gap-3">
+                <span class="text-4xl">🗳️</span>
+                <h1 class="text-3xl font-semibold text-gray-800">Voter Registration</h1>
+            </div>
+        </header>
+
+        <main class="space-y-8">
+            <section class="bg-white rounded-xl shadow-sm p-6">
+                <form onsubmit="registerVoter(event)" class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Photo Upload -->
+                        <div class="space-y-2">
+                            <label class="block text-sm font-medium text-gray-700">Voter Photo</label>
+                            <div class="relative group">
+                                <input type="file" id="photo" accept="image/*" required 
+                                    class="hidden" onchange="previewImage(event)">
+                                <label for="photo" class="cursor-pointer block">
+                                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-blue-500 transition-colors">
+                                        <div class="mb-2 text-gray-500">
+                                            <svg class="mx-auto h-12 w-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                            </svg>
+                                        </div>
+                                        <span class="text-sm text-gray-600">Click to upload photo</span>
+                                        <span class="block text-xs text-gray-400">JPEG or PNG (max 2MB)</span>
+                                    </div>
+                                </label>
+                            </div>
+                            <img id="imagePreview" class="avatar-preview rounded-full hidden mx-auto mt-2">
+                        </div>
+
+                        <!-- Personal Info--> 
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                                <input type="text" id="name" required
+                                    class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+
+                            <div class="grid grid-cols-1 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">ID Number</label>
+                                    <input type="text" id="idNumber" required
+                                        class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Age</label>
+                                    <input type="number" id="age" min="18" required
+                                        class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                            <input type="email" id="email" required
+                                class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Address</label>
+                            <input type="text" id="address" required
+                                class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                    </div>
+
+                    <button type="submit"
+                        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition-colors duration-200">
+                        Register Voter
+                    </button>
+                </form>
+            </section>
+
+            <section class="bg-white rounded-xl shadow-sm p-6">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">Registered Voters</h2>
+                <div id="votersList" class="space-y-4">
+                    <!-- Voter items will be added here dynamically -->
+                </div>
+            </section>
+        </main>
+
+        <footer class="mt-12 text-center">
+            <p class="text-sm text-gray-500">
+                © <span id="year"></span> National Voter Registration System. All rights reserved.
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        let voters = JSON.parse(localStorage.getItem('voters')) || [];
+        displayVoters();
+
+        function previewImage(event) {
+            const input = event.target;
+            const preview = document.getElementById('imagePreview');
+            
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.classList.remove('hidden');
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function registerVoter(e) {
+            e.preventDefault();
+            
+            const voter = {
+                name: document.getElementById('name').value.trim(),
+                idNumber: document.getElementById('idNumber').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                age: document.getElementById('age').value,
+                address: document.getElementById('address').value.trim(),
+                photo: document.getElementById('imagePreview').src || ''
+            };
+
+            if (!validateVoter(voter)) return;
+
+            voters.push(voter);
+            localStorage.setItem('voters', JSON.stringify(voters));
+            resetForm();
+            displayVoters();
+        }
+
+        function validateVoter(voter) {
+            // Basic validations
+            if (!voter.name || !voter.email || !voter.age || !voter.address || !voter.idNumber) {
+                alert('Please fill in all required fields');
+                return false;
+            }
+
+            if (voter.age < 18) {
+                alert('Voter must be at least 18 years old');
+                return false;
+            }
+
+            if (!/^\d{10,20}$/.test(voter.idNumber)) {
+                alert('ID Number must be 10-20 digits');
+                return false;
+            }
+
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(voter.email)) {
+                alert('Please enter a valid email address');
+                return false;
+            }
+
+            if (!voter.photo) {
+                alert('Please upload a voter photo');
+                return false;
+            }
+
+            return true;
+        }
+
+        function displayVoters() {
+            const listDiv = document.getElementById('votersList');
+            listDiv.innerHTML = voters.map(voter => `
+                <div class="voter-item bg-gray-50 rounded-lg p-4 flex items-start gap-4">
+                    <img src="${voter.photo}" class="w-16 h-16 rounded-full object-cover">
+                    <div class="flex-1">
+                        <div class="font-medium text-gray-800">${voter.name}</div>
+                        <div class="text-sm text-gray-600">ID: ${voter.idNumber}</div>
+                        <div class="text-sm text-gray-600">${voter.age} years · ${voter.email}</div>
+                        <div class="text-sm text-gray-600">${voter.address}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function resetForm() {
+            document.querySelector('form').reset();
+            document.getElementById('imagePreview').classList.add('hidden');
+            document.getElementById('imagePreview').src = '';
+        }
+
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+    
+    <script type="text/javascript" src="cdn_modules/alpinejs@3.14.8/cdn.js"></script>
+</body>
+</html>  

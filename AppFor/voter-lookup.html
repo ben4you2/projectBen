@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/AppFor/style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <title></title>
+</head>
+
+<body>
+  <!--
+  <form id="voterLookupForm">
+  <input type="text" id="voterId" placeholder="Enter your ID number" required />
+  <button type="submit">Check Registration</button>
+</form>
+-->
+
+
+    <!--Animation for the form-->
+    <form id="voterLookupForm" class="space-y-4 transition-all duration-500 ease-in-out opacity-100 hover:opacity-90">
+  <input type="text" id="voterId" class="w-full p-2 border rounded-md" placeholder="Enter your ID number" required />
+  <button type="submit" class="w-full bg-primary text-white p-2 rounded-md hover:bg-secondary transition duration-300">
+    <i class="fas fa-check-circle mr-2"></i> Check Registration
+  </button>
+</form>
+
+    <div id="voterDetails" class="mt-6 text-center">
+      <!-- Voter details will appear here -->
+    </div>
+
+  
+</body>
+
+</html>
