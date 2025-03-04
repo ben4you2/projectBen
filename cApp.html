@@ -642,6 +642,7 @@
                     <div class="flex space-x-2 mt-2 md:mt-0">
                         <button onclick="editVoter(${index})" class="btn btn-edit">Edit</button>
                         <button onclick="removeVoter(${index})" class="btn btn-remove">Remove</button>
+                        <button onclick="removeVoter()" class="btn btn-primary">Remove</button>
                     </div>
                 </div>
             `).join('');
@@ -661,6 +662,7 @@
         }
 
         function removeVoter(index) {
+          
             Swal.fire({
                 title: "Are you sure?",
                 text: "This voter will be permanently removed!",
@@ -685,8 +687,25 @@
             document.getElementById('editIndex').value = "";
             document.getElementById('submitBtn').textContent = "Register Voter";
         }
-
         document.getElementById('year').textContent = new Date().getFullYear();
+        
+        
+        /*text recognition*/
+  import { HfInference } from "@huggingface/inference";
+
+const client = new HfInference("hf_xxxxxxxxxxxxxxxxxxxxxxxx");
+
+const data = fs.readFileSync("sample1.flac");
+
+const output = await client.automaticSpeechRecognition({
+	data,
+	model: "openai/whisper-large-v3",
+	provider: "fal-ai",
+});
+
+console.log(output);
+  
+        
     </script>
 </body>
 </html>

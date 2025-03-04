@@ -1,0 +1,207 @@
+<!--<!DOCTYPE html>
+<html>
+<head>
+    <title>Ethical Real-Time Sensor Demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        /* Responsive design */
+        .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+        video { width: 100%; border: 2px solid #ddd; }
+        .disclaimer { color: red; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Ethical Sensor Demo</h1>
+        <p class="disclaimer">⚠️ This is a simulation. No data is stored or shared.</p>
+        <video id="video" autoplay></video>
+        <button id="startBtn">Start Camera</button>
+        <div id="faceResults"></div>
+        <div id="voiceResults"></div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/face-api.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>-->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ethical Sensor Demo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4a90e2;
+            --background: #1a1a2e;
+            --glass: rgba(255, 255, 255, 0.05);
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            background: var(--background);
+            color: white;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: linear-gradient(145deg, #16213e, #0f3460);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .sensor-card {
+            background: var(--glass);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            transition: transform 0.3s;
+        }
+
+        .sensor-card:hover {
+            transform: translateY(-5px);
+        }
+
+        #video {
+            width: 100%;
+            border-radius: 15px;
+            border: 2px solid var(--primary);
+        }
+
+        .status-indicator {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 10px 0;
+        }
+
+        button:hover {
+            opacity: 0.9;
+            transform: scale(1.05);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .disclaimer {
+            color: #ff4757;
+            font-size: 0.9em;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fas fa-satellite-dish"></i> Ethical Sensor Demo</h1>
+        <p class="disclaimer">⚠️ No data is stored, shared, or processed externally.</p>
+        
+        <button id="startBtn"><i class="fas fa-play"></i> Start Sensors</button>
+        
+        <div class="grid">
+            <div class="sensor-card">
+                <h3><i class="fas fa-running"></i> Motion Detection</h3>
+                <p>Acceleration: <span id="acceleration">0</span>g</p>
+                <p>Rotation: <span id="rotation">0</span>°</p>
+            </div>
+
+            <div class="sensor-card">
+                <h3><i class="fas fa-hand-paper"></i> Proximity</h3>
+                <p>Distance: <span id="proximity">Unknown</span></p>
+            </div>
+        </div>
+
+        <div class="sensor-card">
+            <h3><i class="fas fa-video"></i> Live Camera</h3>
+            <video id="video" autoplay></video>
+            <p>Faces Detected: <span id="faceCount">0</span></p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/face-api.js"></script>
+    <script>
+        // Sensor Handlers
+        let isSensorsActive = false;
+
+        async function startSensors() {
+            try {
+                // Camera and Face Detection
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                document.getElementById('video').srcObject = stream;
+                faceapi.nets.tinyFaceDetector.loadFromUri('/models');
+                
+                setInterval(async () => {
+                    const detections = await faceapi.detectAllFaces(
+                        document.getElementById('video'),
+                        new faceapi.TinyFaceDetectorOptions()
+                    );
+                    document.getElementById('faceCount').textContent = detections.length;
+                }, 1000);
+
+                // Device Motion (Acceleration/Rotation)
+                if (window.DeviceMotionEvent) {
+                    window.addEventListener('devicemotion', (e) => {
+                        const accel = e.acceleration;
+                        document.getElementById('acceleration').textContent = 
+                            Math.hypot(accel.x, accel.y, accel.z).toFixed(2);
+                    });
+                }
+
+                // Proximity Sensor
+                if ('ProximitySensor' in window) {
+                    const sensor = new ProximitySensor();
+                    sensor.addEventListener('reading', () => {
+                        document.getElementById('proximity').textContent = 
+                            `${sensor.distance?.toFixed(2) ?? 'N/A'} cm`;
+                    });
+                    sensor.start();
+                } else {
+                    document.getElementById('proximity').textContent = "Not supported";
+                }
+
+                // Screen Wake Lock
+                if ('wakeLock' in navigator) {
+                    const wakeLock = await navigator.wakeLock.request('screen');
+                }
+
+                isSensorsActive = true;
+            } catch (error) {
+                alert(`Sensor Error: ${error.message}`);
+            }
+        }
+
+        document.getElementById('startBtn').addEventListener('click', startSensors);
+
+        // Battery status check (optional)
+        navigator.getBattery?.().then(battery => {
+            if (battery.level < 0.2) {
+                alert("Low battery mode: Sensors may be limited");
+            }
+        });
+    </script>
+</body>
+</html>
