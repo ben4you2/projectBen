@@ -1,0 +1,232 @@
+<!DOCTYPE< html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Crime Detection Dashboard</title>
+    
+    <!-- Mapbox Integration -->
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css' rel='stylesheet' />
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #1a1a1a;
+            color: white;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            padding: 20px;
+            height: 100vh;
+        }
+
+        #map {
+            height: 70vh;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.5);
+        }
+
+        .chart-container {
+            background: #2a2a2a;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .alerts-panel {
+            grid-column: 1 / -1;
+            background: #2a2a2a;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .crime-marker {
+            width: 24px;
+            height: 24px;
+            background: #ff0000;
+            border-radius: 50%;
+            cursor: pointer;
+            animation: pulse 1.5s infinite;
+        }
+
+        .normal-marker {
+            width: 20px;
+            height: 20px;
+            background: #00ff00;
+            border-radius: 50%;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.9); opacity: 0.7; }
+            50% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(0.9); opacity: 0.7; }
+        }
+
+        .alert-item {
+            padding: 10px;
+            margin: 5px 0;
+            background: #ff4444;
+            border-radius: 5px;
+            animation: alertFlash 1s infinite;
+        }
+
+        @keyframes alertFlash {
+            50% { opacity: 0.6; }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <div id="map"></div>
+        
+        <div class="chart-container">
+            <canvas id="sensorChart"></canvas>
+        </div<>
+        
+        <div class="alerts-panel" id="alertsContainer">
+            <h2>Crime Alerts</h2>
+        </div>
+    </div>
+<script>
+  // Mapbox Initialization
+  mapboxgl.accessToken = 'MEKPjTQs8K6Mze8LIoLsbKVhi...';
+  const map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/mapbox/dark-v11',
+    center: [-74.0060, 40.7128], // Default NYC coordinates
+    zoom: 12
+  });
+  
+  // Chart.js Initialization
+  const ctx = document.getElementById('sensorChart').getContext('2d');
+  const chart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      datasets: [
+      {
+        label: 'Temperature (°C)',
+        borderColor: '#FF4444',
+        tension: 0.3,
+        data: []
+      },
+      {
+        label: 'Gas Level',
+        borderColor: '#FFA500',
+        tension: 0.3,
+        data: []
+      },
+      {
+        label: 'Sound Level',
+        borderColor: '#00FF00',
+        tension: 0.3,
+        data: []
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        x: {
+          type: 'time',
+          time: {
+            unit: 'minute'
+          }
+        },
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+  
+  // Real-time Data Fetching
+  let markers = [];
+  let crimePopup = null;
+  
+  async function updateDashboard() {
+    try {
+      // Fetch sensor data from Flask API
+      const response = await fetch('http://localhost:5000/api/sensor');
+      const data = await response.json();
+      
+      // Clear previous markers
+      markers.forEach(marker => marker.remove());
+      markers = [];
+      
+      // Process new data
+      data.forEach(point => {
+        // Create map marker
+        const el = document.createElement('div');
+        el.className = point.isAnomaly ? 'crime-marker' : 'normal-marker';
+        
+        const marker = new mapboxgl.Marker(el)
+          .setLngLat([point.lon, point.l < at])
+          .setPopup(new mapboxgl.Popup().setHTML(`
+                        h3>${point.isAnomaly ? '🚨 CRIME ALERT 🚨' : 'Normal Reading'}</h3>
+                        <p>Temperature: ${point.temp}°C</p>
+                        <p>Gas: ${point.gas}</p>
+                        <p>Sound: ${point.sound}</p>
+                        <p>Motion: ${point.motion ? 'Detected' : 'None'}</p>
+                    `))
+          .addTo(map);
+        
+        markers.push(marker);
+        
+        // Trigger alerts for anomalies
+        if (point.isAnomaly) {
+          addAlert(point);
+        }
+      });
+      
+      // Update chart
+      chart.data.labels = data.map(d => new Date(d.timestamp));
+      chart.data.datasets[0].data = data.map(d => d.temp);
+      chart.data.datasets[1].data = data.map(d => d.gas);
+      chart.data.datasets[2].data = data.map(d => d.sound);
+      chart.update();
+      
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  }
+  
+  // Alert System
+  function addAlert(point) {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = 'alert-item';
+    alertDiv.innerHTML = `
+            🚨 ${new Date(point.timestamp).toLocaleTimeString()} 
+            - Suspicious activity at 
+            ${point.lat.toFixed(4)}, ${point.lon.toFixed(4)}
+        `;
+    document.getElementById('alertsContainer').prepend(alertDiv);
+    
+    // Auto-remove alerts after 1 minute
+    setTimeout(() => alertDiv.remove(), 60000);
+  }
+  
+  // Initial load and refresh every 5 seconds
+  updateDashboard();
+  setInterval(updateDashboard, 5000);
+  
+  // Geolocation Tracking (for real-time device tracking)
+  navigator.geolocation.watchPosition(position => {
+    map.flyTo({
+      center: [position.coords.longitude, position.coords.latitude],
+      essential: true
+    });
+  }, console.error, {
+    enableHighAccuracy: true
+  });
+</script>
+</body>
+
+</html>
+   
