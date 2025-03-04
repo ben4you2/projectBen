@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crime Detection Dashboard</title>
+    
+    <!-- Mapbox Integration -->
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css' rel='stylesheet' />
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #1a1a1a;
+            color: white;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        #map {
+            height: 70vh;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.5);
+        }
+
+        .chart-container {
+            background: #2a2a2a;
+            padding: 20px;
+            border-radius: 10px;
+            height: 70vh;
+        }
+
+        .alerts-panel {
+            grid-column: 1 / -1;
+            background: #2a2a2a;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .crime-marker {
+            width: 24px;
+            height: 24px;
+            background: #ff0000;
+            border-radius: 50%;
+            cursor: pointer;
+            animation: pulse 1.5s infinite;
+        }
+
+        .normal-marker {
+            width: 20px;
+            height: 20px;
+            background: #00ff00;
+            border-radius: 50%;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.9); opacity: 0.7; }
+            50% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(0.9); opacity: 0.7; }
+        }
+
+        .alert-item {
+            padding: 10px;
+            margin: 5px 0;
+            background: #ff4444;
+            border-radius: 5px;
+            animation: alertFlash 1s infinite;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            #map, .chart-container {
+                height: 50vh;
+            }
+        }
+
+        @keyframes alertFlash {
+            50% { opacity: 0.6; }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <div id="map"></div>
+        
+        <div class="chart-container">
+            <canvas id="sensorChart"></canvas>
+        </div>
+        
+        <div class="alerts-panel" id="alertsContainer">
+            <h2>Crime Alerts</h2>
+        </div>
+    </div>
+
+<script>
+// Mapbox Initialization
+mapboxgl.accessToken = 'YOUR_MAPBOX_ACCESS_TOKEN'; // Replace with your token
+const map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/mapbox/dark-v11',
+    center: [-74.0060, 40.7128], // NYC coordinates
+    zoom: 12
+});
+
+// Chart.js Initialization
+const ctx = document.getElementById('sensorChart').getContext('2d');
+const chart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        datasets: [
+            {
+                label: 'Temperature (°C)',
+                borderColor: '#FF4444',
+                tension: 0.3,
+                data: []
+            },
+            {
+                label: 'Gas Level',
+                borderColor: '#FFA500',
+                tension: 0.3,
+                data: []
+            },
+            {
+                label: 'Sound Level',
+                borderColor: '#00FF00',
+                tension: 0.3,
+                data: []
+            }
+        ]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            x: {
+                type: 'time',
+                time: {
+                    unit: 'minute',
+                    tooltipFormat: 'HH:mm:ss'
+                }
+            },
+            y: { beginAtZero: true }
+        }
+    }
+});
+
+// Real-time Data Handling
+let markers = [];
+
+async function updateDashboard() {
+    try {
+        // Simulated data - replace with actual API call
+        const mockData = Array.from({length: 5}, (_, i) => ({
+            lon: -74.0060 + (Math.random() * 0.01 - 0.005),
+            lat: 40.7128 + (Math.random() * 0.01 - 0.005),
+            temp: Math.random() * 40,
+            gas: Math.random() * 100,
+            sound: Math.random() * 120,
+            motion: Math.random() > 0.5,
+            isAnomaly: Math.random() > 0.8,
+            timestamp: new Date().toISOString()
+        }));
+
+        // Clear previous markers
+        markers.forEach(marker => marker.remove());
+        markers = [];
+
+        // Process data points
+        mockData.forEach(point => {
+            const el = document.createElement('div');
+            el.className = point.isAnomaly ? 'crime-marker' : 'normal-marker';
+            
+            const marker = new mapboxgl.Marker(el)
+                .setLngLat([point.lon, point.lat])
+                .setPopup(new mapboxgl.Popup().setHTML(`
+                    <h3>${point.isAnomaly ? '🚨 CRIME ALERT 🚨' : 'Normal Reading'}</h3>
+                    <p>Temperature: ${point.temp.toFixed(1)}°C</p>
+                    <p>Gas: ${point.gas.toFixed(1)}</p>
+                    <p>Sound: ${point.sound.toFixed(1)}</p>
+                    <p>Motion: ${point.motion ? 'Detected' : 'None'}</p>
+                `))
+                .addTo(map);
+            
+            markers.push(marker);
+            
+            if (point.isAnomaly) {
+                addAlert(point);
+            }
+        });
+
+        // Update chart
+        const now = new Date();
+        chart.data.labels = mockData.map((_, i) => new Date(now - (i * 5000)));
+        chart.data.datasets[0].data = mockData.map(d => d.temp);
+        chart.data.datasets[1].data = mockData.map(d => d.gas);
+        chart.data.datasets[2].data = mockData.map(d => d.sound);
+        chart.update();
+
+    } catch (error) {
+        console.error('Error:', error);
+        // Add error handling here
+    }
+}
+
+// Alert System
+function addAlert(point) {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = 'alert-item';
+    alertDiv.innerHTML = `
+        🚨 ${new Date(point.timestamp).toLocaleTimeString()} 
+        - Suspicious activity at 
+        ${point.lat.toFixed(4)}, ${point.lon.toFixed(4)}
+    `;
+    alertsContainer.prepend(alertDiv);
+
+    setTimeout(() => alertDiv.remove(), 60000);
+}
+
+// Initialize and update every 5 seconds
+updateDashboard();
+setInterval(updateDashboard, 5000);
+
+// Geolocation Handling
+if (navigator.geolocation) {
+    navigator.geolocation.watchPosition(
+        position => {
+            map.flyTo({
+                center: [position.coords.longitude, position.coords.latitude],
+                essential: true
+            });
+        },
+        error => console.error('Geolocation error:', error),
+        { enableHighAccuracy: true }
+    );
+}
+</script>
+</body>
+</html>
