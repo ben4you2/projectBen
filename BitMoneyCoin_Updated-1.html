@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bitcoin Profit Guide</title>
+    <style>
+        :root {
+            --primary-color: #f7931a;
+            --dark-color: #1a1a1a;
+            --light-color: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: var(--dark-color);
+            color: var(--light-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        .header {
+            background-color: var(--primary-color);
+            padding: 1rem;
+            text-align: center;
+        }
+
+        /* Navigation */
+        .nav {
+            background-color: #333;
+            padding: 1rem;
+        }
+
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin: 0 15px;
+        }
+
+        .nav-links a {
+            color: var(--light-color);
+            text-decoration: none;
+            padding: 5px 10px;
+        }
+
+        /* Dark/Light Mode */
+        .mode-toggle {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            cursor: pointer;
+            background: var(--primary-color);
+            padding: 10px;
+            border-radius: 5px;
+            color: white;
+        }
+
+        /* Crypto Price Tracker */
+        .crypto-price {
+            text-align: center;
+            margin: 20px 0;
+            padding: 10px;
+            background: #2a2a2a;
+            border-radius: 10px;
+        }
+
+        /* Crypto Converter */
+        .converter {
+            text-align: center;
+            margin: 20px 0;
+            padding: 10px;
+            background: #2a2a2a;
+            border-radius: 10px;
+        }
+
+        input, select {
+            padding: 8px;
+            margin: 5px;
+            background: #3a3a3a;
+            color: white;
+        }
+        
+        /* News Feed */
+        .news-feed {
+            background: #2a2a2a;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <h1>Bitcoin Profit Guide</h1>
+        <p>Secure Ways to Earn Bitcoin Online</p>
+        <button class="mode-toggle" onclick="toggleMode()">🌗 Toggle Mode</button>
+    </header>
+
+    <div class="container">
+        <div class="crypto-price">
+            <h3>Live Bitcoin Price: <span id="btcPrice">Loading...</span></h3>
+        </div>
+
+        <div class="converter">
+            <h3>Crypto Converter</h3>
+            <input type="number" id="btcAmount" placeholder="BTC Amount">
+            <select id="convertTo">
+                <option value="usd">USD</option>
+            </select>
+            <button onclick="convertCrypto()">Convert</button>
+            <p>Converted Amount: <span id="convertedValue">0</span></p>
+        </div>
+
+        <div class="news-feed">
+            <h3>Latest Crypto News</h3>
+            <ul id="newsList">Loading...</ul>
+        </div>
+    </div>
+
+    <script>
+        async function fetchBitcoinPrice() {
+            try {
+                let response = await fetch('https://api.coindesk.com/v1/bpi/currentprice/BTC.json');
+                let data = await response.json();
+                document.getElementById('btcPrice').innerText = data.bpi.USD.rate + " USD";
+            } catch (error) {
+                document.getElementById('btcPrice').innerText = "Error fetching price.";
+            }
+        }
+
+        function convertCrypto() {
+            let btcAmount = document.getElementById('btcAmount').value;
+            let btcPrice = parseFloat(document.getElementById('btcPrice').innerText.split(" ")[0].replace(",", ""));
+            if (!btcAmount || isNaN(btcPrice)) {
+                alert("Enter a valid amount and wait for BTC price to load.");
+                return;
+            }
+            document.getElementById('convertedValue').innerText = (btcAmount * btcPrice).toFixed(2) + " USD";
+        }
+
+        async function fetchCryptoNews() {
+            try {
+                let response = await fetch('https://api.coingecko.com/api/v3/news');
+                let data = await response.json();
+                let newsList = document.getElementById('newsList');
+                newsList.innerHTML = data.data.slice(0, 5).map(news => `<li>${news.title}</li>`).join('');
+            } catch (error) {
+                document.getElementById('newsList').innerText = "Error fetching news.";
+            }
+        }
+
+        function toggleMode() {
+            let body = document.body;
+            if (body.style.backgroundColor === "white") {
+                body.style.backgroundColor = "#1a1a1a";
+                body.style.color = "white";
+            } else {
+                body.style.backgroundColor = "white";
+                body.style.color = "black";
+            }
+        }
+
+        fetchBitcoinPrice();
+        fetchCryptoNews();
+        setInterval(fetchBitcoinPrice, 60000);
+    </script>
+
+</body>
+</html>
