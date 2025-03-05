@@ -58,9 +58,36 @@
             text-decoration: none;
             padding: 5px 10px;
         }
+        
+        
+    /* Dark/Light Mode */
 
-        /* Dark/Light Mode */
-        .mode-toggle {
+    .mode-toggle ,#converter {
+        position: absolute;
+        top: 15px;
+        right: 20px;
+        cursor: pointer;
+        background: linear-gradient(45deg, #f7931a, #f9a825);
+        padding: 10px 20px;
+        border: none;
+        border-radius: 25px;
+        color: white;
+        font-size: 16px;
+        transition: background 0.3s, transform 0.3s;
+    }
+
+    .mode-toggle:hover {
+        background: linear-gradient(45deg, #f9a825, #f7931a);
+        transform: scale(1.05);
+    }
+
+    .mode-toggle:active {
+        transform: scale(1);
+    }
+        
+
+        /* Dark/Light Mode
+        .mode-toggle , #converter{
             position: absolute;
             top: 15px;
             right: 20px;
@@ -69,7 +96,7 @@
             padding: 10px;
             border-radius: 5px;
             color: white;
-        }
+        }*/
 
         /* Crypto Price Tracker */
         .crypto-price {
@@ -103,6 +130,11 @@
             border-radius: 10px;
             margin: 20px 0;
         }
+        #converter{
+            
+            
+        
+        }
         
     </style>
 </head>
@@ -125,7 +157,7 @@
             <select id="convertTo">
                 <option value="usd">USD</option>
             </select>
-            <button onclick="convertCrypto()">Convert</button>
+            <button onclick="convertCrypto()" id="converter">Convert</button>
             <p>Converted Amount: <span id="convertedValue">0</span></p>
         </div>
 
