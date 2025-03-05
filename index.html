@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -58,8 +59,35 @@
             text-decoration: none;
             padding: 5px 10px;
         }
+        
+    ...
+    /* Dark/Light Mode */
+    .mode-toggle {
+        position: absolute;
+        top: 15px;
+        right: 20px;
+        cursor: pointer;
+        background: linear-gradient(45deg, #f7931a, #f9a825);
+        padding: 10px 20px;
+        border: none;
+        border-radius: 25px;
+        color: white;
+        font-size: 16px;
+        transition: background 0.3s, transform 0.3s;
+    }
 
-        /* Dark/Light Mode */
+    .mode-toggle:hover {
+        background: linear-gradient(45deg, #f9a825, #f7931a);
+        transform: scale(1.05);
+    }
+
+    .mode-toggle:active {
+        transform: scale(1);
+    }
+
+        
+/*
+        /* Dark/Light Mode 
         .mode-toggle {
             position: absolute;
             top: 15px;
@@ -69,7 +97,7 @@
             padding: 10px;
             border-radius: 5px;
             color: white;
-        }
+        }*/
 
         /* Crypto Price Tracker */
         .crypto-price {
@@ -158,10 +186,10 @@
 
         async function fetchCryptoNews() {
             try {
-                let response = await fetch('https://api.coingecko.com/api/v3/news');
+                let response = await fetch('https://newsapi.org/v2/everything?q=bitcoin&apiKey=YOUR_API_KEY'); // replace with a valid news API and your API key
                 let data = await response.json();
                 let newsList = document.getElementById('newsList');
-                newsList.innerHTML = data.data.slice(0, 5).map(news => `<li>${news.title}</li>`).join('');
+                newsList.innerHTML = data.articles.slice(0, 5).map(news => `<li>${news.title}</li>`).join('');
             } catch (error) {
                 document.getElementById('newsList').innerText = "Error fetching news.";
             }
@@ -173,7 +201,7 @@
                 body.style.backgroundColor = "#1a1a1a";
                 body.style.color = "white";
             } else {
-                body.style.backgroundColor = "black";
+                body.style.backgroundColor = "white";
                 body.style.color = "black";
             }
         }
