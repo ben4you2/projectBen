@@ -169,17 +169,16 @@
 
         function toggleMode() {
             let body = document.body;
-            let head-r = document.getElementByClassName('.header');
-            let cont-ainer = document.getElementByClassnName('.container');
+            let cont-ainer = document.getElementByClassName('.container');
+            let news-feed = document.getElementByClassName('.news-feed');
             if (body.style.backgroundColor === "white") {
                 body.style.backgroundColor = "#1a1a1a";
-                body.style.color = "white";
-                head-r.style.color="white";
+                body.style.color = "black";
                 
             } else {
                 body.style.backgroundColor = "white";
                 body.style.color = "black";
-                head-r.style.color="black";
+               news-feed.style.color="white";
                 cont-ainer.style.color="white";
             }
         }
