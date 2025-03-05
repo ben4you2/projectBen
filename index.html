@@ -63,7 +63,7 @@
 
     /* Dark/Light Mode */
     /*
-    .mode-toggle {
+    .mode-toggle , #converter{
         position: absolute;
         top: 15px;
         right: 20px;
@@ -88,7 +88,7 @@
 
         
     /*Dark/Light Mode*/
-        .mode-toggle {
+        .mode-toggle ,#converter {
             position: absolute;
             top: 15px;
             right: 20px;
@@ -153,7 +153,7 @@
             <select id="convertTo">
                 <option value="usd">USD</option>
             </select>
-            <button onclick="convertCrypto()">Convert</button>
+            <button onclick="convertCrypto()" id="converter">Convert</button>
             <p>Converted Amount: <span id="convertedValue">0</span></p>
         </div>
 
@@ -197,12 +197,16 @@
 
         function toggleMode() {
             let body = document.body;
+            let cont = document.body;
+            let conver = document.body;
             if (body.style.backgroundColor === "white") {
                 body.style.backgroundColor = "#1a1a1a";
                 body.style.color = "white";
             } else {
                 body.style.backgroundColor = "black";
                 body.style.color = "white";
+                cont.style.color="white";
+                conver.style.color="white";
             }
         }
 
