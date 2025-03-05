@@ -169,12 +169,18 @@
 
         function toggleMode() {
             let body = document.body;
+            let head-r = document.getElementByClassName('.header');
+            let cont-ainer = document.getElementByClassnName('.container');
             if (body.style.backgroundColor === "white") {
                 body.style.backgroundColor = "#1a1a1a";
                 body.style.color = "white";
+                head-r.style.color="white";
+                
             } else {
                 body.style.backgroundColor = "white";
                 body.style.color = "black";
+                head-r.style.color="black";
+                cont-ainer.style.color="white";
             }
         }
 
