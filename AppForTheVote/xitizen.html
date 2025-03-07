@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en" x-data="voterApp()" x-cloak>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voter Registration System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🗳️</text></svg>">
+
+    <style>
+        [x-cloak] { display: none !important; }
+        .drag-active { @apply border-blue-500 bg-blue-50; }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        <!-- Header -->
+        <header class="mb-12 text-center">
+            <div class="inline-flex items-center gap-3 mb-6">
+                <span class="text-4xl">🗳️</span>
+                <h1 class="text-3xl font-bold text-gray-800">Voter Registration</h1>
+            </div>
+        </header>
+
+        <!-- Registration Form -->
+        <section class="bg-white rounded-xl shadow-sm p-6 mb-8 transition-all duration-300 hover:shadow-md">
+            <form @submit.prevent="saveVoter" class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Photo Upload -->
+                    <div class="space-y-4">
+                        <label class="block text-sm font-medium text-gray-700">Voter Photo</label>
+                        <div class="relative group" 
+                             @dragover.prevent="isDragging = true" 
+                             @dragleave.prevent="isDragging = false"
+                             @drop.prevent="handleDrop">
+                            <input type="file" id="photo" accept="image/*" required 
+                                   class="hidden" @change="previewImage">
+                            <label for="photo" class="cursor-pointer block">
+                                <div class="border-2 border-dashed border-gray-200 rounded-xl p-6 text-center transition-all"
+                                     :class="{'drag-active': isDragging}">
+                                    <template x-if="!state.photoPreview">
+                                        <div class="space-y-2 text-gray-400">
+                                            <i class="fas fa-camera text-4xl"></i>
+                                            <p class="text-sm mt-2">Drag & drop or click to upload</p>
+                                            <p class="text-xs">JPEG/PNG (max 2MB)</p>
+                                        </div>
+                                    </template>
+                                    <img :src="state.photoPreview" x-show="state.photoPreview" 
+                                         class="w-32 h-32 object-cover rounded-xl mx-auto shadow-sm">
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Personal Info -->
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                            <input type="text" x-model="state.formData.name" required
+                                   class="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-400 focus:border-blue-400">
+                        </div>
+
+                        <div class="grid grid-cols-1 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">National ID</label>
+                                <input type="text" x-model="state.formData.idNumber" required
+                                       class="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-400 focus:border-blue-400">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Age</label>
+                                <input type="number" x-model="state.formData.age" min="18" required
+                                       class="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-400 focus:border-blue-400">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Info -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                        <input type="email" x-model="state.formData.email" required
+                               class="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-400">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Address</label>
+                        <input type="text" x-model="state.formData.address" required
+                               class="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-400">
+                    </div>
+                </div>
+
+                <div class="flex gap-3">
+                    <button type="submit" 
+                            class="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-300">
+                        <i class="fas fa-save mr-2"></i>
+                        <span x-text="editIndex === -1 ? 'Register Voter' : 'Update Voter'"></span>
+                    </button>
+                    <button type="button" @click="cancelEdit" x-show="editIndex !== -1"
+                            class="px-6 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors duration-200">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Voters List -->
+        <section class="bg-white rounded-xl shadow-sm p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-semibold text-gray-800">Registered Voters</h2>
+                <div class="relative w-64">
+                    <input type="text" 
+                           x-model="searchQuery" 
+                           placeholder="Search voters..." 
+                           class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-400"
+                           @input.debounce.300ms>
+                    <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <template x-for="(voter, index) in filteredVoters" :key="voter.idNumber">
+                    <div class="bg-white rounded-lg p-4 shadow-sm border border-gray-100 transition-all hover:shadow-md">
+                        <div class="flex items-start gap-4">
+                            <img :src="voter.photo" class="w-20 h-20 rounded-lg object-cover shadow-sm">
+                            <div class="flex-1">
+                                <div class="flex items-start justify-between mb-2">
+                                    <div>
+                                        <h3 class="font-semibold text-gray-800" x-text="voter.name"></h3>
+                                        <p class="text-sm text-gray-500">ID: <span x-text="voter.idNumber"></span></p>
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <button @click="editVoter(index)" 
+                                                class="text-blue-500 hover:text-blue-600 transition-colors">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button @click="deleteVoter(index)" 
+                                                class="text-red-500 hover:text-red-600 transition-colors">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-gray-600">
+                                    <p><i class="fas fa-envelope mr-2 text-blue-400"></i><span x-text="voter.email"></span></p>
+                                    <p><i class="fas fa-map-marker-alt mr-2 text-green-400"></i><span x-text="voter.address"></span></p>
+                                    <p><i class="fas fa-birthday-cake mr-2 text-purple-400"></i><span x-text="voter.age + ' years'"></span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+
+                <div x-show="filteredVoters.length === 0" 
+                     class="text-center py-8 text-gray-400">
+                    <i class="fas fa-user-slash text-3xl mb-2"></i>
+                    <p>No voters found</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('voterApp', () => ({
+                voters: JSON.parse(localStorage.getItem('voters')) || [],
+                state: {
+                    formData: { name: '', idNumber: '', age: '', email: '', address: '', photo: '' },
+                    photoPreview: null,
+                    isDragging: false
+                },
+                searchQuery: '',
+                editIndex: -1,
+
+                init() {
+                    this.$watch('voters', (value) => {
+                        localStorage.setItem('voters', JSON.stringify(value));
+                    });
+                },
+
+                get filteredVoters() {
+                    return this.voters.filter(voter => {
+                        const search = this.searchQuery.toLowerCase();
+                        return Object.values(voter).some(value =>
+                            String(value).toLowerCase().includes(search)
+                        );
+                    });
+                },
+
+                previewImage(event) {
+                    const file = event.target.files?.[0] || event.dataTransfer?.files?.[0];
+                    if (!file) return;
+
+                    if (file.size > 2 * 1024 * 1024) {
+                        Swal.fire('Error', 'Image size must be less than 2MB', 'error');
+                        return;
+                    }
+
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        this.state.photoPreview = e.target.result;
+                        this.state.formData.photo = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                    this.state.isDragging = false;
+                },
+
+                handleDrop(event) {
+                    this.state.isDragging = false;
+                    this.previewImage(event);
+                },
+
+                saveVoter() {
+                    if (!this.validateForm()) return;
+
+                    const isEdit = this.editIndex !== -1;
+
+                    if (!isEdit) {
+                        this.voters.unshift({ ...this.state.formData });
+                    } else {
+                        this.voters[this.editIndex] = { ...this.state.formData };
+                        this.editIndex = -1;
+                    }
+
+                    this.resetForm();
+                    Swal.fire({
+                        icon: 'success',
+                        title: isEdit ? 'Updated!' : 'Registered!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                },
+
+                validateForm() {
+                    const { name, idNumber, age, email, address, photo } = this.state.formData;
+
+                    if (!name || !idNumber || !age || !email || !address || !photo) {
+                        Swal.fire('Error', 'All fields are required', 'error');
+                        return false;
+                    }
+
+                    if (!/^\d{8,20}$/.test(idNumber)) {
+                        Swal.fire('Error', 'ID must be 8-20 digits', 'error');
+                        return false;
+                    }
+
+                    if (age < 18) {
+                        Swal.fire('Error', 'Voter must be at least 18 years old', 'error');
+                        return false;
+                    }
+
+                    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                        Swal.fire('Error', 'Invalid email address', 'error');
+                        return false;
+                    }
+
+                    return true;
+                },
+
+                editVoter(index) {
+                    this.state.formData = { ...this.voters[index] };
+                    this.state.photoPreview = this.voters[index].photo;
+                    this.editIndex = index;
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                },
+
+                async deleteVoter(index) {
+                    const result = await Swal.fire({
+                        title: 'Confirm Delete',
+                        text: 'Are you sure you want to delete this voter?',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                    });
+
+                    if (result.isConfirmed) {
+                        this.voters.splice(index, 1);
+                        Swal.fire('Deleted!', '', 'success');
+                    }
+                },
+
+                resetForm() {
+                    this.state.formData = { name: '', idNumber: '', age: '', email: '', address: '', photo: '' };
+                    this.state.photoPreview = null;
+                    document.getElementById('photo').value = '';
+                },
+
+                cancelEdit() {
+                    this.resetForm();
+                    this.editIndex = -1;
+                }
+            }));
+        });
+    </script>
+</body>
+</html>
