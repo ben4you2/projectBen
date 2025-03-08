@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="text/javascript" src="cdn_modules/font-awesome@6.7.2/css/all.min.css"></script>
     <title>Emergency Management</title>
     <style>
         body {
@@ -13,6 +14,7 @@
             background-color: #f0f4f8;
             color: #333;
             line-height: 1.6;
+            
         }
 
         .container {
@@ -23,6 +25,9 @@
             padding: 2rem;
             border-radius: 12px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            grid-template-areas: (auto,minmax(250px,1fr));
+            gap:1.5rem;
+          
         }
 
         h1 {
@@ -220,7 +225,8 @@
         
         <ul id="emergencyList"></ul>
     </div>
-    <script src="https://kit.fontawesome.com/yourfontawesomekit.js" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/cdn_modules/font-awesome@6.7.2/js/all.min.js" crossorigin="anonymous"></script>
+    
     <script src="/emergyApp/emergency.js"></script>
 </body>
 </html>
