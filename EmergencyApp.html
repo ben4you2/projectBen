@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ben&Tech Lottery Generator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --gradient-1: #2c3e50;
+            --gradient-2: #3498db;
+            --accent-color: #e74c3c;
+            --color:#25ef53;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--gradient-1), var(--gradient-2),var(--accent-color));
+            min-height: 100vh;
+            color: white;
+            font-family: 'Arial Rounded MT Bold', Arial, sans-serif;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        #lottery-number {
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            letter-spacing: 4px;
+            color: var(--accent-color);
+            text-shadow: 0 0 10px rgba(231, 76, 60, 0.4);
+        }
+
+        .btn-primary {
+            background-color: var(--accent-color);
+            border: none;
+            padding: 1rem 2rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+        }
+
+        .list-group-item {
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .frequency-badge {
+            background: var(--accent-color);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+        }
+
+        .number-icon {
+            font-size: 2rem;
+            filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.3));
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-5">
+        <div class="text-center mb-5">
+            <h1 class="display-4 fw-bold mb-3">
+                <i class="fas fa-dice number-icon me-2"></i>
+                Ben&Tech Lotto
+            </h1>
+        </div>
+
+        <div class="card p-4 mb-4 mx-auto" style="max-width: 600px;">
+            <h2 class="mb-4">Your Lucky Number</h2>
+            <div id="lottery-number" class="display-1 mb-4">-----</div>
+            <button class="btn btn-primary btn-lg w-100" onclick="generateLotteryNumber()">
+                <i class="fas fa-magic me-2"></i>Generate
+            </button>
+        </div>
+
+        <div class="row justify-content-center g-4">
+            <div class="col-md-6">
+                <div class="card p-4">
+                    <h3 class="mb-3"><i class="fas fa-history me-2"></i>Previous Numbers</h3>
+                    <ul id="previous-numbers" class="list-group list-group-flush"></ul>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card p-4">
+                    <h3 class="mb-3"><i class="fas fa-chart-bar me-2"></i>Frequency Analysis</h3>
+                    <div class="table-responsive">
+                        <table class="table table-borderless text-white mb-0">
+                            <tbody id="frequency-table"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="text-center mt-5 opacity-75">
+            <small>🔮 Luck is what happens when preparation meets opportunity 🔮</small>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let previousNumbers = [];
+        let frequencyMap = {};
+
+        function generateLotteryNumber() {
+            // Generate 5-digit number with leading zeros
+            const number = String(Math.floor(Math.random() * 100000)).padStart(5, '0');
+            
+            // Update display
+            document.getElementById('lottery-number').textContent = number;
+            
+            // Add to history
+            previousNumbers.unshift(number);
+            updateHistory();
+            
+            // Update frequency analysis
+            updateFrequencyAnalysis(number);
+            
+            // Add animation
+            animateNumber();
+        }
+
+        function animateNumber() {
+            const element = document.getElementById('lottery-number');
+            element.style.transform = 'scale(1.1)';
+            setTimeout(() => element.style.transform = 'scale(1)', 200);
+        }
+
+        function updateHistory() {
+            const list = document.getElementById('previous-numbers');
+            list.innerHTML = previousNumbers
+                .slice(0, 10)
+                .map(num => `<li class="list-group-item d-flex justify-content-between align-items-center">
+                    ${num}
+                    <small class="text-muted">${new Date().toLocaleTimeString()}</small>
+                </li>`)
+                .join('');
+        }
+
+        function updateFrequencyAnalysis(number) {
+            number.split('').forEach(digit => {
+                frequencyMap[digit] = (frequencyMap[digit] || 0) + 1;
+            });
+            
+            const table = document.getElementById('frequency-table');
+            table.innerHTML = Object.entries(frequencyMap)
+                .sort((a, b) => b[1] - a[1])
+                .map(([digit, count]) => `
+                    <tr>
+                        <td>${digit}</td>
+                        <td class="text-end">
+                            <span class="frequency-badge">${count}</span>
+                        </td>
+                    </tr>
+                `)
+                .join('');
+        }
+    </script>
+</body>
+</html>
+
+<!--
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ben&Tech Lottery Generator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* ... (keep existing styles unchanged) ... */
+                :root {
+          --gradient-1: #2c3e50;
+          --gradient-2: #3498db;
+          --accent-color: #e74c3c;
+        }
+        
+        body {
+          background: linear-gradient(135deg, var(--gradient-1), var(--gradient-2));
+          min-height: 100vh;
+          color: white;
+          font-family: 'Arial Rounded MT Bold', Arial, sans-serif;
+        }
+        
+        .card {
+          background: rgba(255, 255, 255, 0.1);
+          backdrop-filter: blur(10px);
+          border-radius: 20px;
+          border: 1px solid rgba(255, 255, 255, 0.2);
+          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        #lottery-number {
+          font-family: 'Courier New', monospace;
+          font-weight: bold;
+          letter-spacing: 4px;
+          color: var(--accent-color);
+          text-shadow: 0 0 10px rgba(231, 76, 60, 0.4);
+        }
+        
+        .btn-primary {
+          background-color: var(--accent-color);
+          border: none;
+          padding: 1rem 2rem;
+          transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .btn-primary:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+        }
+        
+        .list-group-item {
+          background: rgba(255, 255, 255, 0.05);
+          color: white;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .frequency-badge {
+          background: var(--accent-color);
+          padding: 0.25rem 0.75rem;
+          border-radius: 20px;
+        }
+        
+        .number-icon {
+          font-size: 2rem;
+          filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.3));
+        }
+    </style>
+</head>
+<body>
+    <!-- ... (keep existing HTML structure unchanged) ... 
+    <div class="container py-5">
+      <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold mb-3">
+          <i class="fas fa-dice number-icon me-2"></i>
+          Ben&Tech Lotto
+        </h1>
+      </div>
+      
+      <div class="card p-4 mb-4 mx-auto" style="max-width: 600px;">
+        <h2 class="mb-4">Your Lucky Number</h2>
+        <div id="lottery-number" class="display-1 mb-4">-----</div>
+        <button class="btn btn-primary btn-lg w-100" onclick="generateLotteryNumber()">
+          <i class="fas fa-magic me-2"></i>Generate
+        </button>
+      </div>
+      
+      <div class="row justify-content-center g-4">
+        <div class="col-md-6">
+          <div class="card p-4">
+            <h3 class="mb-3"><i class="fas fa-history me-2"></i>Previous Numbers</h3>
+            <ul id="previous-numbers" class="list-group list-group-flush"></ul>
+          </div>
+        </div>
+        
+        <div class="col-md-6">
+          <div class="card p-4">
+            <h3 class="mb-3"><i class="fas fa-chart-bar me-2"></i>Frequency Analysis</h3>
+            <div class="table-responsive">
+              <table class="table table-borderless text-white mb-0">
+                <tbody id="frequency-table"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer class="text-center mt-5 opacity-75">
+        <small>🔮 Luck is what happens when preparation meets opportunity 🔮</small>
+      </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let state = {
+            previousNumbers: JSON.parse(localStorage.getItem('lotteryNumbers')) || [],
+            frequencyMap: JSON.parse(localStorage.getItem('frequencyMap')) || {}
+        };
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            updateHistory();
+            updateFrequencyAnalysis();
+        });
+
+        function generateLotteryNumber() {
+            const number = generateUniqueNumber();
+            updateDisplay(number);
+            updateState(number);
+            saveToLocalStorage();
+            animateNumber();
+        }
+
+        function generateUniqueNumber() {
+            let number;
+            do {
+                number = String(Math.floor(Math.random() * 100000)).padStart(5, '0');
+            } while (state.previousNumbers.includes(number));
+            return number;
+        }
+
+        function updateState(number) {
+            state.previousNumbers.unshift(number);
+            if (state.previousNumbers.length > 50) {
+                state.previousNumbers.pop();
+            }
+            
+            number.split('').forEach(digit => {
+                state.frequencyMap[digit] = (state.frequencyMap[digit] || 0) + 1;
+            });
+        }
+
+        function saveToLocalStorage() {
+            localStorage.setItem('lotteryNumbers', JSON.stringify(state.previousNumbers));
+            localStorage.setItem('frequencyMap', JSON.stringify(state.frequencyMap));
+        }
+
+        function updateDisplay(number) {
+            document.getElementById('lottery-number').textContent = number;
+            updateHistory();
+            updateFrequencyAnalysis();
+        }
+
+        function updateHistory() {
+            const list = document.getElementById('previous-numbers');
+            list.innerHTML = state.previousNumbers
+                .map((num, index) => `
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>${index + 1}. ${num}</span>
+                        <small class="text-muted">${new Date().toLocaleTimeString()}</small>
+                    </li>
+                `).join('');
+        }
+
+        function updateFrequencyAnalysis() {
+            const sortedDigits = Object.entries(state.frequencyMap)
+                .sort((a, b) => b[1] - a[1]);
+            
+            const table = document.getElementById('frequency-table');
+            table.innerHTML = sortedDigits
+                .map(([digit, count]) => `
+                    <tr>
+                        <td>${digit}</td>
+                        <td class="text-end">
+                            <div class="progress" style="height: 20px">
+                                <div class="progress-bar" 
+                                    role="progressbar" 
+                                    style="width: ${(count / Math.max(...sortedDigits.map(d => d[1])) * 100}%">
+                                    ${count}
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                `).join('');
+        }
+
+        function animateNumber() {
+            const element = document.getElementById('lottery-number');
+            element.style.transform = 'scale(1.1)';
+            setTimeout(() => element.style.transform = 'scale(1)', 200);
+        }
+    </script>
+</body>
+</html>-->
+
+
+<!--
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ben&Tech Lottery Generator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --gradient-1: #2c3e50;
+            --gradient-2: #3498db;
+            --accent-color: #e74c3c;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--gradient-1), var(--gradient-2));
+            min-height: 100vh;
+            color: white;
+            font-family: 'Arial Rounded MT Bold', Arial, sans-serif;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        #lottery-number {
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            letter-spacing: 4px;
+            color: var(--accent-color);
+            text-shadow: 0 0 10px rgba(231, 76, 60, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: var(--accent-color);
+            border: none;
+            padding: 1rem 2rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .history-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .frequency-table {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+   <div class="container py-5">
+          <!-- ... (same HTML structure as before) ... 
+        <div class="text-center mb-5">
+          <h1 class="display-4 fw-bold mb-3">
+            <i class="fas fa-dice number-icon me-2"></i>
+            Ben&Tech Lotto
+          </h1>
+        </div>
+        
+        <div class="card p-4 mb-4 mx-auto" style="max-width: 600px;">
+          <h2 class="mb-4">Your Lucky Number</h2>
+          <div id="lottery-number" class="display-1 mb-4">-----</div>
+          <button class="btn btn-primary btn-lg w-100" onclick="generateLotteryNumber()">
+            <i class="fas fa-magic me-2"></i>Generate
+          </button>
+        </div>
+        
+        <div class="row justify-content-center g-4">
+          <div class="col-md-6">
+            <div class="card p-4">
+              <h3 class="mb-3"><i class="fas fa-history me-2"></i>Previous Numbers</h3>
+              <ul id="previous-numbers" class="list-group list-group-flush"></ul>
+            </div>
+          </div>
+          
+          <div class="col-md-6">
+            <div class="card p-4">
+              <h3 class="mb-3"><i class="fas fa-chart-bar me-2"></i>Frequency Analysis</h3>
+              <div class="table-responsive">
+                <table class="table table-borderless text-white mb-0">
+                  <tbody id="frequency-table"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <footer class="text-center mt-5 opacity-75">
+          <small>🔮 Luck is what happens when preparation meets opportunity 🔮</small>
+        </footer>
+        
+    </div>
+
+    <script>
+        let state = {
+            previousNumbers: JSON.parse(localStorage.getItem('lotteryNumbers')) || [],
+            frequencyMap: JSON.parse(localStorage.getItem('frequencyMap')) || {}
+        };
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            updateHistory();
+            updateFrequencyDisplay();
+        });
+
+        function generateLotteryNumber() {
+            const number = generateUniqueNumber();
+            updateDisplay(number);
+            updateState(number);
+            saveToLocalStorage();
+            animateNumber();
+        }
+
+        function generateUniqueNumber() {
+            let number;
+            do {
+                number = String(Math.floor(Math.random() * 100000)).padStart(5, '0');
+            } while (state.previousNumbers.includes(number));
+            return number;
+        }
+
+        function updateState(number) {
+            state.previousNumbers.unshift(number);
+            if (state.previousNumbers.length > 50) {
+                state.previousNumbers.pop();
+            }
+            
+            number.split('').forEach(digit => {
+                state.frequencyMap[digit] = (state.frequencyMap[digit] || 0) + 1;
+            });
+        }
+
+        function saveToLocalStorage() {
+            localStorage.setItem('lotteryNumbers', JSON.stringify(state.previousNumbers));
+            localStorage.setItem('frequencyMap', JSON.stringify(state.frequencyMap));
+        }
+
+        function updateHistory() {
+            const list = document.getElementById('previous-numbers');
+            list.innerHTML = state.previousNumbers
+                .map((num, index) => `
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>${index + 1}. ${num}</span>
+                        <small class="text-muted">${new Date().toLocaleTimeString()}</small>
+                    </li>
+                `).join('');
+        }
+
+        function updateFrequencyDisplay() {
+            const sortedDigits = Object.entries(state.frequencyMap)
+                .sort((a, b) => b[1] - a[1]);
+            
+            const table = document.getElementById('frequency-table');
+            table.innerHTML = sortedDigits
+                .map(([digit, count]) => `
+                    <tr>
+                        <td>${digit}</td>
+                        <td class="text-end">
+                            <div class="progress" style="height: 20px">
+                                <div class="progress-bar" 
+                                    role="progressbar" 
+                                    style="width: ${(count / Math.max(...sortedDigits.map(d => d[1])) * 100}%">
+                                    ${count}
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                `).join('');
+        }
+
+        function animateNumber() {
+            const element = document.getElementById('lottery-number');
+            element.style.transform = 'scale(1.1)';
+            setTimeout(() => element.style.transform = 'scale(1)', 200);
+        }
+    </script>
+    
+    <!--
+    
+   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let state = {
+            previousNumbers: JSON.parse(localStorage.getItem('lotteryNumbers')) || [],
+            frequencyMap: JSON.parse(localStorage.getItem('frequencyMap')) || {}
+        };
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            updateHistory();
+            updateFrequencyAnalysis();
+        });
+
+        function generateLotteryNumber() {
+            const number = generateUniqueNumber();
+            updateDisplay(number);
+            updateState(number);
+            saveToLocalStorage();
+            animateNumber();
+        }
+
+        function generateUniqueNumber() {
+            let number;
+            do {
+                number = String(Math.floor(Math.random() * 100000)).padStart(5, '0');
+            } while (state.previousNumbers.includes(number));
+            return number;
+        }
+
+        function updateState(number) {
+            state.previousNumbers.unshift(number);
+            if (state.previousNumbers.length > 50) {
+                state.previousNumbers.pop();
+            }
+            
+            number.split('').forEach(digit => {
+                state.frequencyMap[digit] = (state.frequencyMap[digit] || 0) + 1;
+            });
+        }
+
+        function saveToLocalStorage() {
+            localStorage.setItem('lotteryNumbers', JSON.stringify(state.previousNumbers));
+            localStorage.setItem('frequencyMap', JSON.stringify(state.frequencyMap));
+        }
+
+        function updateDisplay(number) {
+            document.getElementById('lottery-number').textContent = number;
+            updateHistory();
+            updateFrequencyAnalysis();
+        }
+
+        function updateHistory() {
+            const list = document.getElementById('previous-numbers');
+            list.innerHTML = state.previousNumbers
+                .map((num, index) => `
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>${index + 1}. ${num}</span>
+                        <small class="text-muted">${new Date().toLocaleTimeString()}</small>
+                    </li>
+                `).join('');
+        }
+
+        function updateFrequencyAnalysis() {
+            const sortedDigits = Object.entries(state.frequencyMap)
+                .sort((a, b) => b[1] - a[1]);
+            
+            const table = document.getElementById('frequency-table');
+            table.innerHTML = sortedDigits
+                .map(([digit, count]) => `
+                    <tr>
+                        <td>${digit}</td>
+                        <td class="text-end">
+                            <div class="progress" style="height: 20px">
+                                <div class="progress-bar" 
+                                    role="progressbar" 
+                                    style="width: ${(count / Math.max(...sortedDigits.map(d => d[1])) * 100}%">
+                                    ${count}
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                `).join('');
+        }
+
+        function animateNumber() {
+            const element = document.getElementById('lottery-number');
+            element.style.transform = 'scale(1.1)';
+            setTimeout(() => element.style.transform = 'scale(1)', 200);
+        }
+    </script>
+</body>
+</html>-->
