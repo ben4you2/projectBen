@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emergency Management Logo</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f4f8;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-icon {
+            font-size: 3rem;
+            color: #e53935; /* Red for emergency */
+            margin-right: 1rem;
+            animation: pulse 2s infinite ease-in-out;
+        }
+
+        .logo-text {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #333;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="logo-container">
+        <i class="logo-icon fas fa-exclamation-triangle"></i>
+        <span class="logo-text">Emergency Hub</span>
+    </div>
+    <script src="https://kit.fontawesome.com/yourfontawesomekit.js" crossorigin="anonymous"></script>
+    <script src="/emergyApp/emergency.js"></script>""
+</body>
+</html>

@@ -1,0 +1,307 @@
+<!--<!DOCTYPE html>
+<!html lang="en" x-data="emergencyApp()" x-cloak>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emergency Request & Report</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        [x-cloak] { display: none !important; }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div class="container mx-auto p-4">
+        <header class="text-center py-8">
+            <h1 class="text-3xl font-bold text-red-600"><i class="fas fa-exclamation-triangle mr-2"></i> Emergency Requests & Reports</h1>
+        </header>
+
+        <section class="bg-white rounded-lg shadow-md p-6 mb-4">
+            <h2 class="text-xl font-semibold mb-4">Submit Emergency Request/Report</h2>
+            <form @submit.prevent="submitRequest">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="name" class="block text-sm font-medium text-gray-700">Your Name</label>
+                        <input type="text" id="name" x-model="request.name" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" required>
+                    </div>
+                    <div>
+                        <label for="phone" class="block text-sm font-medium text-gray-700">Phone Number</label>
+                        <input type="tel" id="phone" x-model="request.phone" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" required>
+                    </div>
+                    <div>
+                        <label for="location" class="block text-sm font-medium text-gray-700">Location</label>
+                        <input type="text" id="location" x-model="request.location" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" required>
+                    </div>
+                    <div>
+                        <label for="type" class="block text-sm font-medium text-gray-700">Type of Emergency</label>
+                        <select id="type" x-model="request.type" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" required>
+                            <option value="Fire">Fire</option>
+                            <option value="Medical">Medical</option>
+                            <option value="Police">Police</option>
+                            <option value="Accident">Accident</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="md:col-span-2">
+                        <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+                        <textarea id="description" x-model="request.description" rows="4" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" required></textarea>
+                    </div>
+                </div>
+                <button type="submit" class="mt-4 bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700">Submit Request</button>
+            </form>
+        </section>
+
+        <section class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-xl font-semibold mb-4">Emergency Requests/Reports</h2>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <template x-for="(req, index) in requests" :key="index">
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap" x-text="req.name"></td>
+                                <td class="px-6 py-4 whitespace-nowrap" x-text="req.phone"></td>
+                                <td class="px-6 py-4 whitespace-nowrap" x-text="req.location"></td>
+                                <td class="px-6 py-4 whitespace-nowrap" x-text="req.type"></td>
+                                <td class="px-6 py-4" x-text="req.description"></td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <button @click="deleteRequest(index)" class="text-red-600 hover:text-red-800"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                        </template>
+                        <tr x-show="requests.length === 0">
+                            <td colspan="6" class="px-6 py-4 text-center text-gray-500">No emergency requests/reports.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        function emergencyApp() {
+            return {
+                requests: JSON.parse(localStorage.getItem('emergencyRequests')) || [],
+                request: {
+                    name: '',
+                    phone: '',
+                    location: '',
+                    type: 'Fire',
+                    description: ''
+                },
+                submitRequest() {
+                    this.requests.push({ ...this.request });
+                    localStorage.setItem('emergencyRequests', JSON.stringify(this.requests));
+                    this.request = { name: '', phone: '', location: '', type: 'Fire', description: '' };
+                    Swal.fire('Submitted!', 'Your request has been submitted.', 'success');
+                },
+                deleteRequest(index) {
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: "You won't be able to revert this!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'Yes, delete it!'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            this.requests.splice(index, 1);
+                            localStorage.setItem('emergencyRequests', JSON.stringify(this.requests));
+                            Swal.fire('Deleted!', 'Your request has been deleted.', 'success');
+                        }
+                    });
+                }
+            };
+        }
+    </script>
+</body>
+</html>-->
+
+
+<!--Code the is being updated for another version of code-->
+<!DOCTYPE html>
+
+<!--html lang="en" x-data="emergencyApp()" x-cloak>-->
+<html lang="en"
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emergency Request & Report</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        [x-cloak] { display: none !important; }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div class="container mx-auto p-4">
+        <header class="text-center py-8">
+            <h1 class="text-3xl font-bold text-red-600"><i class="fas fa-exclamation-triangle mr-2"></i> Emergency Requests & Reports</h1>
+        </header>
+
+        <section class="bg-white rounded-lg shadow-md p-6 mb-4">
+            <h2 class="text-xl font-semibold mb-4">Submit Emergency Request/Report</h2>
+            <form @submit.prevent="submitRequest">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="name" class="block text-sm font-medium text-gray-700">Your Name</label>
+                        <input type="text" id="name" x-model="request.name" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" required>
+                    </div>
+                    <div>
+                        <label for="phone" class="block text-sm font-medium text-gray-700">Phone Number</label>
+                        <input type="tel" id="phone" x-model="request.phone" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" required>
+                    </div>
+                    <div>
+                        <label for="location" class="block text-sm font-medium text-gray-700">Location</label>
+                        <input type="text" id="location" x-model="request.location" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" required>
+                    </div>
+                    <div>
+                        <label for="type" class="block text-sm font-medium text-gray-700">Type of Emergency</label>
+                        <select id="type" x-model="request.type" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" required>
+                            <option value="Fire">Fire</option>
+                            <option value="Medical">Medical</option>
+                            <option value="Police">Police</option>
+                            <option value="Accident">Accident</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="md:col-span-2">
+                        <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+                        <textarea id="description" x-model="request.description" rows="4" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" required></textarea>
+                    </div>
+                </div>
+                <button type="submit" class="mt-4 bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700">Submit Request</button>
+            </form>
+        </section>
+
+        <section class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-xl font-semibold mb-4">Emergency Requests/Reports</h2>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Notification</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <template x-for="(req, index) in requests" :key="index">
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap" x-text="req.name"></td>
+                                <td class="px-6 py-4 whitespace-nowrap" x-text="req.phone"></td>
+                                <td class="px-6 py-4 whitespace-nowrap" x-text="req.location"></td>
+                                <td class="px-6 py-4 whitespace-nowrap" x-text="req.type"></td>
+                                <td class="px-6 py-4" x-text="req.description"></td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <button @click="deleteRequest(index)" class="text-red-600 hover:text-red-800"><i class="fas fa-trash"></i></button>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <button @click="sendNotification(req.phone)" class="text-blue-600 hover:text-blue-800"><i class="fas fa-bell"></i></button>
+                                </td>
+                            </tr>
+                        </template>
+                        <tr x-show="requests.length === 0">
+                            <td colspan="7" class="px-6 py-4 text-center text-gray-500">No emergency requests/reports.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        function emergencyApp() {
+            return {
+                requests: JSON.parse(localStorage.getItem('emergencyRequests')) || [],
+                request: {
+                    name: '',
+                    phone: '',
+                    location: '',
+                    type: 'Fire',
+                    description: ''
+                },
+                submitRequest() {
+                    this.requests.push({ ...this.request });
+                    localStorage.setItem('emergencyRequests', JSON.stringify(this.requests));
+                    this.request = { name: '', phone: '', location: '', type: 'Fire', description: '' };
+                    Swal.fire('Submitted!', 'Your request has been submitted.', 'success');
+                },
+                deleteRequest(index) {
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: "You won't be able to revert this!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'Yes, delete it!'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            this.requests.splice(index, 1);
+                            localStorage.setItem('emergencyRequests', JSON.stringify(this.requests));
+                            Swal.fire('Deleted!', 'Your request has been deleted.', 'success');
+                        }
+                    });
+                },
+                sendNotification(phoneNumber) {
+                    // In a real-world scenario, you'd integrate with a messaging service (like Twilio, SMS Gateway, etc.)
+                    // This is a placeholder for demonstration.
+                    Swal.fire({
+                        title: 'Notification Sent',
+                        text: `Notification sent to ${phoneNumber}. (Placeholder)`,
+                        icon: 'info'
+                    });
+                    console.log(`Notification sent to ${phoneNumber}`); // Log for debugging
+                    // Example using fetch (replace with your actual API endpoint):
+                    /*
+                    fetch('/send-sms', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ phoneNumber: phoneNumber, message: 'Emergency Alert!' }),
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire('Notification Sent', `Notification sent to ${phoneNumber}.`, 'success');
+                        } else {
+                            Swal.fire('Notification Failed', `Failed to send notification to ${phoneNumber}.`, 'error');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        Swal.fire('Notification Failed', `Failed to send notification to ${phoneNumber}.`, 'error');
+                    });
+                    */
+                }
+            };
+        }
+    </script>
+</body>
+</html>
+
+
+
+
+

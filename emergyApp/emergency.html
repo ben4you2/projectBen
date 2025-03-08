@@ -1,0 +1,405 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emergency Management</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f4f8;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 2rem auto;
+            background-color: #fff;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #e53935;
+            margin-bottom: 2rem;
+            font-weight: 600;
+        }
+
+        form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        form label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #444;
+        }
+
+        form input, form select, form textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        form input:focus, form select:focus, form textarea:focus {
+            border-color: #e53935;
+            outline: none;
+            box-shadow: 0 0 5px rgba(229, 57, 53, 0.3);
+        }
+
+        form textarea {
+            resize: vertical;
+            min-height: 150px;
+        }
+
+        form button {
+            background-color: #e53935;
+            color: white;
+            padding: 1rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            grid-column: 1 / -1;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+        }
+
+        form button:hover {
+            background-color: #d32f2f;
+        }
+
+        ul#emergencyList {
+            list-style: none;
+            padding: 0;
+        }
+
+        ul#emergencyList li {
+            background-color: #f9f9f9;
+            padding: 1.5rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        ul#emergencyList li:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        ul#emergencyList li:last-child {
+            border-bottom: none;
+        }
+
+        ul#emergencyList li button {
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.25rem;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-left: 0.5rem;
+            font-size: 0.9rem;
+            transition: background-color 0.3s ease;
+        }
+
+        ul#emergencyList li button:last-child {
+            background-color: #e53935;
+        }
+
+        ul#emergencyList li button:hover {
+            background-color: #388e3c;
+        }
+
+        ul#emergencyList li button:last-child:hover {
+            background-color: #d32f2f;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                width: 95%;
+                padding: 1.5rem;
+            }
+
+            form {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+          /*  body {
+             display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f4f8;
+        }
+*/
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-icon {
+            font-size: 3rem;
+            color: #e53935; /* Red for emergency */
+            margin-right: 1rem;
+            animation: pulse 2s infinite ease-in-out;
+        }
+
+        .logo-text {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #333;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }    
+        
+        
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Emergency Management</h1>
+        
+     <div class="logo-container">
+      <i class="logo-icon fas fa-exclamation-triangle"></i>
+      <span class="logo-text">Emergency Hub</span>
+    </div>
+
+        <form id="emergencyForm">
+            <label for="name">Name:</label>
+            <input type="text" id="name" placeholder="Name">
+
+            <label for="phone">Phone:</label>
+            <input type="tel" id="phone" placeholder="Phone">
+
+            <label for="location">Location:</label>
+            <input type="text" id="location" placeholder="Location">
+
+            <label for="type">Type:</label>
+            <select id="type">
+                <option value="Fire">Fire</option>
+                <option value="Medical">Medical</option>
+                <option value="Police">Police</option>
+                <option value="Accident">Accident</option>
+                <option value="Other">Other</option>
+            </select>
+
+            <label for="description">Description:</label>
+            <textarea id="description" placeholder="Description"></textarea>
+
+            <button type="button" onclick="addEmergency()">Add Emergency</button>
+        </form>
+        
+        
+        <ul id="emergencyList"></ul>
+    </div>
+    <script src="https://kit.fontawesome.com/yourfontawesomekit.js" crossorigin="anonymous"></script>
+    <script src="/emergyApp/emergency.js"></script>
+</body>
+</html>
+
+
+
+
+<!--
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <title>Emergency</title>
+</head>
+<body>
+
+ <input type="text" id="name" placeholder="Name">
+<input type="tel" id="phone" placeholder="Phone">
+<input type="text" id="location" placeholder="Location">
+<select id="type">
+  <option value="Fire">Fire</option>
+  <option value="Medical">Medical</option>
+  <option value="Police">Police</option>
+  <option value="Accident">Accident</option>
+  <option value="Other">Other</option>
+</select>
+<textarea id="description" placeholder="Description"></textarea>
+<button onclick="addEmergency()">Add Emergency</button>
+<ul id="emergencyList"></ul>
+
+  
+</body>
+
+<script src="/emergyApp/emergency.html"></script>
+
+</html>-->
+
+
+<!--<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emergency Management</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #d32f2f;
+        }
+
+        form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        form label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        form input, form select, form textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        form textarea {
+            resize: vertical;
+        }
+
+        form button {
+            background-color: #d32f2f;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            grid-column: 1 / 3;
+        }
+
+        form button:hover {
+            background-color: #b71c1c;
+        }
+
+        ul#emergencyList {
+            list-style: none;
+            padding: 0;
+        }
+
+        ul#emergencyList li {
+            background-color: #f9f9f9;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        ul#emergencyList li:last-child {
+            border-bottom: none;
+        }
+
+        ul#emergencyList li button {
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 5px;
+        }
+
+        ul#emergencyList li button:last-child{
+          background-color: #d32f2f;
+        }
+
+        ul#emergencyList li button:hover {
+            background-color: #388e3c;
+        }
+
+        ul#emergencyList li button:last-child:hover{
+          background-color: #b71c1c;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Emergency Management</h1>
+        <form id="emergencyForm">
+            <label for="name">Name:</label>
+            <input type="text" id="name" placeholder="Name">
+
+            <label for="phone">Phone:</label>
+            <input type="tel" id="phone" placeholder="Phone">
+
+            <label for="location">Location:</label>
+            <input type="text" id="location" placeholder="Location">
+
+            <label for="type">Type:</label>
+            <select id="type">
+                <option value="Fire">Fire</option>
+                <option value="Medical">Medical</option>
+                <option value="Police">Police</option>
+                <option value="Accident">Accident</option>
+                <option value="Other">Other</option>
+            </select>
+
+            <label for="description">Description:</label>
+            <textarea id="description" placeholder="Description"></textarea>
+
+            <button type="button" onclick="addEmergency()">Add Emergency</button>
+        </form>
+        <ul id="emergencyList"></ul>
+    </div>
+
+    <script src="emergency.js"></script>
+</body>
+</html>-->
