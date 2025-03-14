@@ -95,7 +95,7 @@
             background: #3a3a3a;
             color: white;
         }
-        
+
         /* News Feed */
         .news-feed {
             background: #2a2a2a;
@@ -103,91 +103,90 @@
             border-radius: 10px;
             margin: 20px 0;
         }
-        
+
     </style>
 </head>
 <body>
 
-    <header class="header">
-        <h1>Bitcoin Profit Guide</h1>
-        <p>Secure Ways to Earn Bitcoin Online</p>
-        <button class="mode-toggle" onclick="toggleMode()">🌗 Toggle Mode</button>
-    </header>
+<header class="header">
+    <h1>Bitcoin Profit Guide</h1>
+    <p>Secure Ways to Earn Bitcoin Online</p>
+    <button class="mode-toggle" onclick="toggleMode()">🌗 Toggle Mode</button>
+</header>
 
-    <div class="container">
-        <div class="crypto-price">
-            <h3>Live Bitcoin Price: <span id="btcPrice">Loading...</span></h3>
-        </div>
-
-        <div class="converter">
-            <h3>Crypto Converter</h3>
-            <input type="number" id="btcAmount" placeholder="BTC Amount">
-            <select id="convertTo">
-                <option value="usd">USD</option>
-            </select>
-            <button onclick="convertCrypto()">Convert</button>
-            <p>Converted Amount: <span id="convertedValue">0</span></p>
-        </div>
-
-        <div class="news-feed">
-            <h3>Latest Crypto News</h3>
-            <ul id="newsList">Loading...</ul>
-        </div>
+<div class="container">
+    <div class="crypto-price">
+        <h3>Live Bitcoin Price: <span id="btcPrice">Loading...</span></h3>
     </div>
 
-    <script>
-        async function fetchBitcoinPrice() {
-            try {
-                let response = await fetch('https://api.coindesk.com/v1/bpi/currentprice/BTC.json');
-                let data = await response.json();
-                document.getElementById('btcPrice').innerText = data.bpi.USD.rate + " USD";
-            } catch (error) {
-                document.getElementById('btcPrice').innerText = "Error fetching price.";
-            }
-        }
+    <div class="converter">
+        <h3>Crypto Converter</h3>
+        <input type="number" id="btcAmount" placeholder="BTC Amount">
+        <select id="convertTo">
+            <option value="usd">USD</option>
+        </select>
+        <button onclick="convertCrypto()">Convert</button>
+        <p>Converted Amount: <span id="convertedValue">0</span></p>
+    </div>
 
-        function convertCrypto() {
-            let btcAmount = document.getElementById('btcAmount').value;
-            let btcPrice = parseFloat(document.getElementById('btcPrice').innerText.split(" ")[0].replace(",", ""));
-            if (!btcAmount || isNaN(btcPrice)) {
-                alert("Enter a valid amount and wait for BTC price to load.");
-                return;
-            }
-            document.getElementById('convertedValue').innerText = (btcAmount * btcPrice).toFixed(2) + " USD";
-        }
+    <div class="news-feed">
+        <h3>Latest Crypto News</h3>
+        <ul id="newsList">Loading...</ul>
+    </div>
+</div>
 
-        async function fetchCryptoNews() {
-            try {
-                let response = await fetch('https://api.coingecko.com/api/v3/news');
-                let data = await response.json();
-                let newsList = document.getElementById('newsList');
-                newsList.innerHTML = data.data.slice(0, 5).map(news => `<li>${news.title}</li>`).join('');
-            } catch (error) {
-                document.getElementById('newsList').innerText = "Error fetching news.";
-            }
+<script>
+    async function fetchBitcoinPrice() {
+        try {
+            let response = await fetch('https://api.coindesk.com/v1/bpi/currentprice/BTC.json');
+            let data = await response.json();
+            document.getElementById('btcPrice').innerText = data.bpi.USD.rate + " USD";
+        } catch (error) {
+            document.getElementById('btcPrice').innerText = "Error fetching price.";
         }
-        
-function toggleMode() {
-    let body = document.body;
-    let modeToggle = document.querySelector('.mode-toggle');
-    if (body.style.backgroundColor === "white") {
-        body.style.backgroundColor = "#1a1a1a";
-        body.style.color = "white";
-        modeToggle.style.backgroundColor = "var(--primary-color)";
-        modeToggle.style.color = "white";
-    } else {
-        body.style.backgroundColor = "white";
-        body.style.color = "#1a1a1a";
-        modeToggle.style.backgroundColor = "var(--primary-color)";
-        modeToggle.style.color = "black";
     }
-}
 
+    function convertCrypto() {
+        let btcAmount = document.getElementById('btcAmount').value;
+        let btcPrice = parseFloat(document.getElementById('btcPrice').innerText.split(" ")[0].replace(",", ""));
+        if (!btcAmount || isNaN(btcPrice)) {
+            alert("Enter a valid amount and wait for BTC price to load.");
+            return;
+        }
+        document.getElementById('convertedValue').innerText = (btcAmount * btcPrice).toFixed(2) + " USD";
+    }
 
-        fetchBitcoinPrice();
-        fetchCryptoNews();
-        setInterval(fetchBitcoinPrice, 60000);
-    </script>
+    async function fetchCryptoNews() {
+        try {
+            let response = await fetch('https://api.coingecko.com/api/v3/news');
+            let data = await response.json();
+            let newsList = document.getElementById('newsList');
+            newsList.innerHTML = data.data.slice(0, 5).map(news => `<li>${news.title}</li>`).join('');
+        } catch (error) {
+            document.getElementById('newsList').innerText = "Error fetching news.";
+        }
+    }
+
+    function toggleMode() {
+        let body = document.body;
+        let modeToggle = document.querySelector('.mode-toggle');
+        if (body.style.backgroundColor === "white") {
+            body.style.backgroundColor = "#1a1a1a";
+            body.style.color = "white";
+            modeToggle.style.backgroundColor = "var(--primary-color)";
+            modeToggle.style.color = "white";
+        } else {
+            body.style.backgroundColor = "white";
+            body.style.color = "#1a1a1a";
+            modeToggle.style.backgroundColor = "var(--primary-color)";
+            modeToggle.style.color = "black";
+        }
+    }
+
+    fetchBitcoinPrice();
+    fetchCryptoNews();
+    setInterval(fetchBitcoinPrice, 60000);
+</script>
 
 </body>
 </html>
