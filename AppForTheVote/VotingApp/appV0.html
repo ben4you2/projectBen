@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voter Registration System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        
+        .fade-in { opacity: 0; transform: translateY(10px); transition: all 0.5s ease-in-out; }
+        .fade-in.show { opacity: 1; transform: translateY(0); }
+
+        .btn { transition: background-color 0.3s ease; }
+        .btn:hover { transform: scale(1.05); }
+
+        #photoPreview, #capturedImage {
+            display: none;
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-3xl">
+        <!-- Header -->
+        <header class="text-center mb-12">
+            <div class="inline-flex items-center gap-3 mb-4 fade-in">
+                <span class="text-4xl">🗳️</span>
+                <h1 class="text-3xl font-bold text-gray-800">Voter Registration</h1>
+            </div>
+        </header>
+
+        <!-- Registration Form -->
+        <div class="bg-white rounded-xl shadow-sm p-6 mb-8 fade-in">
+            <form id="voterForm" class="space-y-5">
+                <div class="space-y-4">
+                    <label for="name" class="block text-gray-700 font-medium">Full Name</label>
+                    <input type="text" id="name" placeholder="Enter Full Name" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400">
+                    
+                    <label for="idNumber" class="block text-gray-700 font-medium">National ID</label>
+                    <input type="text" id="idNumber" placeholder="Enter ID Number" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400">
+                    
+                    <label for="email" class="block text-gray-700 font-medium">Email Address</label>
+                    <input type="email" id="email" placeholder="Enter Email" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400">
+                    
+                    <label for="address" class="block text-gray-700 font-medium">Residential Address</label>
+                    <input type="text" id="address" placeholder="Enter Address" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400">
+                </div>
+
+                <!-- Picture Upload Section -->
+                <div class="border-2 border-dashed border-gray-200 rounded-lg p-4 text-center">
+                    <input type="file" id="photo" class="hidden" accept="image/*">
+                    <label for="photo" class="cursor-pointer block">
+                        <i class="fas fa-camera text-2xl text-gray-400 mb-2"></i>
+                        <p class="text-sm text-gray-500">Upload Voter Photo (JPEG/PNG)</p>
+                    </label>
+                    <img id="photoPreview" class="mt-3 rounded-lg"/>
+                </div>
+
+                <!-- Camera Capture Section -->
+                <div class="text-center mt-4">
+                    <button type="button" id="openCamera" class="bg-gray-500 text-white py-2 px-4 rounded-lg btn">Take a Picture</button>
+                    <video id="cameraStream" class="hidden mt-4 rounded-lg" autoplay></video>
+                    <canvas id="canvas" class="hidden"></canvas>
+                    <img id="capturedImage" class="mt-3 rounded-lg"/>
+                    <button type="button" id="capturePhoto" class="hidden bg-green-500 text-white py-2 px-4 mt-2 rounded-lg btn">Capture</button>
+                </div>
+
+                <button type="submit" class="w-full bg-blue-500 text-white py-3 px-6 rounded-lg font-medium hover:bg-blue-600 transition-colors duration-200 btn">
+                    <i class="fas fa-user-plus mr-2"></i> Register Voter
+                </button>
+            </form>
+        </div>
+
+        <!-- Voters List -->
+        <div id="votersList" class="bg-white rounded-xl shadow-sm p-6 mb-8 fade-in">
+            <p class="text-gray-500 text-center">No voters registered yet.</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll(".fade-in").forEach(el => el.classList.add("show"));
+
+            const voterForm = document.getElementById("voterForm");
+            const votersList = document.getElementById("votersList");
+            const openCameraBtn = document.getElementById("openCamera");
+            const capturePhotoBtn = document.getElementById("capturePhoto");
+            const cameraStream = document.getElementById("cameraStream");
+            const canvas = document.getElementById("canvas");
+            const photoPreview = document.getElementById("photoPreview");
+            const capturedImage = document.getElementById("capturedImage");
+            const voters = JSON.parse(localStorage.getItem("voters")) || [];
+            let videoStream = null;
+
+            document.getElementById("photo").addEventListener("change", function(event) {
+                const reader = new FileReader();
+                reader.onload = function() {
+                    photoPreview.src = reader.result;
+                    photoPreview.style.display = "block";
+                };
+                reader.readAsDataURL(event.target.files[0]);
+            });
+
+            openCameraBtn.addEventListener("click", async function () {
+                videoStream = await navigator.mediaDevices.getUserMedia({ video: true });
+                cameraStream.srcObject = videoStream;
+                cameraStream.classList.remove("hidden");
+                capturePhotoBtn.classList.remove("hidden");
+            });
+
+            capturePhotoBtn.addEventListener("click", function () {
+                const context = canvas.getContext("2d");
+                canvas.width = cameraStream.videoWidth;
+                canvas.height = cameraStream.videoHeight;
+                context.drawImage(cameraStream, 0, 0, canvas.width, canvas.height);
+                capturedImage.src = canvas.toDataURL("image/png");
+                capturedImage.style.display = "block";
+                cameraStream.classList.add("hidden");
+                capturePhotoBtn.classList.add("hidden");
+                videoStream.getTracks().forEach(track => track.stop());
+            });
+
+            voterForm.addEventListener("submit", function (e) {
+                e.preventDefault();
+
+                const name = document.getElementById("name").value.trim();
+                const idNumber = document.getElementById("idNumber").value.trim();
+                const email = document.getElementById("email").value.trim();
+                const address = document.getElementById("address").value.trim();
+                const photo = capturedImage.src || photoPreview.src;
+
+                voters.push({ name, idNumber, email, address, photo });
+                localStorage.setItem("voters", JSON.stringify(voters));
+
+                voterForm.reset();
+                photoPreview.style.display = "none";
+                capturedImage.style.display = "none";
+            });
+        });
+    </script>
+</body>

@@ -22,6 +22,7 @@
             padding: 2rem;
             max-width: 1200px;
             margin: 0 auto;
+            
         }
 
         .container {
@@ -29,6 +30,7 @@
             padding: 2rem;
             border-radius: 12px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin:0 auto;
         }
 
         h1 {
@@ -39,6 +41,7 @@
 
         .form-section {
             margin-bottom: 3rem;
+            
         }
 
         .form-row {
@@ -184,6 +187,9 @@
     </div>
 
     <script>
+    
+    import("@/AppForTheVote/app.js");
+    
         let voters = JSON.parse(localStorage.getItem('voters')) || [];
         let editIndex = -1;
 
@@ -234,12 +240,12 @@
 
         function validateVoter(voter) {
             if (!voter.name || !voter.idNumber || !voter.email || !voter.address) {
-                alert('All fields are required');
+                presentAlert('Alert','All fields are required','Message to the user');
                 return false;
             }
             
             if (!/^\d{8,20}$/.test(voter.idNumber)) {
-                alert('ID must be 8-20 digits');
+                presentAlert('Alert','ID must be 8-20 digits','The message');
                 return false;
             }
             

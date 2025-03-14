@@ -1,0 +1,306 @@
+<!--<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voter Registration System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .fade-in { opacity: 0; transform: translateY(10px); transition: all 0.5s ease-in-out; }
+        .fade-in.show { opacity: 1; transform: translateY(0); }
+        .btn { transition: background-color 0.3s ease; }
+        .btn:hover { transform: scale(1.05); }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-3xl">
+        <!-- Header 
+        <header class="text-center mb-12">
+            <div class="inline-flex items-center gap-3 mb-4 fade-in">
+                <span class="text-4xl">🗳️</span>
+                <h1 class="text-3xl font-bold text-gray-800">Voter Registration</h1>
+            </div>
+        </header>
+
+        <!-- Registration Form 
+        <div class="bg-white rounded-xl shadow-sm p-6 mb-8 fade-in">
+            <form id="voterForm" class="space-y-5">
+                <div class="space-y-4">
+                    <div class="relative">
+                        <label for="name" class="block text-gray-700 font-medium">Full Name</label>
+                        <input type="text" id="name" placeholder="Enter Full Name" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400">
+                    </div>
+                    
+                    <div class="relative">
+                        <label for="idNumber" class="block text-gray-700 font-medium">National ID</label>
+                        <input type="text" id="idNumber" placeholder="Enter ID Number" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400">
+                    </div>
+                    
+                    <div class="relative">
+                        <label for="email" class="block text-gray-700 font-medium">Email Address</label>
+                        <input type="email" id="email" placeholder="Enter Email" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400">
+                    </div>
+                    
+                    <div class="relative">
+                        <label for="address" class="block text-gray-700 font-medium">Residential Address</label>
+                        <input type="text" id="address" placeholder="Enter Address" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400">
+                    </div>
+                    
+                    <div class="border-2 border-dashed border-gray-200 rounded-lg p-4 text-center">
+                        <input type="file" id="photo" class="hidden" accept="image/*">
+                        <label for="photo" class="cursor-pointer block">
+                            <i class="fas fa-camera text-2xl text-gray-400 mb-2"></i>
+                            <p class="text-sm text-gray-500">Upload Voter Photo (JPEG/PNG)</p>
+                        </label>
+                        <img id="photoPreview" class="mt-3 hidden max-w-xs rounded-lg"/>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full bg-blue-500 text-white py-3 px-6 rounded-lg font-medium hover:bg-blue-600 transition-colors duration-200 btn">
+                    <i class="fas fa-user-plus mr-2"></i> Register Voter
+                </button>
+            </form>
+        </div>
+
+        <!-- Search Section
+        <div class="bg-white rounded-xl shadow-sm p-6 mb-8 fade-in">
+            <input type="text" id="search" placeholder="Search voters..." class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400">
+        </div>
+
+        <!-- Voters List 
+        <div id="votersList" class="bg-white rounded-xl shadow-sm p-6 mb-8 fade-in">
+            <p class="text-gray-500 text-center">No voters registered yet.</p>
+        </div>
+
+        <!-- Analytics Section 
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 fade-in">
+            <div class="bg-white rounded-xl shadow-sm p-6">
+                <h3 class="font-medium mb-4">Registration Statistics</h3>
+                <canvas id="voterChart"></canvas>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow-sm p-6">
+                <button id="generatePdf" class="w-full bg-green-500 text-white py-2.5 px-6 rounded-lg font-medium hover:bg-green-600 transition-colors duration-200 btn">
+                    <i class="fas fa-file-pdf mr-2"></i> Generate Report
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Fade-in animations
+            document.querySelectorAll(".fade-in").forEach((el) => el.classList.add("show"));
+
+            // Image Preview
+            document.getElementById("photo").addEventListener("change", function(event) {
+                const reader = new FileReader();
+                reader.onload = function() {
+                    document.getElementById("photoPreview").src = reader.result;
+                    document.getElementById("photoPreview").classList.remove("hidden");
+                };
+                reader.readAsDataURL(event.target.files[0]);
+            });
+
+            // Voter List
+            const voterForm = document.getElementById("voterForm");
+            const votersList = document.getElementById("votersList");
+
+            voterForm.addEventListener("submit", function (e) {
+                e.preventDefault();
+                const name = document.getElementById("name").value.trim();
+                const idNumber = document.getElementById("idNumber").value.trim();
+                const email = document.getElementById("email").value.trim();
+                const address = document.getElementById("address").value.trim();
+                const photo = document.getElementById("photoPreview").src;
+
+                if (!name || !idNumber || !email || !address) {
+                    alert("All fields are required!");
+                    return;
+                }
+
+                const voterCard = `
+                    <div class="bg-gray-50 rounded-lg p-4 mb-2 fade-in show">
+                        <h3 class="font-medium text-gray-800">${name}</h3>
+                        <p class="text-sm text-gray-500">ID: ${idNumber}</p>
+                        <p><i class="fas fa-envelope mr-2"></i>${email}</p>
+                        <p><i class="fas fa-map-marker-alt mr-2"></i>${address}</p>
+                    </div>
+                `;
+                votersList.innerHTML += voterCard;
+                voterForm.reset();
+                document.getElementById("photoPreview").classList.add("hidden");
+            });
+        });
+    </script>
+</body>
+</html> -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voter Registration System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        
+        .fade-in { opacity: 0; transform: translateY(10px); transition: all 0.5s ease-in-out; }
+        .fade-in.show { opacity: 1; transform: translateY(0); }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #38a169;
+            color: white;
+            padding: 12px 18px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: none;
+            z-index: 1000;
+        }
+
+        .notification.show {
+            display: block;
+            animation: fadeInOut 3s ease-in-out;
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translateY(-10px); }
+            10% { opacity: 1; transform: translateY(0); }
+            90% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-10px); }
+        }
+
+        .btn { transition: background-color 0.3s ease; }
+        .btn:hover { transform: scale(1.05); }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-3xl">
+        <!-- Header -->
+        <header class="text-center mb-12">
+            <div class="inline-flex items-center gap-3 mb-4 fade-in">
+                <span class="text-4xl">🗳️</span>
+                <h1 class="text-3xl font-bold text-gray-800">Voter Registration</h1>
+            </div>
+        </header>
+
+        <!-- Registration Form -->
+        <div class="bg-white rounded-xl shadow-sm p-6 mb-8 fade-in">
+            <form id="voterForm" class="space-y-5">
+                <div class="space-y-4">
+                    <label for="name" class="block text-gray-700 font-medium">Full Name</label>
+                    <input type="text" id="name" placeholder="Enter Full Name" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400">
+                    
+                    <label for="idNumber" class="block text-gray-700 font-medium">National ID</label>
+                    <input type="text" id="idNumber" placeholder="Enter ID Number" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400">
+                    
+                    <label for="email" class="block text-gray-700 font-medium">Email Address</label>
+                    <input type="email" id="email" placeholder="Enter Email" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400">
+                    
+                    <label for="address" class="block text-gray-700 font-medium">Residential Address</label>
+                    <input type="text" id="address" placeholder="Enter Address" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400">
+                </div>
+
+                <button type="submit" class="w-full bg-blue-500 text-white py-3 px-6 rounded-lg font-medium hover:bg-blue-600 transition-colors duration-200 btn">
+                    <i class="fas fa-user-plus mr-2"></i> Register Voter
+                </button>
+            </form>
+        </div>
+
+        <!-- Search Section -->
+        <div class="bg-white rounded-xl shadow-sm p-6 mb-8 fade-in">
+            <input type="text" id="search" placeholder="Enter voter ID to check..." class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400">
+            <button id="checkVoter" class="w-full mt-4 bg-yellow-500 text-white py-2 rounded-lg hover:bg-yellow-600 btn">
+                Check Voter Status
+            </button>
+        </div>
+
+        <!-- Notifications -->
+        <div id="notification" class="notification"></div>
+
+        <!-- Voters List -->
+        <div id="votersList" class="bg-white rounded-xl shadow-sm p-6 mb-8 fade-in">
+            <p class="text-gray-500 text-center">No voters registered yet.</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll(".fade-in").forEach(el => el.classList.add("show"));
+
+            const voterForm = document.getElementById("voterForm");
+            const votersList = document.getElementById("votersList");
+            const checkVoterBtn = document.getElementById("checkVoter");
+            const notification = document.getElementById("notification");
+            const searchField = document.getElementById("search");
+
+            let voters = JSON.parse(localStorage.getItem("voters")) || [];
+
+            voterForm.addEventListener("submit", function (e) {
+                e.preventDefault();
+
+                const name = document.getElementById("name").value.trim();
+                const idNumber = document.getElementById("idNumber").value.trim();
+                const email = document.getElementById("email").value.trim();
+                const address = document.getElementById("address").value.trim();
+
+                if (!name || !idNumber || !email || !address) {
+                    alert("All fields are required!");
+                    return;
+                }
+
+                voters.push({ name, idNumber, email, address });
+                localStorage.setItem("voters", JSON.stringify(voters));
+
+                displayVoters();
+                voterForm.reset();
+            });
+
+            function displayVoters() {
+                votersList.innerHTML = voters.length
+                    ? voters.map(v => `<div class="bg-gray-50 rounded-lg p-4 mb-2 fade-in show">
+                        <h3 class="font-medium text-gray-800">${v.name}</h3>
+                        <p class="text-sm text-gray-500">ID: ${v.idNumber}</p>
+                    </div>`).join('')
+                    : '<p class="text-gray-500 text-center">No voters registered yet.</p>';
+            }
+
+            checkVoterBtn.addEventListener("click", function () {
+                const id = searchField.value.trim();
+                if (!id) return;
+
+                const voter = voters.find(v => v.idNumber === id);
+                showNotification(voter ? "Voter Found: " + voter.name : "Voter Not Found", voter ? "green" : "red");
+
+                if (voter) new Audio("notification.mp3").play();
+            });
+
+            function showNotification(message, color) {
+                notification.textContent = message;
+                notification.style.backgroundColor = color === "green" ? "#38a169" : "#e53e3e";
+                notification.classList.add("show");
+
+                setTimeout(() => {
+                    notification.classList.remove("show");
+                }, 3000);
+            }
+
+            displayVoters();
+        });
+    </script>
+</body>
+</html>

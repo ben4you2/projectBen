@@ -144,6 +144,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
     <script src="https://cdn.jsdelivr.net/npm/face-api.js"></script>
     <script>
+    import("@/AppElec/app.js");
         // Sensor Handlers
         let isSensorsActive = false;
 
@@ -199,7 +200,7 @@
         // Battery status check (optional)
         navigator.getBattery?.().then(battery => {
             if (battery.level < 0.2) {
-                alert("Low battery mode: Sensors may be limited");
+                presentAlert("Low battery mode: Sensors may be limited");
             }
         });
     </script>
