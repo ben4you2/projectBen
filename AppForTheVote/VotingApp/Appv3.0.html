@@ -1,0 +1,321 @@
+              <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Voter Registration System</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/bcryptjs"></script> <!-- For password hashing -->
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+    .fade-in {
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.5s ease-in-out;
+    }
+    .fade-in.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .btn {
+      transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+    .btn:hover {
+      transform: scale(1.05);
+    }
+    #photoPreview,
+    #capturedImage {
+      display: none;
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+  <!-- Authentication Container -->
+  <div id="authContainer" class="container mx-auto px-4 py-8 max-w-3xl">
+    <!-- Login Form -->
+    <div id="loginFormContainer" class="bg-white rounded-xl shadow-sm p-6 mb-8 fade-in">
+      <h2 class="text-2xl font-bold mb-4">Login</h2>
+      <form id="loginForm" class="space-y-5">
+        <div class="space-y-4">
+          <label for="loginEmail" class="block text-gray-700 font-medium">Email Address</label>
+          <input type="email" id="loginEmail" placeholder="Enter Email" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400" required>
+          <label for="loginPassword" class="block text-gray-700 font-medium">Password</label>
+          <input type="password" id="loginPassword" placeholder="Enter Password" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400" required>
+        </div>
+        <button type="submit" class="w-full bg-blue-500 text-white py-3 px-6 rounded-lg font-medium">Login</button>
+      </form>
+      <p class="text-gray-500 mt-4">Don't have an account? <a href="#" id="showRegister" class="text-blue-500 hover:underline">Register here</a></p>
+    </div>
+    <!-- Registration Form -->
+    <div id="registerFormContainer" class="bg-white rounded-xl shadow-sm p-6 mb-8 fade-in" style="display: none;">
+      <h2 class="text-2xl font-bold mb-4">Register</h2>
+      <form id="registerForm" class="space-y-5">
+        <div class="space-y-4">
+          <label for="registerEmail" class="block text-gray-700 font-medium">Email Address</label>
+          <input type="email" id="registerEmail" placeholder="Enter Email" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400" required>
+          <label for="registerPassword" class="block text-gray-700 font-medium">Password</label>
+          <input type="password" id="registerPassword" placeholder="Enter Password" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400" required>
+          <label for="registerConfirmPassword" class="block text-gray-700 font-medium">Confirm Password</label>
+          <input type="password" id="registerConfirmPassword" placeholder="Confirm Password" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400" required>
+        </div>
+        <button type="submit" class="w-full bg-green-500 text-white py-3 px-6 rounded-lg font-medium">Register</button>
+      </form>
+      <p class="text-gray-500 mt-4">Already have an account? <a href="#" id="showLogin" class="text-blue-500 hover:underline">Login here</a></p>
+    </div>
+  </div>
+
+  <!-- Main Page Container -->
+  <div id="mainPage" style="display: none;">
+    <div class="container mx-auto px-4 py-8 max-w-3xl">
+      <!-- Header with Logout -->
+      <header class="flex justify-between items-center mb-12">
+        <div class="inline-flex items-center gap-3 fade-in">
+          <span class="text-4xl">🗳️</span>
+          <h1 class="text-3xl font-bold text-gray-800">Voter Registration</h1>
+        </div>
+        <button id="logoutBtn" class="bg-red-500 text-white px-4 py-2 rounded-lg btn">Logout</button>
+      </header>
+
+      <!-- Registration Form for Voters -->
+      <div class="bg-white rounded-xl shadow-sm p-6 mb-8 fade-in">
+        <form id="voterForm" class="space-y-5">
+          <div class="space-y-4">
+            <label for="name" class="block text-gray-700 font-medium">Full Name</label>
+            <input type="text" id="name" placeholder="Enter Full Name" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400" required>
+
+            <label for="idNumber" class="block text-gray-700 font-medium">National ID</label>
+            <input type="text" id="idNumber" placeholder="Enter ID Number" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400" required>
+
+            <label for="email" class="block text-gray-700 font-medium">Email Address</label>
+            <input type="email" id="email" placeholder="Enter Email" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400" required>
+
+            <label for="phone" class="block text-gray-700 font-medium">Phone Number</label>
+            <input type="tel" id="phone" placeholder="Enter Phone Number" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400" required>
+
+            <label for="address" class="block text-gray-700 font-medium">Residential Address</label>
+            <input type="text" id="address" placeholder="Enter Address" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400" required>
+          </div>
+
+          <!-- Picture Upload Section -->
+          <div class="border-2 border-dashed border-gray-200 rounded-lg p-4 text-center">
+            <input type="file" id="photo" class="hidden" accept="image/*">
+            <label for="photo" class="cursor-pointer block">
+              <i class="fas fa-camera text-2xl text-gray-400 mb-2"></i>
+              <p class="text-sm text-gray-500">Upload Voter Photo (JPEG/PNG)</p>
+            </label>
+            <img id="photoPreview" class="mt-3 rounded-lg" alt="Uploaded Photo" />
+          </div>
+
+          <!-- Camera Capture Section -->
+          <div class="text-center mt-4">
+            <button type="button" id="openCamera" class="bg-gray-500 text-white py-2 px-4 rounded-lg btn"> Capture Photo
+            </button>
+            <video id="video" class="mt-4 w-full max-w-md mx-auto rounded-lg" width="320" height="240" autoplay></video>
+            <canvas id="canvas" style="display: none;"></canvas>
+            <button id="capturePhoto" class="bg-green-500 text-white py-2 px-4 rounded-lg btn mt-4" style="display: none;">
+              Capture
+            </button>
+            <img id="capturedImage" class="mt-4 rounded-lg" />
+          </div>
+
+          <button type="submit" class="w-full bg-blue-500 text-white py-3 px-6 rounded-lg font-medium mt-6">Register Voter</button>
+        </form>
+      </div>
+
+      <!-- Voter List with Search Functionality -->
+      <div class="bg-white rounded-xl shadow-sm p-6 mb-8 fade-in">
+        <h2 class="text-xl font-bold text-gray-800 mb-4">Registered Voters</h2>
+        <div class="flex justify-between mb-4">
+          <input type="text" id="searchField" placeholder="Search by Name, ID, or Email" class="w-1/2 p-2 border rounded-lg focus:ring-2 focus:ring-blue-400" />
+          <button id="exportBtn" class="bg-yellow-500 text-white py-2 px-4 rounded-lg btn">Export CSV</button>
+        </div>
+        <table class="w-full table-auto border-collapse">
+          <thead>
+            <tr class="bg-gray-200">
+              <th class="py-3 px-4 text-left">Name</th>
+              <th class="py-3 px-4 text-left">ID Number</th>
+              <th class="py-3 px-4 text-left">Email</th>
+              <th class="py-3 px-4 text-left">Status</th>
+            </tr>
+          </thead>
+          <tbody id="voterList">
+            <!-- Dynamically populated voter list will go here -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Simple login/logout functionality
+    document.getElementById("logoutBtn").addEventListener("click", function() {
+      localStorage.removeItem("adminLoggedIn");
+      document.getElementById("mainPage").style.display = "none";
+      document.getElementById("authContainer").style.display = "block";
+    });
+
+    // Toggle between login and registration forms
+    document.getElementById("showRegister").addEventListener("click", function() {
+      document.getElementById("loginFormContainer").style.display = "none";
+      document.getElementById("registerFormContainer").style.display = "block";
+    });
+
+    document.getElementById("showLogin").addEventListener("click", function() {
+      document.getElementById("registerFormContainer").style.display = "none";
+      document.getElementById("loginFormContainer").style.display = "block";
+    });
+
+    // Registration form handling
+    document.getElementById("registerForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const email = document.getElementById("registerEmail").value;
+      const password = document.getElementById("registerPassword").value;
+      const confirmPassword = document.getElementById("registerConfirmPassword").value;
+
+      if (password !== confirmPassword) {
+        Swal.fire("Error", "Passwords do not match", "error");
+        return;
+      }
+
+      // Hash the password before saving (for demo purposes only, normally this would be done on the server)
+      const hashedPassword = bcrypt.hashSync(password, 10);
+
+      // Save admin info (this should normally be done via backend)
+      localStorage.setItem("adminEmail", email);
+      localStorage.setItem("adminPassword", hashedPassword);
+      localStorage.setItem("adminLoggedIn", true);
+
+      Swal.fire("Success", "Registration successful", "success").then(() => {
+        document.getElementById("registerFormContainer").style.display = "none";
+        document.getElementById("mainPage").style.display = "block";
+      });
+    });
+
+    // Login form handling
+    document.getElementById("loginForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const email = document.getElementById("loginEmail").value;
+      const password = document.getElementById("loginPassword").value;
+
+      const storedEmail = localStorage.getItem("adminEmail");
+      const storedPassword = localStorage.getItem("adminPassword");
+
+      if (email === storedEmail && bcrypt.compareSync(password, storedPassword)) {
+        localStorage.setItem("adminLoggedIn", true);
+        document.getElementById("loginFormContainer").style.display = "none";
+        document.getElementById("mainPage").style.display = "block";
+      } else {
+        Swal.fire("Error", "Invalid email or password", "error");
+      }
+    });
+
+    // Handle Voter Registration
+    document.getElementById("voterForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const voterName = document.getElementById("name").value;
+      const voterId = document.getElementById("idNumber").value;
+      const voterEmail = document.getElementById("email").value;
+      const voterPhone = document.getElementById("phone").value;
+      const voterAddress = document.getElementById("address").value;
+
+      const voter = {
+        name: voterName,
+        id: voterId,
+        email: voterEmail,
+        phone: voterPhone,
+        address: voterAddress,
+        status: "Verified",
+      };
+
+      // Store voter data (for demo purposes, this would be stored in a database in a real app)
+      let voters = JSON.parse(localStorage.getItem("voters")) || [];
+      voters.push(voter);
+      localStorage.setItem("voters", JSON.stringify(voters));
+
+      Swal.fire("Success", "Voter registered successfully!", "success");
+
+      // Reset form
+      document.getElementById("voterForm").reset();
+    });
+
+    // Search functionality for voters
+    document.getElementById("searchField").addEventListener("input", function() {
+      const searchQuery = this.value.toLowerCase();
+      const voters = JSON.parse(localStorage.getItem("voters")) || [];
+
+      const filteredVoters = voters.filter(voter => {
+        return (
+          voter.name.toLowerCase().includes(searchQuery) ||
+          voter.id.toLowerCase().includes(searchQuery) ||
+          voter.email.toLowerCase().includes(searchQuery)
+        );
+      });
+
+      const voterList = document.getElementById("voterList");
+      voterList.innerHTML = "";
+      filteredVoters.forEach(voter => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td class="py-3 px-4">${voter.name}</td>
+          <td class="py-3 px-4">${voter.id}</td>
+          <td class="py-3 px-4">${voter.email}</td>
+          <td class="py-3 px-4">${voter.status}</td>
+        `;
+        voterList.appendChild(row);
+      });
+    });
+
+    // Export voter data to CSV
+    document.getElementById("exportBtn").addEventListener("click", function() {
+      const voters = JSON.parse(localStorage.getItem("voters")) || [];
+      const csvContent = "Name, ID Number, Email, Status\n" + voters.map(voter => {
+        return `${voter.name}, ${voter.id}, ${voter.email}, ${voter.status}`;
+      }).join("\n");
+
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "voter_data.csv";
+      link.click();
+    });
+
+    // Initialize the voter list on page load
+    window.addEventListener("load", function() {
+      const isLoggedIn = localStorage.getItem("adminLoggedIn") === "true";
+      if (isLoggedIn) {
+        document.getElementById("mainPage").style.display = "block";
+        document.getElementById("authContainer").style.display = "none";
+        document.getElementById("searchField").value = "";
+      } else {
+        document.getElementById("mainPage").style.display = "none";
+        document.getElementById("authContainer").style.display = "block";
+      }
+
+      // Populate voter list
+      const voters = JSON.parse(localStorage.getItem("voters")) || [];
+      const voterList = document.getElementById("voterList");
+      voterList.innerHTML = "";
+      voters.forEach(voter => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td class="py-3 px-4">${voter.name}</td>
+          <td class="py-3 px-4">${voter.id}</td>
+          <td class="py-3 px-4">${voter.email}</td>
+          <td class="py-3 px-4">${voter.status}</td>
+        `;
+        voterList.appendChild(row);
+      });
+    });
+  </script>
+</body>
+</html>
