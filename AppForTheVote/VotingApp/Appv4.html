@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Voter Registration System</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+    .fade-in {
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.5s ease-in-out;
+    }
+    .fade-in.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .btn {
+      transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+    .btn:hover {
+      transform: scale(1.05);
+    }
+    #photoPreview,
+    #capturedImage {
+      display: none;
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+  <!-- Authentication Container -->
+  <div id="authContainer" class="container mx-auto px-4 py-8 max-w-3xl">
+    <!-- Login Form -->
+    <div id="loginFormContainer" class="bg-white rounded-xl shadow-sm p-6 mb-8 fade-in">
+      <h2 class="text-2xl font-bold mb-4">Login</h2>
+      <form id="loginForm" class="space-y-5">
+        <div class="space-y-4">
+          <label for="loginEmail" class="block text-gray-700 font-medium">Email Address</label>
+          <input type="email" id="loginEmail" placeholder="Enter Email" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400" required>
+          <label for="loginPassword" class="block text-gray-700 font-medium">Password</label>
+          <input type="password" id="loginPassword" placeholder="Enter Password" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400" required>
+        </div>
+        <button type="submit" class="w-full bg-blue-500 text-white py-3 px-6 rounded-lg font-medium">Login</button>
+      </form>
+      <p class="text-gray-500 mt-4">
+        Don't have an account?
+        <a href="#" id="showRegister" class="text-blue-500 hover:underline">Register here</a>
+      </p>
+      <p class="text-gray-500 mt-2">
+        <a href="#" id="forgotPassword" class="text-blue-500 hover:underline">Forgot Password?</a>
+      </p>
+    </div>
+    <!-- Registration Form -->
+    <div id="registerFormContainer" class="bg-white rounded-xl shadow-sm p-6 mb-8 fade-in" style="display: none;">
+      <h2 class="text-2xl font-bold mb-4">Register</h2>
+      <form id="registerForm" class="space-y-5">
+        <div class="space-y-4">
+          <!-- Email will be used to generate the username -->
+          <label for="registerEmail" class="block text-gray-700 font-medium">Email Address</label>
+          <input type="email" id="registerEmail" placeholder="Enter Email" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400" required>
+          <label for="registerPassword" class="block text-gray-700 font-medium">Password</label>
+          <input type="password" id="registerPassword" placeholder="Enter Password" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400" required>
+          <label for="registerConfirmPassword" class="block text-gray-700 font-medium">Confirm Password</label>
+          <input type="password" id="registerConfirmPassword" placeholder="Confirm Password" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400" required>
+        </div>
+        <button type="submit" class="w-full bg-green-500 text-white py-3 px-6 rounded-lg font-medium">Register</button>
+      </form>
+      <p class="text-gray-500 mt-4">
+        Already have an account?
+        <a href="#" id="showLogin" class="text-blue-500 hover:underline">Login here</a>
+      </p>
+    </div>
+  </div>
+
+  <!-- Main Page Container -->
+  <div id="mainPage" style="display: none;">
+    <div class="container mx-auto px-4 py-8 max-w-3xl">
+      <!-- Header with Logout -->
+      <header class="flex justify-between items-center mb-12">
+        <div class="inline-flex items-center gap-3 fade-in">
+          <span class="text-4xl">🗳️</span>
+          <h1 class="text-3xl font-bold text-gray-800">Voter Registration</h1>
+        </div>
+        <button id="logoutBtn" class="bg-red-500 text-white px-4 py-2 rounded-lg btn">Logout</button>
+      </header>
+
+      <!-- Registration Form for Voters -->
+      <div class="bg-white rounded-xl shadow-sm p-6 mb-8 fade-in">
+        <form id="voterForm" class="space-y-5">
+          <div class="space-y-4">
+            <label for="name" class="block text-gray-700 font-medium">Full Name</label>
+            <input type="text" id="name" placeholder="Enter Full Name" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400" required>
+
+            <label for="idNumber" class="block text-gray-700 font-medium">National ID</label>
+            <input type="text" id="idNumber" placeholder="Enter ID Number" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400" required>
+
+            <label for="email" class="block text-gray-700 font-medium">Email Address</label>
+            <input type="email" id="email" placeholder="Enter Email" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400" required>
+
+            <label for="phone" class="block text-gray-700 font-medium">Phone Number</label>
+            <input type="tel" id="phone" placeholder="Enter Phone Number" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400" required>
+
+            <label for="address" class="block text-gray-700 font-medium">Residential Address</label>
+            <input type="text" id="address" placeholder="Enter Address" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400" required>
+          </div>
+
+          <!-- Picture Upload Section -->
+          <div class="border-2 border-dashed border-gray-200 rounded-lg p-4 text-center">
+            <input type="file" id="photo" class="hidden" accept="image/*">
+            <label for="photo" class="cursor-pointer block">
+              <i class="fas fa-camera text-2xl text-gray-400 mb-2"></i>
+              <p class="text-sm text-gray-500">Upload Voter Photo (JPEG/PNG)</p>
+            </label>
+            <img id="photoPreview" class="mt-3 rounded-lg" alt="Uploaded Photo" />
+          </div>
+
+          <!-- Camera Capture Section -->
+          <div class="text-center mt-4">
+            <button type="button" id="openCamera" class="bg-gray-500 text-white py-2 px-4 rounded-lg btn">
+              Take a Picture
+            </button>
+            <video id="cameraStream" class="hidden mt-4 rounded-lg" autoplay></video>
+            <canvas id="canvas" class="hidden"></canvas>
+            <img id="capturedImage" class="mt-3 rounded-lg" alt="Captured Photo" />
+            <button type="button" id="capturePhoto" class="hidden bg-green-500 text-white py-2 px-4 mt-2 rounded-lg btn">
+              Capture
+            </button>
+          </div>
+
+          <button type="submit" class="w-full bg-blue-500 text-white py-3 px-6 rounded-lg font-medium hover:bg-blue-600 transition-colors duration-200 btn">
+            <i class="fas fa-user-plus mr-2"></i> Register Voter
+          </button>
+        </form>
+      </div>
+
+      <!-- Search Field -->
+      <div class="bg-white rounded-xl shadow-sm p-6 mb-8 fade-in">
+        <div class="flex">
+          <input type="text" id="searchVoter" placeholder="Search Voter by Name or ID" class="w-full p-2 border rounded-l-lg focus:ring-2 focus:ring-blue-400">
+          <button id="searchBtn" class="bg-blue-500 text-white px-4 rounded-r-lg">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Voters List -->
+      <div id="votersList" class="bg-white rounded-xl shadow-sm p-6 mb-8 fade-in">
+        <!-- Voter entries will be dynamically added here -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      // ---------------------------
+      // Authentication Functionality
+      // ---------------------------
+      const authContainer = document.getElementById("authContainer");
+      const mainPage = document.getElementById("mainPage");
+      const loginForm = document.getElementById("loginForm");
+      const registerForm = document.getElementById("registerForm");
+      const loginEmail = document.getElementById("loginEmail");
+      const loginPassword = document.getElementById("loginPassword");
+      const registerEmail = document.getElementById("registerEmail");
+      const registerPassword = document.getElementById("registerPassword");
+      const registerConfirmPassword = document.getElementById("registerConfirmPassword");
+      const showRegister = document.getElementById("showRegister");
+      const showLogin = document.getElementById("showLogin");
+      const forgotPassword = document.getElementById("forgotPassword");
+      const logoutBtn = document.getElementById("logoutBtn");
+
+      // If a user is already logged in, show main page; otherwise, show authentication
+      if (localStorage.getItem("loggedInUser")) {
+        authContainer.style.display = "none";
+        mainPage.style.display = "block";
+      } else {
+        authContainer.style.display = "block";
+        mainPage.style.display = "none";
+      }
+
+      // Toggle to show registration form
+      showRegister.addEventListener("click", function (e) {
+        e.preventDefault();
+        document.getElementById("loginFormContainer").style.display = "none";
+        document.getElementById("registerFormContainer").style.display = "block";
+      });
+
+      // Toggle to show login form
+      showLogin.addEventListener("click", function (e) {
+        e.preventDefault();
+        document.getElementById("registerFormContainer").style.display = "none";
+        document.getElementById("loginFormContainer").style.display = "block";
+      });
+
+      // Forgot Password functionality
+      forgotPassword.addEventListener("click", function (e) {
+        e.preventDefault();
+        Swal.fire({
+          title: 'Reset Password',
+          input: 'email',
+          inputLabel: 'Enter your registered email',
+          inputPlaceholder: 'Email address',
+          showCancelButton: true,
+        }).then((result) => {
+          if (result.value) {
+            let users = JSON.parse(localStorage.getItem("users")) || [];
+            const user = users.find(u => u.email === result.value.trim());
+            if (user) {
+              // Simulate sending email
+              Swal.fire("Success", "A password reset link has been sent to your email.", "success");
+            } else {
+              Swal.fire("Error", "Email not found.", "error");
+            }
+          }
+        });
+      });
+
+      // Helper function to generate a username from email
+      function generateUsername(email) {
+        return email.split('@')[0];
+      }
+
+      // Registration submission
+      registerForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+        const email = registerEmail.value.trim();
+        const password = registerPassword.value;
+        const confirmPassword = registerConfirmPassword.value;
+        if (password !== confirmPassword) {
+          Swal.fire("Error", "Passwords do not match.", "error");
+          return;
+        }
+        let users = JSON.parse(localStorage.getItem("users")) || [];
+        if (users.find(user => user.email === email)) {
+          Swal.fire("Error", "User already registered. Please login.", "error");
+          return;
+        }
+        const username = generateUsername(email);
+        users.push({ email, username, password });
+        localStorage.setItem("users", JSON.stringify(users));
+        localStorage.setItem("loggedInUser", email);
+        Swal.fire("Success", `Registration successful. Your username is: ${username}`, "success");
+        authContainer.style.display = "none";
+        mainPage.style.display = "block";
+      });
+
+      // Login submission
+      loginForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+        const email = loginEmail.value.trim();
+        const password = loginPassword.value;
+        let users = JSON.parse(localStorage.getItem("users")) || [];
+        const user = users.find(user => user.email === email && user.password === password);
+        if (!user) {
+          Swal.fire("Error", "Invalid credentials.", "error");
+          return;
+        }
+        localStorage.setItem("loggedInUser", email);
+        Swal.fire("Success", `Login successful. Welcome, ${user.username}.`, "success");
+        authContainer.style.display = "none";
+        mainPage.style.display = "block";
+      });
+
+      // Logout functionality
+      logoutBtn.addEventListener("click", function () {
+        localStorage.removeItem("loggedInUser");
+        location.reload();
+      });
+
+      // ---------------------------
+      // Main Page: Voter Registration Functionality
+      // ---------------------------
+      document.querySelectorAll(".fade-in").forEach(el => el.classList.add("show"));
+
+      const voterForm = document.getElementById("voterForm");
+      const votersList = document.getElementById("votersList");
+      const searchInput = document.getElementById("searchVoter");
+      const searchBtn = document.getElementById("searchBtn");
+      const openCameraBtn = document.getElementById("openCamera");
+      const capturePhotoBtn = document.getElementById("capturePhoto");
+      const cameraStream = document.getElementById("cameraStream");
+      const canvas = document.getElementById("canvas");
+      const photoPreview = document.getElementById("photoPreview");
+      const capturedImage = document.getElementById("capturedImage");
+
+      let voters = JSON.parse(localStorage.getItem("voters")) || [];
+      let videoStream = null;
+
+      // Display existing voters on load
+      updateVotersList();
+
+      // Handle photo upload
+      document.getElementById("photo").addEventListener("change", function (event) {
+        if (event.target.files[0]) {
+          const reader = new FileReader();
+          reader.onload = function () {
+            photoPreview.src = reader.result;
+            photoPreview.style.display = "block";
+          };
+          reader.readAsDataURL(event.target.files[0]);
+        }
+      });
+
+      // Open camera for capturing photo
+      openCameraBtn.addEventListener("click", async function () {
+        try {
+          videoStream = await navigator.mediaDevices.getUserMedia({ video: true });
+          cameraStream.srcObject = videoStream;
+          cameraStream.classList.remove("hidden");
+          capturePhotoBtn.classList.remove("hidden");
+        } catch (error) {
+          Swal.fire("Error", "Unable to access camera.", "error");
+        }
+      });
+
+      // Capture photo from camera
+      capturePhotoBtn.addEventListener("click", function () {
+        const context = canvas.getContext("2d");
+        canvas.width = cameraStream.videoWidth;
+        canvas.height = cameraStream.videoHeight;
+        context.drawImage(cameraStream, 0, 0, canvas.width, canvas.height);
+        capturedImage.src = canvas.toDataURL("image/png");
+        capturedImage.style.display = "block";
+        cameraStream.classList.add("hidden");
+        capturePhotoBtn.classList.add("hidden");
+        if (videoStream) {
+          videoStream.getTracks().forEach(track => track.stop());
+        }
+      });
+
+      // Update voters list display with optional filtering
+      function updateVotersList(filter = "") {
+        votersList.innerHTML = "";
+        const filteredVoters = voters.filter(voter =>
+          voter.name.toLowerCase().includes(filter.toLowerCase()) ||
+          voter.idNumber.toLowerCase().includes(filter.toLowerCase())
+        );
+
+        if (filteredVoters.length === 0) {
+          votersList.innerHTML = `<p class="text-gray-500 text-center">No voters registered yet.</p>`;
+          return;
+        }
+
+        filteredVoters.forEach((voter, index) => {
+          const voterCard = document.createElement("div");
+          voterCard.classList.add("border", "rounded-xl", "p-4", "mb-4", "bg-white", "shadow-sm", "flex", "items-center", "space-x-4");
+          voterCard.innerHTML = `
+            <img src="${voter.photo ? voter.photo : 'https://via.placeholder.com/100'}" alt="Profile Picture" class="w-16 h-16 object-cover rounded-full">
+            <div class="flex-1">
+              <h2 class="text-xl font-semibold text-gray-800">${voter.name}</h2>
+              <p class="text-gray-500">ID: ${voter.idNumber}</p>
+              <p class="text-gray-500">Phone: ${voter.phone}</p>
+              <p class="text-gray-500">Address: ${voter.address}</p>
+            </div>
+            <button onclick="viewVoterDetails(${index})" class="bg-blue-500 text-white px-3 py-1 rounded-lg btn">View Details</button>
+          `;
+          votersList.appendChild(voterCard);
+        });
+      }
+
+      // Filter voters when search button is clicked or on input event
+      function filterVoters() {
+        updateVotersList(searchInput.value);
+      }
+      searchInput.addEventListener("input", filterVoters);
+      searchBtn.addEventListener("click", filterVoters);
+
+      // Handle voter registration submission
+      voterForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+        const name = document.getElementById("name").value.trim();
+        const idNumber = document.getElementById("idNumber").value.trim();
+        const email = document.getElementById("email").value.trim();
+        const phone = document.getElementById("phone").value.trim();
+        const address = document.getElementById("address").value.trim();
+        // Use captured image if available; otherwise, use uploaded photo
+        const photo = capturedImage.src || photoPreview.src || "";
+        if (!name || !idNumber || !email || !phone || !address) {
+          Swal.fire("Error", "Please fill in all the required fields.", "error");
+          return;
+        }
+        const newVoter = { name, idNumber, email, phone, address, photo };
+        voters.push(newVoter);
+        localStorage.setItem("voters", JSON.stringify(voters));
+        Swal.fire("Success", "Voter has been successfully registered.", "success");
+        voterForm.reset();
+        photoPreview.style.display = "none";
+        capturedImage.style.display = "none";
+        updateVotersList(searchInput.value);
+      });
+
+      // Function to view detailed voter information using SweetAlert modal
+      window.viewVoterDetails = function(index) {
+        const voter = voters[index];
+        Swal.fire({
+          title: voter.name,
+          html: `
+            <img src="${voter.photo ? voter.photo : 'https://via.placeholder.com/100'}" alt="Profile Picture" class="w-24 h-24 object-cover rounded-full mx-auto mb-4">
+            <p><strong>ID:</strong> ${voter.idNumber}</p>
+            <p><strong>Email:</strong> ${voter.email}</p>
+            <p><strong>Phone:</strong> ${voter.phone}</p>
+            <p><strong>Address:</strong> ${voter.address}</p>
+          `,
+          confirmButtonText: 'Close'
+        });
+      }
+    });
+  </script>
+</body>
+</html>
