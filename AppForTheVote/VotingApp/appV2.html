@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voter Registration</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body class="bg-gray-100">
+
+    <!-- Header Section -->
+    <header class="text-center py-6 bg-blue-600 text-white">
+        <h1 class="text-3xl font-bold">Voter Registration</h1>
+    </header>
+
+    <!-- Search Section -->
+    <div class="max-w-lg mx-auto p-4">
+        <input type="text" id="searchVoter" placeholder="Search Voter by Name or ID" class="w-full px-4 py-2 rounded-lg border border-gray-300 mb-4" />
+    </div>
+
+    <!-- Voter Registration Form -->
+    <div class="max-w-lg mx-auto p-4">
+        <form id="voterForm" class="space-y-4">
+            <input type="text" id="voterName" placeholder="Enter Voter's Name" class="w-full px-4 py-2 rounded-lg border border-gray-300" required />
+            <input type="text" id="voterId" placeholder="Enter Voter's ID" class="w-full px-4 py-2 rounded-lg border border-gray-300" required />
+            
+            <!-- Image Upload Section -->
+            <input type="file" accept="image/*" id="imageInput" capture="camera" class="w-full px-4 py-2 rounded-lg border border-gray-300" />
+            <img id="imagePreview" class="mt-2 w-full rounded-lg hidden" alt="Image Preview" />
+
+            <!-- Register Button -->
+            <button type="button" id="registerVoterButton" class="w-full bg-blue-500 text-white py-2 rounded-lg">Register Voter</button>
+        </form>
+    </div>
+
+    <!-- Voter List -->
+    <div id="voterList" class="max-w-lg mx-auto p-4">
+        <div class="voter mb-4 p-4 border rounded-lg bg-white">
+            <p class="voter-name">John Doe</p>
+            <p class="voter-id">12345</p>
+        </div>
+    </div>
+
+    <script src="/AppForTheVote/VotingApp/App.js"></script>
+</body>
+</html>
