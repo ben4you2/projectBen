@@ -1,4 +1,4 @@
-
+<!--
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -216,4 +216,162 @@
     </script>
 
 </body>
+</html>-->
+
+
+<!--<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mind Detector - User Engagement</title>
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        #status {
+            font-size: 24px;
+            font-weight: bold;
+            padding: 10px;
+            border-radius: 8px;
+            display: inline-block;
+        }
+        .active { background: green; color: white; }
+        .idle { background: orange; color: white; }
+        .distracted { background: red; color: white; }
+    </style>
+</head>
+<body>
+    <h1>Mind Detector - User Engagement Sensor</h1>
+    <p>Status: <span id="status" class="active">Active</span></p>
+
+    <script>
+        let statusText = document.getElementById("status");
+        let idleTimer, distractedTimer;
+
+        function updateStatus(state) {
+            statusText.textContent = state;
+            statusText.className = state.toLowerCase();
+        }
+
+        function resetIdleTimer() {
+            clearTimeout(idleTimer);
+            clearTimeout(distractedTimer);
+
+            updateStatus("Active");
+
+            idleTimer = setTimeout(() => updateStatus("Idle"), 5000); // 5 seconds of inactivity = idle
+            distractedTimer = setTimeout(() => updateStatus("Distracted"), 15000); // 15 seconds of inactivity = distracted
+        }
+
+        // Detect user interactions (mouse movement, key press, scrolling)
+        document.addEventListener("mousemove", resetIdleTimer);
+        document.addEventListener("keydown", resetIdleTimer);
+        document.addEventListener("scroll", resetIdleTimer);
+
+        // Start with active status
+        resetIdleTimer();
+    </script>
+</body>
+</html>-->
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mind Detector - User Engagement</title>
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        #status {
+            font-size: 24px;
+            font-weight: bold;
+            padding: 10px;
+            border-radius: 8px;
+            display: inline-block;
+        }
+        .active { background: green; color: white; }
+        .idle { background: orange; color: white; }
+        .distracted { background: red; color: white; }
+    </style>
+</head>
+<body>
+    <h1>Mind Detector - User Engagement Sensor</h1>
+    <p>Status: <span id="status" class="active">Active</span></p>
+    <p>Distractions Detected: <span id="distraction-count">0</span></p>
+
+    <script>
+        let statusText = document.getElementById("status");
+        let distractionCountText = document.getElementById("distraction-count");
+        let idleTimer, distractedTimer;
+
+        // Load distraction count from local storage
+        let distractionCount = localStorage.getItem("distractionCount") || 0;
+        distractionCountText.textContent = distractionCount;
+
+        function updateStatus(state) {
+            statusText.textContent = state;
+            statusText.className = state.toLowerCase();
+
+            if (state === "Distracted") {
+                playBeep();
+                sendNotification();
+                distractionCount++;
+                distractionCountText.textContent = distractionCount;
+                localStorage.setItem("distractionCount", distractionCount); // Save count
+            }
+        }
+
+        function resetIdleTimer() {
+            clearTimeout(idleTimer);
+            clearTimeout(distractedTimer);
+
+            updateStatus("Active");
+
+            idleTimer = setTimeout(() => updateStatus("Idle"), 5000); // 5s inactivity = idle
+            distractedTimer = setTimeout(() => updateStatus("Distracted"), 15_000); // 15s inactivity = distracted
+        }
+
+        // Play a beep sound when user is distracted
+        function playBeep() {
+            let beep = new Audio("https://www.soundjay.com/button/beep-07.wav");
+            beep.play();
+        }
+
+        // Send a browser notification when user is distracted
+        function sendNotification() {
+            if (Notification.permission === "granted") {
+                new Notification("Mind Detector Alert", {
+                    body: "You seem distracted! Stay focused!",
+                    icon: "https://cdn-icons-png.flaticon.com/512/854/854878.png"
+                });
+            }
+        }
+
+        // Request notification permission
+        if (Notification.permission !== "granted") {
+            Notification.requestPermission();
+        }
+
+        // Detect user interactions (mouse movement, key press, scrolling)
+        document.addEventListener("mousemove", resetIdleTimer);
+        document.addEventListener("keydown", resetIdleTimer);
+        document.addEventListener("scroll", resetIdleTimer);
+
+        // Start with active status
+        resetIdleTimer();
+    </script>
+</body>
 </html>
+
+
+
+
