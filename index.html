@@ -368,6 +368,28 @@
 
         // Start with active status
         resetIdleTimer();
+        
+        /*Toggle Button for dark mode*/
+
+
+        function toggleMode() {
+            let body = document.body;
+            let cont = document.body;
+            let conver = document.body;
+            if (body.style.backgroundColor === "white") {
+                body.style.backgroundColor = "#1a1a1a";
+                body.style.color = "white";
+            } else {
+                body.style.backgroundColor = "black";
+                body.style.color = "white";
+                cont.style.color="white";
+                conver.style.color="white";
+                
+            }
+        }
+        
+        
+        
     </script>
 </body>
 </html>
