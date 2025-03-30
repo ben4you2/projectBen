@@ -135,12 +135,12 @@
             form.reset();
         });
 
-        function deleteRequest(index) {
+       /* function deleteRequest(index) {
             requests = requests.filter((_, i) => i !== index); // Immutability
             localStorage.setItem('emergencyRequests', JSON.stringify(requests));
             Swal.fire('Deleted!', 'Request removed successfully.', 'success');
             renderTable(requests);
-        }
+        }*/
 
         notificationBtn.addEventListener('click', () => {
             notifications = 0;
