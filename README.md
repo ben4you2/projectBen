@@ -7,3 +7,6 @@ against those minds,thoughts that coe from mind of people that have crime in the
 The application and updated file added is to show
 some updates.
 
+  The app invudes an option for emergency that can be for emergency only and will be used to
+denounce abuse,threat,intimidation,and sexual abuse,harassment,
+sexual assault and domestix violence,abuse and ppsychomogical abuse in house.
