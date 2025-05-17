@@ -9,4 +9,4 @@ some updates.
 
   The app invudes an option for emergency that can be for emergency only and will be used to
 denounce abuse,threat,intimidation,and sexual abuse,harassment,
-sexual assault and domestix violence,abuse and ppsychomogical abuse in house.
+sexual assault and domestic violence,abuse and psychological abuse in,out of house.
