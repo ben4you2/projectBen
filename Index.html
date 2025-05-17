@@ -1,0 +1,862 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.esm.js"></script>
+<script nomodule src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core/css/ionic.bundle.css" />
+<link rel="stylesheet" href="/style.css">
+<title>Mobile Lotto Generator</title>
+  <style>
+        /*body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            text-align: center;
+            padding: 10px;
+            max-width:372px;
+        }*/
+        button {
+            padding: 15px 30px;
+            font-size: 18px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #numbers {
+            font-size: 24px;
+            margin-top: 20px;
+            color: #333;
+        }
+        input {
+            padding: 10px;
+            font-size: 16px;
+            margin: 10px;
+            width: 80px;
+        }
+    
+  .example-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
+  .dv{
+    margin:20px;
+  }
+</style>
+</head>
+<body>
+
+
+<ion-tabs>
+  <ion-tab tab="home">
+    <ion-content>
+      <!--ion back button--> 
+    <div id="home-page">
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Listen now</ion-title>  
+          </ion-toolbar>
+        
+      </ion-header>
+   <br>
+ <div class="example-content">Listen now content to your mind and ears</div>
+    <div class="example-content">Radio content
+        <br><br>
+        <p>This is a content</p></div>
+        <div class="dv">
+        <h2>Mobile Lotto Generator</h2>
+    <label>Numbers to Pick: <input type="number" id="count" value="6" min="1"></label><br>
+    <label>Max Number: <input type="number" id="max" value="49" min="10"></label><br></div>
+    <button onclick="generateNumbers()" style=" padding: 15px 30px;
+       font-size: 18px;
+       background-color: #007bff;
+       color: white;
+       border: none;
+       border-radius: 5px;
+       cursor: pointer;
+       margin-top: 20px;
+       margin-left:20px">Generate Numbers</button>
+    <div id="numbers"></div>
+    <hr style="font-size:2px; width:260px">
+    </div>
+  <!--  
+ <ion-list>
+  <ion-item>
+    <ion-select
+      class="always-flip"
+      toggle-icon="caret-down-sharp"
+      interface="popover"
+      label="Icon flips on both modes"
+      placeholder="Select fruit"
+    >
+      <ion-select-option value="apples">Apples</ion-select-option>
+      <ion-select-option value="oranges">Oranges</ion-select-option>
+      <ion-select-option value="bananas">Bananas</ion-select-option>
+    </ion-select>
+  </ion-item>
+  </ion-list>-->
+  
+  <ion-item>
+    <ion-select
+      class="never-flip"
+      toggle-icon="caret-down-sharp"
+      interface="popover"
+      label="Numbers and Lottery"
+      placeholder="Select type"
+    >
+ <ion-select-option value="apples">Boloto</ion-select-option>
+      <ion-select-option value="oranges">Lotto5</ion-select-option>
+      <ion-select-option value="bananas">Lotto5/5</ion-select-option>
+      <ion-select-option value="royal5">Royal 5</ion-select-option>
+    </ion-select>
+  </ion-item>
+
+
+  <h2>Working on the numbers</h2>
+<div style="margin:20px; padding:5px">
+  <p>That is a web lotto explantion</p>
+  <p>This is when you select the numbers that can be the winers</p>
+  <br>
+  
+  <button click="#ico" style="
+      padding: 15px 30px;
+       font-size: 18px;
+       background-color: #007bff;
+       color: white;
+       border: none;
+       border-radius: 5px;
+       cursor: pointer;
+       margin-top: 20px;">See more...</button>
+</div>
+
+
+<style>
+  ion-select.always-flip::part(icon) {
+    transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  ion-select.always-flip.select-expanded::part(icon) {
+    transform: rotate(180deg);
+  }
+
+  ion-select.never-flip::part(icon) {
+    transform: none;
+  }
+</style>
+
+<!--
+<ion-app>
+  <ion-nav root="page-one"></ion-nav>
+</ion-app>
+
+<script>
+  class PageOne extends HTMLElement {
+    connectedCallback() {
+      this.innerHTML = `
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Back Button</ion-title>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+        <h1>Page One</h1>
+        <p>Navigate to the next page to see the back button.</p>
+        <ion-nav-link router-direction="forward" component="page-two">
+          <ion-button>Navigate</ion-button>
+        </ion-nav-link>
+      </ion-content>
+    `;
+    }
+  }
+  
+  class PageTwo extends HTMLElement {
+    connectedCallback() {
+      this.innerHTML = `
+      <ion-header>
+        <ion-toolbar>
+          <ion-buttons slot="start">
+            <ion-back-button></ion-back-button>
+          </ion-buttons>
+          <ion-title>Back Button</ion-title>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+        <h1>Page Two</h1>
+        <p>Use the back button to navigate to the previous page.</p>
+      </ion-content>
+    `;
+    }
+  }
+  
+  customElements.define('page-one', PageOne);
+  customElements.define('page-two', PageTwo);
+</script>-->
+
+
+     </ion-content>
+     
+  </ion-tab>
+  <ion-tab tab="globe">
+    <ion-content>
+    <div id="radio-page">
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Radio</ion-title>
+        </ion-toolbar>
+      </ion-header>
+      <br>
+  <div class="example-content">Radio content</div>
+  <!--
+    <ion-select label="Solid select" label-placement="floating" fill="solid">
+    <ion-select-option value="apple">Apple</ion-select-option>
+    <ion-select-option value="banana">Banana</ion-select-option>
+    <ion-select-option value="orange">Orange</ion-select-option>
+  </ion-select> <br>-->
+  
+  
+<!--  <ion-select label="Outline select" label-placement="floating" fill="outline">
+  <ion-select-option value="apple">Apple</ion-select-option>
+  <ion-select-option value="banana">Banana</ion-select-option>
+  <ion-select-option value="orange">Orange</ion-select-option>
+</ion-select>-->
+  
+
+<br />
+
+  <ion-list>
+  <ion-item>
+    <ion-select aria-label="Fruit" interface="action-sheet" placeholder="Select the options">
+      <ion-select-option value="apples">Apples</ion-select-option>
+      <ion-select-option value="oranges">Oranges</ion-select-option>
+      <ion-select-option value="bananas">Bananas</ion-select-option>
+    </ion-select>
+  </ion-item>
+</ion-list>
+</div>
+  <p>This is about the numbers lotto that i was working on.</p>
+  </ion-content>
+
+    
+  </ion-tab>
+  
+  <ion-tab tab="library">
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Library</ion-title>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content>
+        <div id="library-page">
+          <br>
+        <div class="example-content">Library content</div>
+    <ion-list>
+  <ion-item>
+    <ion-select aria-label="Fruit" interface="action-sheet" placeholder="Select Book">
+      <ion-select-option value="apples">Little Boy</ion-select-option>
+      <ion-select-option value="oranges">Networking for Professional</ion-select-option>
+      <ion-select-option value="bananas">Software Development for Professional</ion-select-option>
+    </ion-select>
+  </ion-item>
+</ion-list>
+
+<ion-list>
+  <ion-item>
+    <ion-select aria-label="Fruit" interface="popover" placeholder="Select Book">
+      <ion-select-option value="apples">Little Boy</ion-select-option>
+      <ion-select-option value="oranges">Network for Biginners</ion-select-option>
+      <ion-select-option value="bananas">Programming languages for Biginners</ion-select-option>
+    </ion-select>
+  </ion-item>
+</ion-list>
+
+<div style="margin:17px;padding:12px">
+  <p>This is about a program and application that is to be used to show apple. You can see and review the page to make your search</p>
+   
+</div>
+
+<ion-content>
+<ion-list>
+  <ion-item>
+    <ion-select aria-label="Fruit" interface="modal" placeholder="Select fruit">
+      <ion-select-option value="apples">Apples</ion-select-option>
+      <ion-select-option value="oranges">Oranges</ion-select-option>
+      <ion-select-option value="bananas">Bananas</ion-select-option>
+    </ion-select>
+  </ion-item>
+</ion-list>
+</div>
+      </ion-content>
+  
+  </ion-tab>
+  <ion-tab tab="search">
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Search</ion-title>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content>
+     <div id="search-page">
+        <ion-toggle
+  helper-text=" Enable to connect to available networks"
+  error-text=" Must be enabled to access the internet"
+  justify=" space-between"
+  checked
+>
+  Wi-Fi
+</ion-toggle>
+
+<br>
+
+<script>
+  const wifi = document.querySelector('ion-toggle');
+
+  wifi.addEventListener('ionChange', (event) => validateToggle(event));
+
+  const validateToggle = (event) => {
+    wifi.classList.add('ion-touched');
+
+    if (!event.detail.checked) {
+      wifi.classList.add('ion-invalid');
+      wifi.classList.remove('ion-valid');
+    } else {
+      wifi.classList.remove('ion-invalid');
+      wifi.classList.add('ion-valid');
+    }
+  };
+</script>
+
+  <!--<ion-content color="light" class="ion-padding">-->
+    <br>
+  
+  <div class="container">
+    <ion-list inset="true">
+      <ion-item button="true" detail="false" id="select-fruits">
+        <ion-label>Favorite Fruits</ion-label>
+        <div slot="end" id="selected-fruits">0 Items</div>
+      </ion-item>
+    </ion-list>
+  </div>
+
+<ion-modal trigger="select-fruits">
+  <ion-header>
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-button onclick="cancelChanges()">Cancel</ion-button>
+      </ion-buttons>
+      <ion-title>Favorite Fruits</ion-title>
+      <ion-buttons slot="end">
+        <ion-button onclick="confirmChanges()">Done</ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+    <ion-toolbar>
+      <ion-searchbar></ion-searchbar>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content color="light" class="ion-padding">
+    <ion-list id="modal-list" inset="true"> </ion-list>
+  </ion-content>
+</ion-modal>
+
+<script>
+  const list = document.querySelector('ion-list#modal-list');
+  const modal = document.querySelector('ion-modal');
+  const searchbar = document.querySelector('ion-searchbar');
+  const selectedFruitsText = document.querySelector('#selected-fruits');
+  const fruits = [
+    { text: 'Apple', value: 'apple' },
+    { text: 'Apricot', value: 'apricot' },
+    { text: 'Banana', value: 'banana' },
+    { text: 'Blackberry', value: 'blackberry' },
+    { text: 'Blueberry', value: 'blueberry' },
+    { text: 'Cherry', value: 'cherry' },
+    { text: 'Cranberry', value: 'cranberry' },
+    { text: 'Grape', value: 'grape' },
+    { text: 'Grapefruit', value: 'grapefruit' },
+    { text: 'Guava', value: 'guava' },
+    { text: 'Jackfruit', value: 'jackfruit' },
+    { text: 'Lime', value: 'lime' },
+    { text: 'Mango', value: 'mango' },
+    { text: 'Nectarine', value: 'nectarine' },
+    { text: 'Orange', value: 'orange' },
+    { text: 'Papaya', value: 'papaya' },
+    { text: 'Passionfruit', value: 'passionfruit' },
+    { text: 'Peach', value: 'peach' },
+    { text: 'Pear', value: 'pear' },
+    { text: 'Plantain', value: 'plantain' },
+    { text: 'Plum', value: 'plum' },
+    { text: 'Pineapple', value: 'pineapple' },
+    { text: 'Pomegranate', value: 'pomegranate' },
+    { text: 'Raspberry', value: 'raspberry' },
+    { text: 'Strawberry', value: 'strawberry' },
+  ];
+  
+  /**
+   * This is the confirmed
+   * list of selected fruits. It
+   * is only updated once the "Done"
+   * button is pressed in the modal.
+   */
+  var selectedFruits = [];
+  
+  /**
+   * This is the working list of
+   * selected fruits. It tracks any
+   * uncommitted changes that the user
+   * makes in the modal. If the user pressed
+   * the "Cancel" button then this is
+   * reset to the value of the confirmed
+   * selected fruits.
+   */
+  var workingSelectedFruits = [];
+  
+  /**
+   * Filter the list of fruits base
+   * on the search query. If no query
+   * is provided then the entire list
+   * will be returned.
+   */
+  function filterList(searchQuery = undefined) {
+    if (searchQuery === undefined) return fruits;
+    
+    const normalizedQuery = searchQuery.toLowerCase();
+    
+    return fruits.filter((fruit) => fruit.text.toLowerCase().includes(normalizedQuery));
+  }
+  
+  /**
+   * Render a filtered list of fruits
+   * inside of the modal based on the
+   * search query.
+   */
+  function renderList(searchQuery = undefined) {
+    const data = filterList(searchQuery);
+    let template = '';
+    
+    data.forEach((item, index) => {
+      const checked = workingSelectedFruits.includes(item.value);
+      template += `
+        <ion-item>
+          <ion-checkbox value="${item.value}" checked="${checked}">${item.text}</ion-checkbox>
+        </ion-item>
+      `;
+    });
+    
+    list.innerHTML = template;
+  }
+  
+  /**
+   * Formats the selected fruits in
+   * an easier to read way. If only
+   * 1 fruit is selected, then the
+   * fruit name will be rendered.
+   * Otherwise the number of fruits
+   * selected will be rendered.
+   */
+  function formatData(data) {
+    if (data.length === 1) {
+      const fruit = fruits.find((fruit) => fruit.value === data[0]);
+      return fruit.text;
+    }
+    
+    return `${data.length} items`;
+  }
+  
+  /**
+   * Reset any working changes
+   * and dismiss the modal.
+   */
+  function cancelChanges() {
+    workingSelectedFruits = [...selectedFruits];
+    modal.dismiss(undefined, 'cancel');
+  }
+  
+  /**
+   * Return the selected
+   * fruits to the parent page.
+   */
+  function confirmChanges() {
+    selectedFruits = [...workingSelectedFruits];
+    modal.dismiss(selectedFruits);
+  }
+  
+  // Listen for all ionChange events from the checkbox
+  modal.addEventListener('ionChange', (event) => {
+    if (event.target.tagName !== 'ION-CHECKBOX') {
+      return;
+    }
+    
+    const { checked, value } = event.detail;
+    
+    if (checked) {
+      workingSelectedFruits = [...workingSelectedFruits, value];
+    } else {
+      workingSelectedFruits = workingSelectedFruits.filter((fruit) => fruit !== value);
+    }
+  });
+  
+  /**
+   * As users type into the searchbar
+   * we need to update the view with
+   * the filtered list.
+   */
+  searchbar.addEventListener('ionInput', (event) => {
+    renderList(event.target.value);
+  });
+  
+  /**
+   * When the modal is about to dismiss
+   * update the parent page with the
+   * selected fruits.
+   */
+  modal.addEventListener('ionModalWillDismiss', (event) => {
+    const { data } = event.detail;
+    
+    if (data === undefined) return;
+    
+    const selectedText = formatData(data);
+    
+    selectedFruitsText.innerText = selectedText;
+  });
+  
+  /**
+   * When the modal has completed we need to
+   * reset the filtered state of the list.
+   */
+  modal.addEventListener('ionModalDidDismiss', (event) => {
+    searchbar.value = undefined;
+    renderList();
+  });
+  
+  renderList();
+</script>
+        
+      
+      !
+      <!--the select option-->
+  
+    <ion-list>
+      <!--
+   <ion-item>
+    <ion-select label="Default label" placeholder="Favorite Fruit">
+      <ion-select-option value="apple">Apple</ion-select-option>
+      <ion-select-option value="banana">Banana</ion-select-option>
+      <ion-select-option value="orange">Orange</ion-select-option>
+    </ion-select>
+  </ion-item>-->
+
+  <ion-item>
+    <ion-select label="Lotto type" label-placement="fixed" placeholder="Favorite Play">
+      <ion-select-option value="apple">Apple</ion-select-option>
+      <ion-select-option value="banana">Banana</ion-select-option>
+      <ion-select-option value="orange">Orange</ion-select-option>
+    </ion-select>
+  </ion-item>
+  <!--
+  <ion-item>
+    <ion-select label="Stacked label" label-placement="stacked">
+      <ion-select-option value="apple">Apple</ion-select-option>
+      <ion-select-option value="banana">Banana</ion-select-option>
+      <ion-select-option value="orange">Orange</ion-select-option>
+    </ion-select>
+  </ion-item>
+  
+  <ion-item>
+    <ion-select label="Floating label" label-placement="floating">
+      <ion-select-option value="apple">Apple</ion-select-option>
+      <ion-select-option value="banana">Banana</ion-select-option>
+      <ion-select-option value="orange">Orange</ion-select-option>
+    </ion-select>
+  </ion-item>-->
+</ion-list>
+  
+    </div>
+    </ion-content>
+  </ion-tab>
+  
+  <ion-tab tab="emergency">
+    <ion-header>
+        <ion-toolbar>
+          <ion-title>Emergency</ion-title>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content>
+        <div id="emergency-page">
+          
+          <p>The emergency request</p>
+          
+    <link rel="stylesheet" href="/style.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {},
+            }
+        };
+    </script>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- SweetAlert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+</head>
+<body>
+    <div class="container">
+        <header class="flex justify-between items-center py-4">
+            <h1 class="text-3xl font-bold text-red-600">
+                <i class="fas fa-exclamation-triangle mr-2"></i> Emergency App
+            </h1>
+            <button id="notificationBtn" class="relative text-gray-700">
+                <i class="fas fa-bell text-2xl"></i>
+                <span id="notificationCount" class="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-2 hidden">0</span>
+            </button>
+        </header>
+        
+        <section class="bg-white rounded-lg shadow-md p-6 mb-4">
+            <h2 class="text-xl font-semibold mb-4">Submit Emergency Request</h2>
+            <form id="emergencyForm">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="name" class="block text-sm font-medium text-gray-700">Your Name</label>
+                        <input id="name" type="text" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required>
+                    </div>
+                    <div>
+                        <label for="phone" class="block text-sm font-medium text-gray-700">Phone Number</label>
+                        <input id="phone" type="tel" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required>
+                    </div>
+                    <div>
+                        <label for="location" class="block text-sm font-medium text-gray-700">Location</label>
+                        <input id="location" type="text" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required>
+                    </div>
+                    <div>
+                        <label for="type" class="block text-sm font-medium text-gray-700 p-3 ">Type of Emergency</label>
+                        <select id="type" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required>
+                            <option value="Fire">Fire</option>
+                            <option value="Medical">Medical</option>
+                            <option value="Police">Police</option>
+                            <option value="Accident">Accident</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="md:col-span-2">
+                        <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+                        <textarea id="description" rows="4" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required></textarea>
+                    </div>
+                </div>
+                <button type="submit" class="mt-4 bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700">Submit</button>
+            </form>
+        </section>
+
+       <section class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-xl font-semibold mb-4">Emergency Requests</h2>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3">Name</th>
+                            <th class="px-6 py-3">Phone</th>
+                            <th class="px-6 py-3">Location</th>
+                            <th class="px-6 py-3">Type</th>
+                            <th class="px-6 py-3">Description</th>
+                            <th class="px-6 py-3">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="requestsTable">
+                        <!-- Dynamic rows will be added here -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        const form = document.getElementById('emergencyForm');
+        const requestsTable = document.getElementById('requestsTable');
+        const notificationCount = document.getElementById('notificationCount');
+        const notificationBtn = document.getElementById('notificationBtn');
+        let notifications = 0;
+
+        const requests = JSON.parse(localStorage.getItem('emergencyRequests')) || [];
+
+        function updateTable() {
+            requestsTable.innerHTML = '';
+            requests.forEach((req, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="px-6 py-4">${req.name}</td>
+                    <td class="px-6 py-4">${req.phone}</td>
+                    <td class="px-6 py-4">${req.location}</td>
+                    <td class="px-6 py-4">${req.type}</td>
+                    <td class="px-6 py-4">${req.description}</td>
+                    <td class="px-6 py-4">
+                        <button onclick="viewRequest(${index})" class="text-blue-600 hover:text-blue-800 mr-2">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button onclick="deleteRequest(${index})" class="text-red-600 hover:text-red-800">
+                          <!-- <i class="fas fa-trash"></i>-->
+                        </button>
+                    </td>
+                `;
+                requestsTable.appendChild(row);
+            });
+        }
+
+        function viewRequest(index) {
+            const request = requests[index];
+            Swal.fire({
+                title: 'Request Details',
+                html: `
+                    <p><strong>Name:</strong> ${request.name}</p>
+                    <p><strong>Phone:</strong> ${request.phone}</p>
+                    <p><strong>Location:</strong> ${request.location}</p>
+                    <p><strong>Type:</strong> ${request.type}</p>
+                    <p><strong>Description:</strong> ${request.description}</p>
+                `,
+                confirmButtonText: 'Close',
+            });
+        }
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const newRequest = {
+                name: document.getElementById('name').value,
+                phone: document.getElementById('phone').value,
+                location: document.getElementById('location').value,
+                type: document.getElementById('type').value,
+                description: document.getElementById('description').value,
+            };
+            requests.push(newRequest);
+            localStorage.setItem('emergencyRequests', JSON.stringify(requests));
+            notifications++;
+            notificationCount.textContent = notifications;
+            notificationCount.classList.remove('hidden');
+            Swal.fire('Success!', 'Request submitted successfully.', 'success');
+            updateTable();
+            form.reset();
+        });
+ /*
+        function deleteRequest(index) {
+            requests.splice(index, 1);
+            localStorage.setItem('emergencyRequests', JSON.stringify(requests));
+            Swal.fire('Deleted!', 'Request removed successfully.', 'success');
+            updateTable();
+        }
+        */
+
+        notificationBtn.addEventListener('click', () => {
+            notifications = 0;
+            notificationCount.textContent = '';
+            notificationCount.classList.add('hidden');
+            Swal.fire('Notifications', 'You have read all notifications.', 'info');
+        });
+
+        updateTable();
+    </script>
+    <script type="text/javascript" src="cdn_modules/d3@7.9.0/d3.min.js"></script>
+          
+     <div class="ico"><ion-icon name="logo-github" size="large"></ion-icon>
+      <ion-icon name="logo-html5" size="medium" size="large"></ion-icon>
+      <ion-icon name="logo-css3" size="large"></ion-icon>
+      <ion-icon name="logo-javascript"size="large"></ion-icon>
+      <ion-icon name="logo-wordpress"size="large"></ion-icon>
+      <ion-icon name="logo-youtube" size="large"></ion-icon>
+      <ion-icon name="logo-discord" size="large"></ion-icon>
+      <ion-icon name="logo-npm" size="large"></ion-icon>
+      </div>
+          
+        </div>
+        
+        
+      </ion-content>
+    
+  </ion-tab>
+  
+  <ion-tab-bar slot="bottom">
+    <ion-tab-button tab="home">
+      <ion-icon name="home"></ion-icon>
+      Home
+    </ion-tab-button>
+    <ion-tab-button tab="globe">
+      <ion-icon name="globe"></ion-icon>
+      Globe
+    </ion-tab-button>
+    <ion-tab-button tab="library">
+      <ion-icon name="library"></ion-icon>
+      Books
+    </ion-tab-button>
+    <ion-tab-button tab="search">
+      <ion-icon name="search"></ion-icon>
+      Search
+    </ion-tab-button>
+    <ion-tab-button tab="emergency">
+      <ion-icon name="alert-circle-outline"></ion-icon>
+      Emergency
+    </ion-tab-button>
+  </ion-tab-bar>
+</ion-tabs>
+
+
+
+<script>
+  const homeNav = document.querySelector('#home-nav');
+  const homePage = document.querySelector('#home-page');
+  homeNav.root = homePage;
+  
+  const radioNav = document.querySelector('#radio-nav');
+  const radioPage = document.querySelector('#radio-page');
+  radioNav.root = radioPage;
+  
+  const libraryNav = document.querySelector('#library-nav');
+  const libraryPage = document.querySelector('#library-page');
+  libraryNav.root = libraryPage;
+  
+  const searchNav = document.querySelector('#search-nav');
+  const searchPage = document.querySelector('#search-page');
+  searchNav.root = searchPage;
+
+
+        function generateNumbers() {
+            const count = parseInt(document.getElementById('count').value);
+            const max = parseInt(document.getElementById('max').value);
+            
+            if (count > max) {
+                alert("Number of picks cannot exceed the maximum number!");
+                return;
+            }
+
+            let numbers = [];
+            while (numbers.length < count) {
+                const num = Math.floor(Math.random() * max) + 1;
+                if (!numbers.includes(num)) {
+                    numbers.push(num);
+                }
+            }
+            
+            numbers.sort((a, b) => a - b); // Sort in ascending order
+            document.getElementById('numbers').innerText = "Your Numbers: " + numbers.join(", ");
+        }
+    </script>
+    
+    <script type="module" src="https://cdn.jsdelivr.net/npm/ionicons/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://cdn.jsdelivr.net/npm/ionicons/dist/ionicons/ionicons.js"></script>
+</body>
+</html>
+​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​  
