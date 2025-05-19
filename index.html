@@ -59,9 +59,9 @@
             
             <span style="color:${emergency.status === 'Resolved' ? 'green' : 'red'}">(${emergency.status})</span>
             
-          /*  <button onclick="addComment (${emergency.id})" >Comment</button>*/
+           <button onclick="addComment (${emergency.id})" disabled>Comment</button>
             
-         /* <button onclick="resolveEmergency(${emergency.id})">Mark Resolved</button> */
+          <button onclick="resolveEmergency(${emergency.id})" disabled>Mark Resolved</button>
           
             <ul id="comments-${emergency.id}">
                 ${emergency.comments.map(comment => `<li>${comment}</li>`).join("")}
