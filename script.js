@@ -68,8 +68,8 @@ function loadEmergencies() {
     li.innerHTML = `
             <strong>${emergency.description}</strong> 
             <span style="color:${emergency.status === 'Resolved' ? 'green' : 'red'}">(${emergency.status})</span>
-            <button onclick ="addComment(${emergency.id})">Comment</button>
-            <button onclick="resolveEmergency(${emergency.id})">Mark Resolved</button>
+          /*  <button onclick ="addComment(${emergency.id})">Comment</button>*/
+          /*  <button onclick="resolveEmergency(${emergency.id})">Mark Resolved</button>*/
             <ul id="comments-${emergency.id}">
                 ${emergency.comments.map(comment => `<li>${comment}</li>`).join("")}
             </ul>
