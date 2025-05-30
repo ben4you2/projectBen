@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emergency Request & Report</title>
+    <script type="text/javascript" src="cdn_modules/bootstrap@5.3.3/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="cdn_modules/vue@3.5.13/vue.cjs.js"></script>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col items-center">
+    <div class="container w-full max-w-4xl mx-auto p-4 bg-white rounded-lg shadow-md mt-8">
+        <header class="flex justify-between items-center mb-6">
+            <h1 class="text-3xl font-bold text-red-600">
+                <i class="fas fa-exclamation-triangle mr-2"></i> Emergency App Ben4you Technology
+            </h1>
+            <button id="notificationBtn" class="relative text-gray-700">
+                <i class="fas fa-bell text-2xl"></i>
+                <span id="notificationCount" class="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-2 hidden">0</span>
+            </button>
+        </header>
+
+        <section class="mb-6">
+            <h2 class="text-xl font-semibold mb-4">Submit Emergency Request</h2>
+            <form id="emergencyForm" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="name" class="block text-sm font-medium text-gray-700">Your Full Name</label>
+                       <i class="fas fa-user"></i> <input id="name" type="text" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2" required>
+                    </div>
+                    <div>
+                        <label for="phone" class="block text-sm font-medium text-gray-700">Phone Number</label>
+                       <i class="fas fa-mobile"></i> <input id="phone" type="tel" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2" required>
+                    </div>
+                    <div>
+                        <label for="location" class="block text-sm font-medium text-gray-700">Location</label>
+                        <i class="fas fa-location"></i><input id="location" type="text" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2" required>
+                    </div>
+                    <div>
+                        <label for="type" class="block text-sm font-medium text-gray-700">Type of Emergency</label>
+                      <select id="type" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2" required>
+                            <option value="Fire">Fire</option>
+                            <option value="Medical">Medical</option>
+                            <option value="Police">Police</option>
+                            <option value="Accident">Accident</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="md:col-span-2">
+                        <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+                        <i class="fas fa-book"></i><textarea id="description" rows="4" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2" required></textarea>
+                    </div>
+                </div>
+                <button type="submit" class="mt-4 bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700 w-full">Submit</button>
+            </form>
+        </section>
+
+        <section>
+            <h2 class="text-xl font-semibold mb-4">Emergency Requests</h2>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="requestsTable" class="bg-white divide-y divide-gray-200">
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+<!--
+    <script>
+        const form = document.getElementById('emergencyForm');
+        const requestsTable = document.getElementById('requestsTable');
+        const notificationCount = document.getElementById('notificationCount');
+        const notificationBtn = document.getElementById('notificationBtn');
+        let notifications = 0;
+
+        let requests = JSON.parse(localStorage.getItem('emergencyRequests')) || [];
+
+        function renderTable(requestsData) {
+            requestsTable.innerHTML = requestsData.map((req, index) => `
+                <tr>
+                    <td class="px-6 py-4 whitespace-nowrap">${req.name}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">${req.phone}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">${req.location}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">${req.type}</td>
+                    <td class="px-6 py-4">${req.description}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <button onclick="viewRequest(${index})" class="text-blue-600 hover:text-blue-800 mr-2"><i class="fas fa-eye"></i></button>
+                        <button onclick="deleteRequest(${index})" class="text-red-600 hover:text-red-800"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function viewRequest(index) {
+            const request = requests[index];
+            Swal.fire({
+                title: 'Request Details',
+                html: `
+                    <p><strong>Name:</strong> ${request.name}</p>
+                    <p><strong>Phone:</strong> ${request.phone}</p>
+                    <p><strong>Location:</strong> ${request.location}</p>
+                    <p><strong>Type:</strong> ${request.type}</p>
+                    <p><strong>Description:</strong> ${request.description}</p>
+                `,
+                confirmButtonText: 'Close',
+            });
+        }
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const newRequest = {
+                name: document.getElementById('name').value,
+                phone: document.getElementById('phone').value,
+                location: document.getElementById('location').value,
+                type: document.getElementById('type').value,
+                description: document.getElementById('description').value,
+            };
+            requests = [...requests, newRequest]; // Immutability
+            localStorage.setItem('emergencyRequests', JSON.stringify(requests));
+            notifications++;
+            notificationCount.textContent = notifications;
+            notificationCount.classList.remove('hidden');
+            Swal.fire('Success!', 'Request submitted successfully.', 'success');
+            renderTable(requests);
+            form.reset();
+        });
+
+       /* function deleteRequest(index) {
+            requests = requests.filter((_, i) => i !== index); // Immutability
+            localStorage.setItem('emergencyRequests', JSON.stringify(requests));
+            Swal.fire('Deleted!', 'Request removed successfully.', 'success');
+            renderTable(requests);
+        }*/
+/*
+        notificationBtn.addEventListener('click', () => {
+            notifications = 0;
+            notificationCount.textContent = '';
+            notificationCount.classList.add('hidden');
+            notifications++;
+            notificationCount.appendChild(notifications);*/
+          
+            Swal.fire('Notifications', 'You have read all notifications.', 'info');
+            
+        });
+
+        renderTable(requests);
+    </script>
+    -->
+    <script type="text/javascript" src="cdn_modules/socket.io@4.8.1/socket.io.js"></script>
+    <script type="text/javascript" src="cdn_modules/bootstrap@5.3.3/js/bootstrap.min.js"></script>
+    <script src="/main.js"></script>
+</body>
+</html>
