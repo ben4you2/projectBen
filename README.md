@@ -1,3 +1,4 @@
+🛞📲🎛️📟📽️💾📻📹📞🕹️⏱️⌛️📡
 This project is about a program that  will be designed and developed to help people that
 cannot think or ove their mind to kic bad intentions minds out if their place where they are living.
 This is to destroy those particles ir thoughts that move around the place or body to hurt,harm,bother,annoy or think of killing.
