@@ -177,6 +177,29 @@
         }
         .online { background: #28a745; }
         .offline { background: #dc3545; }
+
+        /*The responsive layout for a better responsive design*/
+/* Make layout more responsive */
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* Enhance buttons */
+button {
+  background-color: #007BFF;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  transition: background 0.3s ease-in-out;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+        
     </style>
 </head>
 <body>
@@ -205,6 +228,7 @@
                 </div>
                 
                 <div id="results" class="mt-4"></div>
+                <img src="placeholder.jpg" data-src="real-image.jpg" class="lazy-load">
             </div>
         </div>
     </div>
@@ -276,6 +300,23 @@
                 addresses: [...new Set(text.match(addressPattern) || [])]
             };
         }
+
+        document.addEventListener("DOMContentLoaded", function() {
+  document.querySelectorAll("img.lazy-load").forEach(img => {
+    img.src = img.getAttribute("data-src");
+  });
+});
+
+        // The other script for loading the info
+
+        function fetchAddress() {
+  fetch("https://geocode.xyz/40.714,-74.006?json=1")
+    .then(response => response.json())
+    .then(data => {
+      document.getElementById("address").innerText = data.staddress;
+    })
+    .catch(error => console.error("Error fetching address:", error));
+}
 
         async function onlineEnhancement(text) {
             // Google Geocoding API for address validation
