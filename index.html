@@ -1,151 +1,4 @@
 
-  <!--<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TextDetect - Name & Address Finder</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
-            min-height: 100vh;
-            color: #fff;
-        }
-        
-        .container {
-            margin-top: 50px;
-        }
-        
-        .scan-box {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            padding: 30px;
-            backdrop-filter: blur(10px);
-        }
-        
-        .result-card {
-            background: rgba(255, 255, 255, 0.15);
-            border-radius: 10px;
-            padding: 20px;
-            margin: 15px 0;
-            transition: transform 0.3s ease;
-        }
-        
-        .result-card:hover {
-            transform: translateY(-5px);
-        }
-        
-        #loading {
-            display: none;
-            margin: 20px 0;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <h1 class="text-center mb-4">TextDetect 🔍</h1>
-                <div class="scan-box">
-                    <div class="form-group">
-                        <textarea 
-                            id="inputText" 
-                            class="form-control bg-dark text-white" 
-                            rows="5"
-                            placeholder="Paste or type text here..."
-                        ></textarea>
-                    </div>
-                    <button onclick="analyzeText()" class="btn btn-primary mt-3 w-100">
-                        Detect Names & Addresses
-                    </button>
-                    <div id="loading" class="text-center">
-                        <div class="spinner-border text-primary" role="status">
-                            <span class="visually-hidden">Loading...</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div id="results" class="mt-4"></div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        function analyzeText() {
-            const inputText = document.getElementById('inputText').value;
-            const resultsDiv = document.getElementById('results');
-            const loading = document.getElementById('loading');
-            
-            // Show loading spinner
-            loading.style.display = 'block';
-            resultsDiv.innerHTML = '';
-            
-            // Simulate processing delay
-            setTimeout(() => {
-                const detectedData = detectNamesAndAddresses(inputText);
-                displayResults(detectedData);
-                loading.style.display = 'none';
-            }, 500);
-        }
-
-        function detectNamesAndAddresses(text) {
-            // Basic patterns (you might want to enhance these with more complex regex)
-            const namePattern = /\b([A-Z][a-z]+(?:\s[A-Z][a-z]+)*)\b/g;
-            const addressPattern = /\b\d+\s+([A-Za-z]+\s*)+,\s*[A-Za-z]{2,}\s+\d{5}(?:-\d{4})?\b/g;
-            
-            const names = [...new Set(text.match(namePattern) || [])];
-            const addresses = [...new Set(text.match(addressPattern) || [])];
-
-            return {
-                names: names.filter(n => n.split(' ').length > 1), // Filter single words
-                addresses: addresses
-            };
-        }
-
-        function displayResults(data) {
-            const resultsDiv = document.getElementById('results');
-            let html = '';
-            
-            if (data.names.length > 0) {
-                html += `<h4 class="mt-4">Detected Names:</h4>`;
-                data.names.forEach(name => {
-                    html += `
-                        <div class="result-card">
-                            <div class="d-flex align-items-center">
-                                <span class="badge bg-primary me-2">Name</span>
-                                ${name}
-                            </div>
-                        </div>
-                    `;
-                });
-            }
-
-            if (data.addresses.length > 0) {
-                html += `<h4 class="mt-4">Detected Addresses:</h4>`;
-                data.addresses.forEach(address => {
-                    html += `
-                        <div class="result-card">
-                            <div class="d-flex align-items-center">
-                                <span class="badge bg-success me-2">Address</span>
-                                ${address}
-                            </div>
-                        </div>
-                    `;
-                });
-            }
-
-            if (!data.names.length && !data.addresses.length) {
-                html = `<div class="alert alert-warning">No names or addresses detected.</div>`;
-            }
-
-            resultsDiv.innerHTML = html;
-        }
-    </script>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>-->
 
 <!--Updated code-->
 
@@ -155,228 +8,253 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TextDetect Pro - Smart Detection</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-    <script type="text/javascript" src="cdn_modules/mdb-ui-kit@8.1.0/mdb.min.css"></script>
-    <script type="text/javascript" src="cdn_modules/vue@3.5.13/vue.cjs.js"></script>
-    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Vue CDN for browser (optional, not used in this file) -->
     <style>
-        /* Previous styles remain */
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #232526, #414345);
+            color: #fff;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+        }
         .connection-status {
             position: fixed;
-            top: 10px;
-            right: 10px;
-            padding: 5px 10px;
-            border-radius: 5px;
-        }
-        #inputText{
-            width:130px;
-            margin:20px;
-        }
-        #autoDetect{
-          background-color: #000;
-          color:#aa345e;
+            top: 20px;
+            right: 20px;
+            padding: 8px 18px;
+            border-radius: 24px;
+            font-size: 0.95rem;
+            z-index: 1100;
+            color: #fff;
         }
         .online { background: #28a745; }
         .offline { background: #dc3545; }
-        
-        
-        /* Make layout more responsive */
-.container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-/* Enhance buttons */
-button {
-    background-color: #007BFF;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    transition: background 0.3s ease-in-out;
-}
-
-button:hover {
-    background-color: #0056b3;
-}
-img{
-    width:300px;
-    height:320px;
-    margin:30px;
-    border-radius:10px;
-    
-}
-#inputText{
-    width:270px;
-}
-#noice{
-    margin:20px;
-    font-size:12px;
-}
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            justify-content: center;
+        }
+        .scan-box {
+            background: rgba(30, 30, 30, 0.92);
+            border-radius: 18px;
+            padding: 2rem 2.2rem;
+            box-shadow: 0 8px 32px 0 rgba(31,38,135,0.19);
+            max-width: 430px;
+            width: 100%;
+            margin: 2rem auto 0 auto;
+        }
+        .form-label {
+            color: #fff;
+            font-weight: 500;
+        }
+        #inputText {
+            background: #212529;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            min-height: 120px;
+            margin-bottom: 1rem;
+            resize: vertical;
+        }
+        #inputText:focus {
+            background: #181c20;
+            color: #fff;
+            border: 1.5px solid #0d6efd;
+            box-shadow: 0 0 0 0.2rem rgba(13,110,253,.10);
+        }
+        .btn-detect {
+            width: 100%;
+            padding: 0.65rem 0;
+            font-weight: 500;
+            font-size: 1.1rem;
+            border-radius: 7px;
+            margin-bottom: 0.7rem;
+            background: linear-gradient(90deg,#0d6efd 30%, #4e54c8 80%);
+            transition: background 0.2s, transform 0.2s;
+        }
+        .btn-detect:hover, .btn-detect:focus {
+            background: linear-gradient(90deg,#4e54c8 30%, #0d6efd 80%);
+            transform: translateY(-2px) scale(1.03);
+            color: #fff;
+        }
+        .form-switch .form-check-input {
+            background-color: #181c20;
+            border-color: #0d6efd;
+        }
+        .scan-box .spinner-border {
+            margin: 1rem 0;
+        }
+        .result-card {
+            background: rgba(255,255,255,0.08);
+            border-radius: 9px;
+            padding: 14px 20px;
+            margin: 12px 0;
+            color: #fff;
+            transition: box-shadow 0.2s;
+            box-shadow: 0 1px 7px rgba(0,0,0,0.07);
+        }
+        .result-card:hover {
+            box-shadow: 0 4px 20px rgba(13,110,253,0.13);
+        }
+        .badge {
+            font-size: 0.9em;
+            padding: 0.35em 0.8em;
+        }
+        #noice {
+            margin: 1.5rem 0 0 0;
+            font-size: 1rem;
+            color: #e2e2e2;
+            text-align: center;
+        }
+        @media (max-width: 600px) {
+            .scan-box {
+                padding: 1.2rem 0.6rem;
+            }
+            .main-content {
+                padding: 0 0.5rem;
+            }
+            #inputText {
+                min-height: 80px;
+                font-size: 1rem;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="connection-status" id="connectionStatus"></div>
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <h1 class="text-center mb-4">TextDetect Pro 🔍</h1>
-                <div class="scan-box">
-                    <div class="form-group">
-                        <textarea 
-                            id="inputText" 
-                            class="form-control bg-dark text-white" 
-                            rows="5"
-                            placeholder="Paste or type text here..."
-                            oninput="debouncedAnalyze()"
-                        ></textarea>
-                    </div>
-                    <div class="form-check form-switch mt-3">
-                        <input class="form-check-input" type="checkbox" id="autoDetect" checked>
-                        <label class="form-check-label" for="autoDetect">Auto Detection</label>
-                    </div>
-                    <div id="loading" class="text-center">
-                        <div class="spinner-border text-primary" role="status"></div>
-                    </div>
-                </div>
-                
-                <div id="results" class="mt-4"></div>
+    <div class="main-content">
+        <h1 class="mb-3 text-center" style="font-weight:700;letter-spacing:1px;">TextDetect Pro <span>🔍</span></h1>
+        <div class="scan-box">
+            <label for="inputText" class="form-label">Paste or type text below</label>
+            <textarea 
+                id="inputText" 
+                class="form-control"
+                rows="6"
+                placeholder="Paste or type text here..."
+                oninput="if(document.getElementById('autoDetect').checked){debouncedAnalyze()}"
+            ></textarea>
+            <div class="form-check form-switch my-3">
+                <input class="form-check-input" type="checkbox" id="autoDetect" checked>
+                <label class="form-check-label" for="autoDetect">Auto Detection</label>
             </div>
+            <button type="button" class="btn btn-detect mb-2" onclick="analyzeText()">
+                <span class="bi bi-search"></span> Detect Names & Addresses
+            </button>
+            <div id="loading" class="text-center" style="display:none;">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+            <div id="results" class="mt-3"></div>
         </div>
+        <p id="noice"><strong>Notice:</strong> This is a demo webpage to check names and addresses. Enter your text above.</p>
     </div>
-    
-    <img src="/appNamocation/IMG_1565.jpeg" data-src="/appNamocation/IMG_1565.jpeg" class="lazy-load" >
-    
-    <p id="noice"><strong>Notice:</strong> This is a webpage to check names and addressese
-    entering your texta in the field.</p>
-
     <script>
         // Online Services Configuration
-        const GEOCODING_API_KEY = 'YOUR_GOOGLE_API_KEY';
+        const GEOCODING_API_KEY = 'YOUR_GOOGLE_API_KEY'; // Replace with your own API key
         let isOnline = true;
         let cache = JSON.parse(localStorage.getItem('detectionCache')) || {};
 
-        // Connection Status Check
+        // Connection Status
         function updateConnectionStatus() {
             isOnline = navigator.onLine;
-            document.getElementById('connectionStatus').textContent = isOnline ? 'Online' : 'Offline';
-            document.getElementById('connectionStatus').className = `connection-status ${isOnline ? 'online' : 'offline'}`;
+            const el = document.getElementById('connectionStatus');
+            el.textContent = isOnline ? 'Online' : 'Offline';
+            el.className = `connection-status ${isOnline ? 'online' : 'offline'}`;
         }
+        window.addEventListener('load', updateConnectionStatus);
+        window.addEventListener('online', updateConnectionStatus);
+        window.addEventListener('offline', updateConnectionStatus);
 
-        // Debounce Function
-        const debouncedAnalyze = debounce(() => {
-            if(document.getElementById('autoDetect').checked) {
-                analyzeText();
-            }
-        }, 500);
-
-        // Main Analysis Function
-        async function analyzeText() {
-            const inputText = document.getElementById('inputText').value;
-            if(!inputText) return;
-
-            showLoading(true);
-            
-            try {
-                const results = await enhancedDetection(inputText);
-                displayResults(results);
-                cacheResults(inputText, results);
-            } catch(error) {
-                showError(error.message);
-            }
-            
-            showLoading(false);
-        }
-
-        async function enhancedDetection(text) {
-            let results = { names: [], addresses: [] };
-            
-            // Offline Detection First
-            results = offlineDetection(text);
-            
-            // Online Enhancement if available
-            if(isOnline) {
-                try {
-                    const apiResults = await onlineEnhancement(text);
-                    results = mergeResults(results, apiResults);
-                } catch(onlineError) {
-                    console.warn('Online enhancement failed:', onlineError);
-                }
-            }
-            
-            return results;
-        }
-
-        function offlineDetection(text) {
-            // Enhanced regex patterns
-            const namePattern = /\b([A-ZÀ-Ÿ][a-zà-ÿ]+(?:[\s-][A-ZÀ-Ÿ][a-zà-ÿ]+)*)\b/g;
-            const addressPattern = /(\b\d{1,5}\s[\w\s]{3,},\s[A-Za-z\s]{3,},\s[A-Za-z]{2}\s\d{5}(?:-\d{4})?\b)|(\b\d+\s+[\w\s]+\b,\s?\w+)/gi;
-            
-            return {
-                names: [...new Set(text.match(namePattern) || [])],
-                addresses: [...new Set(text.match(addressPattern) || [])]
-            };
-        }
-
-        async function onlineEnhancement(text) {
-            // Google Geocoding API for address validation
-            const addresses = offlineDetection(text).addresses;
-            const validatedAddresses = [];
-            
-            for(const address of addresses) {
-                try {
-                    const response = await fetch(
-                        `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${GEOCODING_API_KEY}`
-                    );
-                    const data = await response.json();
-                    if(data.results.length > 0) {
-                        validatedAddresses.push(data.results[0].formatted_address);
-                    }
-                } catch(error) {
-                    console.error('Geocoding error:', error);
-                }
-            }
-
-            // Name validation using name-api.com (example)
-            /* const names = offlineDetection(text).names;
-            const validatedNames = [];
-            
-            for(const name of names) {
-                try {
-                    const response = await fetch(`https://api.nameapi.com/...`);
-                    // Process name validation response
-                } catch(error) {
-                    console.error('Name validation error:', error);
-                }
-            } */
-
-            return {
-                names: offlineDetection(text).names, // Replace with validated names
-                addresses: validatedAddresses
-            };
-        }
-
-        // Utility Functions
-        function debounce(func, timeout = 300) {
+        // Debounce Utility
+        function debounce(func, timeout = 400) {
             let timer;
             return (...args) => {
                 clearTimeout(timer);
                 timer = setTimeout(() => func.apply(this, args), timeout);
             };
         }
+        const debouncedAnalyze = debounce(analyzeText, 600);
 
+        // Main Detection Logic
+        async function analyzeText() {
+            const inputText = document.getElementById('inputText').value.trim();
+            if (!inputText) {
+                document.getElementById('results').innerHTML = '';
+                return;
+            }
+            showLoading(true);
+            try {
+                const results = await enhancedDetection(inputText);
+                displayResults(results);
+                cacheResults(inputText, results);
+            } catch (error) {
+                showError(error.message);
+            }
+            showLoading(false);
+        }
+
+        // Enhanced Detection
+        async function enhancedDetection(text) {
+            let results = offlineDetection(text);
+            if (isOnline) {
+                try {
+                    const apiResults = await onlineEnhancement(text);
+                    results = mergeResults(results, apiResults);
+                } catch (onlineError) {
+                    console.warn('Online enhancement failed:', onlineError);
+                }
+            }
+            return results;
+        }
+
+        // Offline Regex Detection
+        function offlineDetection(text) {
+            // Multilingual and multi-word names, simple address patterns (improvable)
+            const namePattern = /\b([A-ZÀ-Ÿ][a-zà-ÿ]+(?:[\s-][A-ZÀ-Ÿ][a-zà-ÿ]+)+)\b/g;
+            const addressPattern = /(\b\d{1,5}\s[\w\s]{3,},\s[A-Za-z\s]{3,},\s[A-Za-z]{2}\s\d{5}(?:-\d{4})?\b)|(\b\d+\s+[\w\s]+\b,\s?\w+)/gi;
+            return {
+                names: [...new Set(text.match(namePattern) || [])],
+                addresses: [...new Set(text.match(addressPattern) || [])]
+            };
+        }
+
+        // Online Geocoding Enhancement
+        async function onlineEnhancement(text) {
+            const addresses = offlineDetection(text).addresses;
+            const validatedAddresses = [];
+            for (const address of addresses) {
+                try {
+                    const response = await fetch(
+                        `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${GEOCODING_API_KEY}`
+                    );
+                    const data = await response.json();
+                    if (data.results && data.results.length > 0) {
+                        validatedAddresses.push(data.results[0].formatted_address);
+                    }
+                } catch (error) {
+                    console.error('Geocoding error:', error);
+                }
+            }
+            return {
+                names: offlineDetection(text).names,
+                addresses: validatedAddresses
+            };
+        }
+
+        // Cache Utility
         function cacheResults(input, results) {
             const cacheKey = hashString(input);
             cache[cacheKey] = results;
             localStorage.setItem('detectionCache', JSON.stringify(cache));
         }
-
         function hashString(str) {
-            return str.split('').reduce((a,b) => (((a << 5) - a) + b.charCodeAt(0))|0, 0);
+            return str.split('').reduce((a, b) => (((a << 5) - a) + b.charCodeAt(0)) | 0, 0);
         }
 
+        // Merge Result Utility
         function mergeResults(offline, online) {
             return {
                 names: [...new Set([...offline.names, ...online.names])],
@@ -384,276 +262,48 @@ img{
             };
         }
 
+        // UI Feedback Functions
         function showLoading(show) {
             document.getElementById('loading').style.display = show ? 'block' : 'none';
         }
-
         function showError(message) {
             const resultsDiv = document.getElementById('results');
             resultsDiv.innerHTML = `<div class="alert alert-danger">${message}</div>`;
         }
 
-        // Update connection status on load and network changes
-        window.addEventListener('load', updateConnectionStatus);
-        window.addEventListener('online', updateConnectionStatus);
-        window.addEventListener('offline', updateConnectionStatus);
-
-        // Initialize geolocation
-        navigator.geolocation.getCurrentPosition(position => {
-            localStorage.setItem('lastKnownLocation', JSON.stringify({
-                lat: position.coords.latitude,
-                lng: position.coords.longitude
-            }));
-        });
-
-        // Modified displayResults function to show source
+        // Result Display
         function displayResults(data) {
             const resultsDiv = document.getElementById('results');
             let html = '';
-            
             const showCategory = (title, items, type) => {
-                if(items.length > 0) {
-                    html += `<h4 class="mt-4">${title}:</h4>`;
+                if (items.length > 0) {
+                    html += `<h4 class="mt-2">${title}:</h4>`;
                     items.forEach(item => {
                         html += `
-                            <div class="result-card">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <span class="badge ${type === 'name' ? 'bg-primary' : 'bg-success'} me-2">
-                                            ${type === 'name' ? 'Name' : 'Address'}
-                                        </span>
-                                        ${item}
-                                    </div>
-                                    <small class="text-muted">${isOnline ? '🌐 Online' : '📴 Offline'}</small>
+                            <div class="result-card d-flex align-items-center justify-content-between">
+                                <div>
+                                    <span class="badge ${type === 'name' ? 'bg-primary' : 'bg-success'} me-2">
+                                        ${type === 'name' ? 'Name' : 'Address'}
+                                    </span>
+                                    ${item}
                                 </div>
+                                <small class="text-muted">${isOnline ? '🌐 Online' : '📴 Offline'}</small>
                             </div>
                         `;
                     });
                 }
             };
-
             showCategory('Detected Names', data.names, 'name');
             showCategory('Validated Addresses', data.addresses, 'address');
-
-            if(!data.names.length && !data.addresses.length) {
-                html = `<div class="alert alert-warning">No names or addresses detected.</div>`;
+            if (!data.names.length && !data.addresses.length) {
+                html = `<div class="alert alert-warning mt-2">No names or addresses detected.</div>`;
             }
-
             resultsDiv.innerHTML = html;
         }
-        
-        document.addEventListener("DOMContentLoaded", function() {
-    document.querySelectorAll("img.lazy-load").forEach(img => {
-        img.src = img.getAttribute("data-src");
-    });
-});
-        
-        
-        function fetchAddress() {
-    fetch("https://geocode.xyz/40.714,-74.006?json=1")
-        .then(response => response.json())
-        .then(data => {
-            document.getElementById("address").innerText = data.staddress;
-        })
-        .catch(error => console.error("Error fetching address:", error));
-}
     </script>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Optionally include bootstrap-icons for button icon (or remove span.bi above) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
 </body>
 </html>
 
-<!--
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NeuroSpatial Detector</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        /* Previous styles remain */
-        .bio-feedback {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 200px;
-            background: rgba(0,0,0,0.7);
-            padding: 15px;
-            border-radius: 10px;
-        }
-        .sensor-visualization {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            margin: 10px auto;
-        }
-        .camera-feed {
-            width: 200px;
-            height: 150px;
-            border: 2px solid #fff;
-            margin: 10px 0;
-        }
-    </style>
-</head>
-<body>
-    <!-- Add to existing container
-    <div class="container">
-        <!-- Previous content 
-        
-        <!-- Add these new sections 
-        <div class="row mt-4">
-            <div class="col-md-6">
-                <div class="scan-box">
-                    <h4>Biometric Sensors</h4>
-                    <div class="sensor-visualization" id="motionVisual"></div>
-                    <div class="camera-feed" id="cameraFeed"></div>
-                    <button onclick="startSensors()" class="btn btn-warning">
-                        Enable Sensors
-                    </button>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="scan-box">
-                    <h4>Neuro Feedback</h4>
-                    <div id="mentalState">Calibration required...</div>
-                    <canvas id="bioCanvas" width="200" height="100"></canvas>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="bio-feedback">
-        <h6>Real-time Feedback</h6>
-        <div id="movementStatus">Movement: Stable</div>
-        <div id="attentionStatus">Attention: Neutral</div>
-        <div id="spaceReaction">Environment: Calm</div>
-    </div>
-
-    <script>
-        // Add these new functions
-        let sensorEnabled = false;
-        let mediaStream = null;
-        let canvasContext = null;
-
-        async function startSensors() {
-            try {
-                // Request camera access
-                mediaStream = await navigator.mediaDevices.getUserMedia({ 
-                    video: { facingMode: 'user' } 
-                });
-                document.getElementById('cameraFeed').srcObject = mediaStream;
-                
-                // Initialize canvas for processing
-                canvasContext = document.getElementById('bioCanvas').getContext('2d');
-                
-                // Start motion sensors
-                window.addEventListener('devicemotion', handleMotion);
-                window.addEventListener('deviceorientation', handleOrientation);
-                
-                // Start face tracking
-                initializeFaceDetection();
-                sensorEnabled = true;
-            } catch(error) {
-                alert('Sensor access required for full functionality');
-            }
-        }
-
-        function initializeFaceDetection() {
-            // Load face-api.js models
-            Promise.all([
-                faceapi.nets.tinyFaceDetector.loadFromUri('/models'),
-                faceapi.nets.faceLandmark68Net.loadFromUri('/models')
-            ]).then(startFaceTracking);
-        }
-
-        function startFaceTracking() {
-            setInterval(async () => {
-                canvasContext.drawImage(document.getElementById('cameraFeed'), 0, 0);
-                const detections = await faceapi.detectSingleFace(
-                    document.getElementById('bioCanvas'), 
-                    new faceapi.TinyFaceDetectorOptions()
-                ).withFaceLandmarks();
-
-                if(detections) {
-                    analyzeFacialData(detections);
-                }
-            }, 100);
-        }
-
-        function analyzeFacialData(detections) {
-            // Simple eye tracking
-            const leftEye = detections.landmarks.getLeftEye();
-            const rightEye = detections.landmarks.getRightEye();
-            const eyeOpenness = calculateEyeOpenness(leftEye, rightEye);
-            
-            updateMentalState(eyeOpenness);
-        }
-
-        function calculateEyeOpenness(leftEye, rightEye) {
-            // Simplified eye openness calculation
-            const leftHeight = Math.abs(leftEye[1].y - leftEye[5].y);
-            const rightHeight = Math.abs(rightEye[1].y - rightEye[5].y);
-            return (leftHeight + rightHeight) / 2;
-        }
-
-        function updateMentalState(eyeOpenness) {
-            const attentionElem = document.getElementById('attentionStatus');
-            if(eyeOpenness < 10) {
-                attentionElem.textContent = 'Attention: Focused';
-                document.body.style.backgroundColor = '#1a2f38';
-            } else {
-                attentionElem.textContent = 'Attention: Relaxed';
-                document.body.style.backgroundColor = '#2a1a38';
-            }
-        }
-
-        function handleMotion(event) {
-            const acceleration = event.acceleration;
-            const visual = document.getElementById('motionVisual');
-            
-            // Update movement status
-            const movement = Math.sqrt(
-                acceleration.x**2 + 
-                acceleration.y**2 + 
-                acceleration.z**2
-            );
-            
-            document.getElementById('movementStatus').textContent = 
-                `Movement: ${movement > 15 ? 'Active' : 'Stable'}`;
-            
-            // Visual feedback
-            visual.style.transform = `translate(${acceleration.x * 2}px, ${acceleration.y * 2}px)`;
-            visual.style.backgroundColor = `hsl(${Math.abs(acceleration.x * 10)}, 70%, 50%)`;
-        }
-
-        function handleOrientation(event) {
-            const spaceReaction = document.getElementById('spaceReaction');
-            const beta = Math.round(event.beta);
-            const gamma = Math.round(event.gamma);
-            
-            if(Math.abs(beta) > 45 || Math.abs(gamma) > 45) {
-                spaceReaction.textContent = 'Environment: Dynamic';
-                document.documentElement.style.setProperty('--main-color', '#ff6b6b');
-            } else {
-                spaceReaction.textContent = 'Environment: Calm';
-                document.documentElement.style.setProperty('--main-color', '#4ecdc4');
-            }
-        }
-
-        // Add to existing utility functions
-        function showLoading(show) {
-            document.getElementById('loading').style.display = show ? 'block' : 'none';
-            if(show && sensorEnabled) {
-                document.getElementById('bioCanvas').style.filter = 'blur(3px)';
-            } else {
-                document.getElementById('bioCanvas').style.filter = 'none';
-            }
-        }
-    </script>
-
-    <!-- Add face-api.js library 
-    <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>-->
