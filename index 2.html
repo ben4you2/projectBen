@@ -1,4 +1,5 @@
-<!--<!DOCTYPE html>
+
+  <!--<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -155,6 +156,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TextDetect Pro - Smart Detection</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
     <script type="text/javascript" src="cdn_modules/mdb-ui-kit@8.1.0/mdb.min.css"></script>
     <script type="text/javascript" src="cdn_modules/vue@3.5.13/vue.cjs.js"></script>
     
@@ -177,29 +179,42 @@
         }
         .online { background: #28a745; }
         .offline { background: #dc3545; }
-
-        /*The responsive layout for a better responsive design*/
-/* Make layout more responsive */
+        
+        
+        /* Make layout more responsive */
 .container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
 /* Enhance buttons */
 button {
-  background-color: #007BFF;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  transition: background 0.3s ease-in-out;
+    background-color: #007BFF;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    transition: background 0.3s ease-in-out;
 }
 
 button:hover {
-  background-color: #0056b3;
+    background-color: #0056b3;
 }
-        
+img{
+    width:300px;
+    height:320px;
+    margin:30px;
+    border-radius:10px;
+    
+}
+#inputText{
+    width:270px;
+}
+#noice{
+    margin:20px;
+    font-size:12px;
+}
     </style>
 </head>
 <body>
@@ -228,10 +243,14 @@ button:hover {
                 </div>
                 
                 <div id="results" class="mt-4"></div>
-                <img src="placeholder.jpg" data-src="real-image.jpg" class="lazy-load">
             </div>
         </div>
     </div>
+    
+    <img src="/appNamocation/IMG_1565.jpeg" data-src="/appNamocation/IMG_1565.jpeg" class="lazy-load" >
+    
+    <p id="noice"><strong>Notice:</strong> This is a webpage to check names and addressese
+    entering your texta in the field.</p>
 
     <script>
         // Online Services Configuration
@@ -300,23 +319,6 @@ button:hover {
                 addresses: [...new Set(text.match(addressPattern) || [])]
             };
         }
-
-        document.addEventListener("DOMContentLoaded", function() {
-  document.querySelectorAll("img.lazy-load").forEach(img => {
-    img.src = img.getAttribute("data-src");
-  });
-});
-
-        // The other script for loading the info
-
-        function fetchAddress() {
-  fetch("https://geocode.xyz/40.714,-74.006?json=1")
-    .then(response => response.json())
-    .then(data => {
-      document.getElementById("address").innerText = data.staddress;
-    })
-    .catch(error => console.error("Error fetching address:", error));
-}
 
         async function onlineEnhancement(text) {
             // Google Geocoding API for address validation
@@ -439,6 +441,22 @@ button:hover {
 
             resultsDiv.innerHTML = html;
         }
+        
+        document.addEventListener("DOMContentLoaded", function() {
+    document.querySelectorAll("img.lazy-load").forEach(img => {
+        img.src = img.getAttribute("data-src");
+    });
+});
+        
+        
+        function fetchAddress() {
+    fetch("https://geocode.xyz/40.714,-74.006?json=1")
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById("address").innerText = data.staddress;
+        })
+        .catch(error => console.error("Error fetching address:", error));
+}
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
