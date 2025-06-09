@@ -13,3 +13,4 @@ denounce abuse,threat,intimidation,and sexual abuse,harassment,
 sexual assault and domestic violence,abuse and psychological abuse in,out of house.
 Work has been reviewed and done on how the app will be used and fix any mistakes and bugs that can interupt the behavior of the application and the features that were designed will be added and implemented to,the use of he application is to help
 users with requests they will need to make dependind on what they have lived or  seen.
+This web app is for people that do not want to get directly to X and can use this web application to connect and personalize it for their use and be connected to post their comments,ideas and retwitt post of others easily with ease in the experience of their X account. It is under programming process and still working on.
