@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <head>
+  	<meta charset="utf-8">
+  	<meta name="viewport" content="width=device-width, initial-scale=1">
+  	<meta name="description" content="">
+  	<meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+  	<meta name="generator" content="Hugo 0.104.2">
+  	<title>Heroes · Bootstrap v5.2</title>
+  	
+  	<link rel="canonical" href="https://getbootstrap.com/docs/5.2/examples/heroes/">
+  	
+  	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+  	<!--
+  	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">-->
+  	
+  	
+  	
+  	
+  	
+  	<link href="../assets/dist/css/bootstrap.min.css" rel="stylesheet">
+  	
+  	<style>
+  		.bd-placeholder-img {
+  			font-size: 1.125rem;
+  			text-anchor: middle;
+  			-webkit-user-select: none;
+  			-moz-user-select: none;
+  			user-select: none;
+  		}
+  		
+  		@media (min-width: 768px) {
+  			.bd-placeholder-img-lg {
+  				font-size: 3.5rem;
+  			}
+  		}
+  		
+  		.b-example-divider {
+  			height: 3rem;
+  			background-color: rgba(0, 0, 0, .1);
+  			border: solid rgba(0, 0, 0, .15);
+  			border-width: 1px 0;
+  			box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+  		}
+  		
+  		.b-example-vr {
+  			flex-shrink: 0;
+  			width: 1.5rem;
+  			height: 100vh;
+  		}
+  		
+  		.bi {
+  			vertical-align: -.125em;
+  			fill: currentColor;
+  		}
+  		
+  		.nav-scroller {
+  			position: relative;
+  			z-index: 2;
+  			height: 2.75rem;
+  			overflow-y: hidden;
+  		}
+  		
+  		.nav-scroller .nav {
+  			display: flex;
+  			flex-wrap: nowrap;
+  			padding-bottom: 1rem;
+  			margin-top: -1px;
+  			overflow-x: auto;
+  			text-align: center;
+  			white-space: nowrap;
+  			-webkit-overflow-scrolling: touch;
+  		}
+  	</style>
+  	
+  	
+  	<!-- Custom styles for this template -->
+  	<link href="heroes.css" rel="stylesheet">
+  </head>
+</head>
+
+<body>
+  
+  <header class="bg-warning" style="padding:40px; margin-top:56px" id="home">
+  <!--
+  <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#home"><img src="/bootstrap-5.2.3-examples/cheatsheet/C.mp4" style=" width:47px; height:40px;border-radius:181px"></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+          <ul class="navbar-nav me-auto mb-2 mb-md-0">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="#home">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#about">About Us</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link disabled">More...</a>
+            </li>
+          </ul>
+         <!-- <form class="d-flex" role="search">
+            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success" type="submit">Search</button>
+          </form>
+        </div>
+      </div>
+      </nav>-->
+      <main>
+   <nav class="navbar navbar-expand-lg bg-dark navbar-dark fixed-top" aria-label=" Offcanvas navbar large">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#"><img src="/bootstrap-5.2.3-examples/cheatsheet/C.mp4" style="width:45px;height:45px;border-radius:176px"></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar2" aria-controls="offcanvasNavbar2">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="offcanvasNavbar2" aria-labelledby="offcanvasNavbar2Label">
+        <div class="offcanvas-header">
+          <h5 class="offcanvas-title" id="offcanvasNavbar2Label"><a href="/bootstrap-5.2.3-examples/cheatsheet/bxc.html " class="text-decoration-none text-white">Ben4you Technology</a></h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+          <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="#home">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#about">About Us</a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                News
+              </a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#">2021</a></li>
+                <li><a class="dropdown-item" href="#">2022</a></li>
+                <li>
+                  <hr class="dropdown-divider">
+                </li>
+                <li><a class="dropdown-item" href="#">2023</a></li>
+                <li><a class="dropdown-item" href="#">2024</a></li>
+                <li><a class="dropdown-item" href="#">2025</a></li>
+              </ul>
+            </li>
+          </ul>
+        <!--  <form class="d-flex mt-3 mt-lg-0" role="search">
+            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success" type="submit">Search</button>
+          </form>-->
+          <br>
+          
+          <small>The ben4you technology company <br> &copy; 2026 All rights reserved</small>
+        </div>
+      </div>
+    </div>
+  </nav></main>
+      
+ <a href="/bootstrap-5.2.3-examples/cheatsheet/bxc.html" class="text-decoration-none text-dark"><h2>
+      Ben4you Technology
+    </h2></a>
+    </header>
+    
+  <div class="bg-dark text-secondary px-4 py-5 text-center">
+    <div class="py-5">
+      <h1 class="display-5 fw-bold text-white">Delmas and Delmas 65</h1>
+      <div class="col-lg-6 mx-auto">
+        <p class="fs-5 mb-4"><!--Quickly design and customize responsive mobile-first sites with Bootstrap, the world’s most popular front-end open source toolkit, featuring Sass variables and mixins, responsive grid system, extensive prebuilt components, and powerful JavaScript plugins.--> This is a mayor and important thing to considere as a problem and as a way of determinging the effect of bad things that are going on in the background and also the mindset of the people of the communal or main communal places and the mayor office.</p>
+        <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+          <button type="button" class="btn btn-outline-info btn-lg px-4 me-sm-3 fw-bold"><a href="#about" class="text-decoration-none text-white px-4 me-sm-3 ">Read More...</a></button>
+          <button type="button" class="btn btn-outline-light btn-lg px-4"><a href="#" class="text-decoration-none text-info px-4 me-sm-3">Main Office</a></button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  
+  <!--color mode-->
+  
+  
+    <div class="text-secondary px-4 py-5 text-center" style="background-color:darkgrey">
+    <div class="py-5">
+      <h1 class="display-5 fw-bold text-white">Weeks and week-ends</h1>
+      <div class="col-lg-6 mx-auto">
+        <p class="fs-5 mb-4">Quickly design and customize responsive mobile-first sites with Bootstrap, the world’s most popular front-end open source toolkit, featuring Sass variables and mixins, responsive grid system, extensive prebuilt components, and powerful JavaScript plugins.</p> 
+        <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+          <button type="button" class="btn btn-outline-info btn-lg px-4 me-sm-3 fw-bold">News and Conputer Technologies</button>
+          <button type="button" class="btn btn-outline-light btn-lg px-4">Information and Development</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+      <div style="margin:23px">
+        
+        <div class="bd-example-snippet bd-code-snippet"><div class="bd-example">
+        <div class="d-flex justify-content-between flex-wrap">
+         <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModalDefault">
+            Launch demo modal
+          </button>
+          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdropLive">
+            Launch static backdrop modal
+          </button>-->
+          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModalCenteredScrollable">
+           That is a Vertically centered scrollable modal for displaying the modal.
+          </button>
+        <!--  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModalFullscreen">
+            Full screen
+          </button>-->
+        </div>
+        </div>
+        </div>
+        
+        
+        <div class="modal fade" id="exampleModalCenteredScrollable" tabindex="-1" aria-labelledby="exampleModalCenteredScrollableTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalCenteredScrollableTitle">Modal title</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      
+      <div class="modal-body">
+        <p>This is some placeholder content to show the scrolling behavior for modals. We use repeated line breaks to demonstrate how content can exceed minimum inner height, thereby showing inner scrolling. When content becomes longer than the predefined max-height of modal, content will be cropped and scrollable within the modal.</p>
+        
+    <br><br>
+    <h2>Register to get more info</h2>
+     <form class="p-4 p-md-5 border rounded-3 bg-light">
+       <div class="form-floating mb-3">
+         <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
+         <label for="floatingInput">Email address</label>
+       </div>
+       <div class="form-floating mb-3">
+         <input type="password" class="form-control" id="floatingPassword" placeholder="Password">
+         <label for="floatingPassword">Password</label>
+       </div>
+       
+       <div class="form-floating mb-3">
+         <input type="username" class="form-control" id="floatingUsername" placeholder="Username">
+         <label for="floatingUsername">Username</label>
+       </div>
+       <div class="checkbox mb-3">
+         <label>
+           <input type="checkbox" value="remember-me"> Remember me
+         </label>
+       </div>
+       <button class="w-100 btn btn-lg btn-primary" type="submit">Sign up</button>
+       <hr class="my-4">
+       <small class="text-muted">By clicking Sign up, you agree to the terms of use. And already have an account?</small> <a href="/bootstrap-5.2.3-examples/cheatsheet/signIn.html">Sign In</a>
+     </form>
+  
+
+        
+        
+        <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+        <p>This content should appear at the bottom after you scroll.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+      </div>
+
+  
+  
+  <!--Color mode-->
+  
+  
+    <div class="bg-darkgray text-secondary px-4 py-5 text-center">
+    <div class="py-5">
+      <h1 class="display-5 fw-bold text-info">Making him get out of his house, making him get upset or mad and death threat</h1>
+      <div class="col-lg-6 mx-auto">
+        <p class="fs-5 mb-4"><!--Quickly design and customize responsive mobile-first sites with Bootstrap, the world’s most popular front-end open source toolkit, featuring Sass variables and mixins, responsive grid system, extensive prebuilt components, and powerful JavaScript plugins.--> 
+        They have been hurting his mind and head and threatning him and bothering to make him get out if his house so tjey can ve ahowng theselves so other that are far seeing in his o install themselves asang member and also make ohers go and sit or sleep so  they can get to my house to hurt me and look for people helping meor those wanting to speakingor be with me in a moment in private. They throw their minds towards the house to look for me specificly where i am sitting and or spelling.</p> 
+        <div class="d-grid gap-2 d-sm-flex justify-content-sm-center"> <button type="button" class="btn btn-outline-info btn-lg px-4 me-sm-3 fw-bold">Services and Responsive behavior</button>
+          <button type="button" class="btn btn-outline-warning btn-lg px-4">Neighbors and law enforcement</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+<div class="px-4 py-5">
+      <h1 class="display-5 fw-bold" id="about">About Us</h1>
+      <p class="fs-5 mb-4">The problem with their enforcement and the society is tat they are linked to crimes and that assassination and also linked to gangs.They spy on me a lot to hurt and plan assassination and also think about me as a criminals while i a victim of physical , mental abuse and death threats,impunity,injustice. They know about me and all my complains and also inreceived threat to my family member they are not able to take no step because they have in their mind that will not be possible as they will be in war wanting to hurt citizen of other country helping their own family or fix the own family member problem. Speaking about law enforcement of haiti that is having affairs with gang chief and gang members.</p>
+    </div>
+  
+      <div class="px-4 py-5">
+      <h1 class="display-5 fw-bold" id="about">Pricing</h1>
+      <p class="fs-5 mb-4">The problem with theaw endorcement and the society is tat they areinked to crimes and assassination and alao linked to gangs.Thy spy on me a lot to hurt and plan assassination and alao think about me as a criminals while i a a victim of physical and mental abuse and death theeats,impuity,injustice. They know about me and all my complains and also inreceived threat to my fanily member they are not able to take no step because they have in their mind that will not be possible as they eill be inwar wantingto huet cotizen pf other countri helping their own gamily or fix the own faily memver problem. Speaking about law endorcementof haiti that is having affairs with gang chief and gang memebers.</p>
+      </div>
+      
+          <div class="px-4 py-5">
+      <h1 class="display-5 fw-bold" id="about">FAQs</h1>
+      <p class="fs-5 mb-4">The problem with theaw endorcement and the society is tat they areinked to crimes and assassination and alao linked to gangs.Thy spy on me a lot to hurt and plan assassination and alao think about me as a criminals while i a a victim of physical and mental abuse and death theeats,impuity,injustice. They know about me and all my complains and also inreceived threat to my fanily member they are not able to take no step because they have in their mind that will not be possible as they eill be inwar wantingto huet cotizen pf other countri helping their own gamily or fix the own faily memver problem. Speaking about law endorcementof haiti that is having affairs with gang chief and gang memebers.</p>
+      </div>
+  
+  
+  
+  <div class="px-4 py-5">
+    <h1 class="display-5 fw-bold">Law enforcement in haiti</h1>
+    <p class="fs-5 mb-4">The problem with law  enforcement and the society is that they are linked to crimes and assassination and also linked to gangs.They spy on me a lot to hurt and plan assassination and also think about me as a criminals while i am a victim of physical and mental abuse and death theeats,impunity,injustice. They know about me and all my complains and also received threat to my family member which they are not able to do taking no step because they have in their mind that it will not be possible as they will be in war wanting to hurt citizens of other country that are helping their own family or fix their own family member problem. Speaking about law enforcement of haiti that is having affairs with gang chief and gang members. They have to not think about me and nor my family members those mentioned people above</p>
+    </div>
+    
+    
+      <div class="px-4 py-5">
+    <h1 class="display-5 fw-bold">Justice System and Authorities</h1>
+    <p class="fs-5 mb-4">The problem with justice system and the society is that they are linked to crimes and  corruption and bribery and also linked to criminals groups or organization.They ignore and violate human rights a lot to hurt and plan alao tonthink about letting criminals do wharter they want while  victims  of physical and mental abuse and death theeats,impuity,injustice getting hurt ,killed and disappear. They know about me and all my complains and also i received death threat to my family member which they are not able to take no step because they have in their mind that it will not be possible as they will be in war wanting to hurt citizens of other country helping their own family or fix their own family member problem. Speaking about law enforcement of haiti that is having affairs with gang chief and gang members.</p>
+  </div>
+  
+    <div class="py-3 my-4"></div>
+    
+
+<div class="container">
+  <footer class="py-3 my-4">
+    <ul class="nav justify-content-center border-bottom pb-3 mb-3">
+      <li class="nav-item"><a href="#home" class="nav-link px-2 text-muted">Home</a></li>
+      <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Features</a></li>
+      <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Pricing</a></li>
+      <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">FAQs</a></li>
+      <li class="nav-item"><a href="#about" class="nav-link px-2 text-muted">About</a></li>
+    </ul>
+    <p class="text-center text-muted">&copy; 2026 Ben4you Technology, Inc</p>
+    
+    <p class="text-center text-muted">
+      <small>Ben4you Technology, the best and the one that is the top of the list of he best company in trchnology</small>
+    </p>
+    
+    <a href="#"><i class="bi bi-top-arrow" style="margin-left:260px"></i>Go-Up</a>
+  </footer>
+</div>
+<!--
+<div class="b-example-divider"></div>-->
+<!--
+<div class="container">
+  <footer class="row row-cols-1 row-cols-sm-2 row-cols-md-5 py-5 my-5 border-top">
+    <div class="col mb-3">
+      <a href="/" class="d-flex align-items-center mb-3 link-dark text-decoration-none">
+        <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
+      </a>
+      <p class="text-muted">&copy; 2022</p>
+    </div>
+
+    <div class="col mb-3">
+
+    </div>
+
+    <div class="col mb-3">
+      <h5>Section</h5>
+      <ul class="nav flex-column">
+        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Home</a></li>
+        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Features</a></li>
+        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Pricing</a></li>
+        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">FAQs</a></li>
+        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">About</a></li>
+      </ul>
+    </div>
+
+    <div class="col mb-3">
+      <h5>Section</h5>
+      <ul class="nav flex-column">
+        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Home</a></li>
+        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Features</a></li>
+        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Pricing</a></li>
+        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">FAQs</a></li>
+        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">About</a></li>
+      </ul>
+    </div>
+
+    <div class="col mb-3">
+      <h5>Section</h5>
+      <ul class="nav flex-column">
+        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Home</a></li>
+        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Features</a></li>
+        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Pricing</a></li>
+        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">FAQs</a></li>
+        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">About</a></li>
+      </ul>
+    </div>
+  </footer>
+</div>-->
+
+    <script src="../assets/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
