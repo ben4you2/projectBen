@@ -1,1115 +1,389 @@
-<!--
-
 <!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TextDetect Pro - Smart Detection</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        :root {
-            --main-bg: linear-gradient(135deg, #232526, #414345);
-            --main-color: #fff;
-            --scanbox-bg: rgba(30, 30, 30, 0.92);
-            --text-color: #fff;
-            --input-bg: #212529;
-            --input-border: #0d6efd;
-            --btn-grad1: #0d6efd;
-            --btn-grad2: #4e54c8;
-            --body-font:#thin;
-        }
-        .theme-light {
-            --main-bg: linear-gradient(135deg, #e0eafc, #cfdef3);
-            --main-color: #222;
-            --scanbox-bg: rgba(255,255,255,0.97);
-            --text-color: #222;
-            --input-bg: #fff;
-            --input-border: #0d6efd;
-            --btn-grad1: #84fab0;
-            --btn-grad2: #8fd3f4;
-        }
-        body {
-            min-height: 100vh;
-            background: var(--main-bg);
-            color: var(--main-color);
-            font-family: 'Segoe UI', 'Arial', sans-serif;
-            transition: background 0.35s, color 0.25s;
-        }
-        .connection-status {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 8px 18px;
-            border-radius: 24px;
-            font-size: 0.95rem;
-            z-index: 1100;
-            color: #fff;
-        }
-        .online { background: #28a745; }
-        .offline { background: #dc3545; }
-        .main-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            justify-content: center;
-        }
-        .scan-box {
-            background: var(--scanbox-bg);
-            border-radius: 18px;
-            padding: 2rem 2.2rem;
-            box-shadow: 0 8px 32px 0 rgba(31,38,135,0.13);
-            max-width: 430px;
-            width: 100%;
-            margin: 2rem auto 0 auto;
-            color: var(--text-color);
-            transition: background 0.35s, color 0.25s;
-        }
-        .form-label {
-            color: var(--text-color);
-            font-weight: 500;
-        }
-        #inputText {
-            background: var(--input-bg);
-            color: var(--text-color);
-            border: none;
-            border-radius: 10px;
-            min-height: 120px;
-            margin-bottom: 1rem;
-            resize: vertical;
-            transition: background 0.35s, color 0.25s;
-        }
-        #inputText:focus {
-            background: #f0f8ff;
-            color: var(--main-color);
-            border: 1.5px solid var(--input-border);
-            box-shadow: 0 0 0 0.2rem rgba(13,110,253,.10);
-        }
-        .btn-detect {
-            width: 100%;
-            padding: 0.65rem 0;
-            font-weight: 500;
-            font-size: 1.1rem;
-            border-radius: 7px;
-            margin-bottom: 0.7rem;
-            background: linear-gradient(90deg,var(--btn-grad1) 30%, var(--btn-grad2) 80%);
-            transition: background 0.2s, transform 0.2s;
-            color: var(--main-color);
-        }
-        .btn-detect:hover, .btn-detect:focus {
-            background: linear-gradient(90deg,var(--btn-grad2) 30%, var(--btn-grad1) 80%);
-            transform: translateY(-2px) scale(1.03);
-            color: var(--main-color);
-        }
-        .form-switch .form-check-input {
-            background-color: #181c20;
-            border-color: #0d6efd;
-        }
-        .scan-box .spinner-border {
-            margin: 1rem 0;
-        }
-        .result-card {
-            background: rgba(255,255,255,0.08);
-            border-radius: 9px;
-            padding: 14px 20px;
-            margin: 12px 0;
-            color: var(--text-color);
-            transition: box-shadow 0.2s, color 0.25s;
-            box-shadow: 0 1px 7px rgba(0,0,0,0.07);
-        }
-        .result-card:hover {
-            box-shadow: 0 4px 20px rgba(13,110,253,0.13);
-        }
-        .badge {
-            font-size: 0.9em;
-            padding: 0.35em 0.8em;
-        }
-        #noice {
-            margin: 1.5rem 0 0 0;
-            font-size: 1rem;
-            color: var(--text-color);
-            text-align: center;
-        }
-        .toggle-theme-btn {
-            position: absolute;
-            top: 28px;
-            left: 24px;
-            z-index: 1200;
-            border-radius: 50px;
-            border: none;
-            background: linear-gradient(90deg, #212529 0%, #0d6efd 100%);
-            color: #fff;
-            font-size: 1.3em;
-            padding: 0.3em 0.7em;
-            cursor: pointer;
-            transition: background 0.2s, color 0.2s;
-        }
-        .theme-light .toggle-theme-btn {
-            background: linear-gradient(90deg, #e0eafc 0%, #8fd3f4 100%);
-            color: #222;
-        }
-        @media (max-width: 600px) {
-            .scan-box {
-                padding: 1.2rem 0.6rem;
-            }
-            .main-content {
-                padding: 0 0.5rem;
-            }
-            #inputText {
-                min-height: 80px;
-                font-size: 1rem;
-            }
-            .toggle-theme-btn {
-                top: 14px;
-                left: 10px;
-                font-size: 1em;
-                padding: 0.2em 0.6em;
-            }
-        }
-    </style>
+  <head>
+  	<meta charset="utf-8">
+  	<meta name="viewport" content="width=device-width, initial-scale=1">
+  	<meta name="description" content="">
+  	<meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+  	<meta name="generator" content="Hugo 0.104.2">
+  	<title>Heroes · Bootstrap v5.2</title>
+  	
+  	<link rel="canonical" href="https://getbootstrap.com/docs/5.2/examples/heroes/">
+  	<!--
+  	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">-->
+  	
+  	
+  	
+  	
+  	
+  	<link href="../assets/dist/css/bootstrap.min.css" rel="stylesheet">
+  	
+  	<style>
+  		.bd-placeholder-img {
+  			font-size: 1.125rem;
+  			text-anchor: middle;
+  			-webkit-user-select: none;
+  			-moz-user-select: none;
+  			user-select: none;
+  		}
+  		
+  		@media (min-width: 768px) {
+  			.bd-placeholder-img-lg {
+  				font-size: 3.5rem;
+  			}
+  		}
+  		
+  		.b-example-divider {
+  			height: 3rem;
+  			background-color: rgba(0, 0, 0, .1);
+  			border: solid rgba(0, 0, 0, .15);
+  			border-width: 1px 0;
+  			box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+  		}
+  		
+  		.b-example-vr {
+  			flex-shrink: 0;
+  			width: 1.5rem;
+  			height: 100vh;
+  		}
+  		
+  		.bi {
+  			vertical-align: -.125em;
+  			fill: currentColor;
+  		}
+  		
+  		.nav-scroller {
+  			position: relative;
+  			z-index: 2;
+  			height: 2.75rem;
+  			overflow-y: hidden;
+  		}
+  		
+  		.nav-scroller .nav {
+  			display: flex;
+  			flex-wrap: nowrap;
+  			padding-bottom: 1rem;
+  			margin-top: -1px;
+  			overflow-x: auto;
+  			text-align: center;
+  			white-space: nowrap;
+  			-webkit-overflow-scrolling: touch;
+  		}
+  	</style>
+  	
+  	
+  	<!-- Custom styles for this template -->
+  	<link href="heroes.css" rel="stylesheet">
+  </head>
 </head>
+
 <body>
-    <button class="toggle-theme-btn" id="toggleThemeBtn" title="Toggle light/dark theme">
-        <span id="themeIcon" class="bi bi-moon"></span>
-    </button>
-    <div class="connection-status" id="connectionStatus"></div>
-    <div class="main-content">
-        <h1 class="mb-3 text-center" style="font-weight:700;letter-spacing:1px;">TextDetect Pro <span>🔍</span></h1>
-        <div class="scan-box">
-            <label for="inputText" class="form-label">Paste or type text below</label>
-            <textarea 
-                id="inputText" 
-                class="form-control"
-                rows="6"
-                placeholder="Paste or type text here..."
-                oninput="if(document.getElementById('autoDetect').checked){debouncedAnalyze()}"
-            ></textarea>
-            <div class="form-check form-switch my-3">
-                <input class="form-check-input" type="checkbox" id="autoDetect" checked>
-                <label class="form-check-label" for="autoDetect">Auto Detection</label>
-            </div>
-            <button type="button" class="btn btn-detect mb-2" onclick="analyzeText()">
-                <span class="bi bi-search"></span> Detect Names & Addresses
-            </button>
-            <div id="loading" class="text-center" style="display:none;">
-                <div class="spinner-border text-primary" role="status">
-                    <span class="visually-hidden">Loading...</span>
-                </div>
-            </div>
-            <div id="results" class="mt-3"></div>
-        </div>
-        <p id="noice"><strong>Notice:</strong> This is a demo webpage to check names and addresses. Enter your text above.</p>
-    </div>
-    <script>
-        // Theme toggle logic
-        const themeBtn = document.getElementById('toggleThemeBtn');
-        const themeIcon = document.getElementById('themeIcon');
-        const themeStorageKey = 'tdetect-theme';
-        function setTheme(theme) {
-            if(theme === 'light') {
-                document.body.classList.add('theme-light');
-                themeIcon.classList.remove('bi-moon');
-                themeIcon.classList.add('bi-brightness-high');
-            } else {
-                document.body.classList.remove('theme-light');
-                themeIcon.classList.remove('bi-brightness-high');
-                themeIcon.classList.add('bi-moon');
-            }
-            localStorage.setItem(themeStorageKey, theme);
-        }
-        // Set theme based on system preference or previous choice
-        function detectAndSetTheme() {
-            const stored = localStorage.getItem(themeStorageKey);
-            if(stored) {
-                setTheme(stored);
-            } else if(window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
-                setTheme('light');
-            } else {
-                setTheme('dark');
-            }
-        }
-        themeBtn.onclick = function() {
-            const isLight = document.body.classList.contains('theme-light');
-            setTheme(isLight ? 'dark' : 'light');
-        };
-        detectAndSetTheme();
-
-        // Connection Status
-        function updateConnectionStatus() {
-            const el = document.getElementById('connectionStatus');
-            const online = navigator.onLine;
-            el.textContent = online ? 'Online' : 'Offline';
-            el.className = `connection-status ${online ? 'online' : 'offline'}`;
-        }
-        window.addEventListener('load', updateConnectionStatus);
-        window.addEventListener('online', updateConnectionStatus);
-        window.addEventListener('offline', updateConnectionStatus);
-
-        // Detection logic
-        const GEOCODING_API_KEY = 'YOUR_GOOGLE_API_KEY'; // Replace with your own API key
-        let isOnline = true;
-        let cache = JSON.parse(localStorage.getItem('detectionCache')) || {};
-
-        function debounce(func, timeout = 400) {
-            let timer;
-            return (...args) => {
-                clearTimeout(timer);
-                timer = setTimeout(() => func.apply(this, args), timeout);
-            };
-        }
-        const debouncedAnalyze = debounce(analyzeText, 600);
-
-        async function analyzeText() {
-            const inputText = document.getElementById('inputText').value.trim();
-            if (!inputText) {
-                document.getElementById('results').innerHTML = '';
-                return;
-            }
-            showLoading(true);
-            try {
-                const results = await enhancedDetection(inputText);
-                displayResults(results);
-                cacheResults(inputText, results);
-            } catch (error) {
-                showError(error.message);
-            }
-            showLoading(false);
-        }
-        async function enhancedDetection(text) {
-            let results = offlineDetection(text);
-            if (navigator.onLine) {
-                try {
-                    const apiResults = await onlineEnhancement(text);
-                    results = mergeResults(results, apiResults);
-                } catch (onlineError) {
-                    console.warn('Online enhancement failed:', onlineError);
-                }
-            }
-            return results;
-        }
-        function offlineDetection(text) {
-            // Multilingual and multi-word names, simple address patterns (improvable)
-            const namePattern = /\b([A-ZÀ-Ÿ][a-zà-ÿ]+(?:[\s-][A-ZÀ-Ÿ][a-zà-ÿ]+)+)\b/g;
-            const addressPattern = /(\b\d{1,5}\s[\w\s]{3,},\s[A-Za-z\s]{3,},\s[A-Za-z]{2}\s\d{5}(?:-\d{4})?\b)|(\b\d+\s+[\w\s]+\b,\s?\w+)/gi;
-            return {
-                names: [...new Set(text.match(namePattern) || [])],
-                addresses: [...new Set(text.match(addressPattern) || [])]
-            };
-        }
-        async function onlineEnhancement(text) {
-            const addresses = offlineDetection(text).addresses;
-            const validatedAddresses = [];
-            for (const address of addresses) {
-                try {
-                    const response = await fetch(
-                        `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${GEOCODING_API_KEY}`
-                    );
-                    const data = await response.json();
-                    if (data.results && data.results.length > 0) {
-                        validatedAddresses.push(data.results[0].formatted_address);
-                    }
-                } catch (error) {
-                    console.error('Geocoding error:', error);
-                }
-            }
-            return {
-                names: offlineDetection(text).names,
-                addresses: validatedAddresses
-            };
-        }
-        function cacheResults(input, results) {
-            const cacheKey = hashString(input);
-            cache[cacheKey] = results;
-            localStorage.setItem('detectionCache', JSON.stringify(cache));
-        }
-        function hashString(str) {
-            return str.split('').reduce((a, b) => (((a << 5) - a) + b.charCodeAt(0)) | 0, 0);
-        }
-        function mergeResults(offline, online) {
-            return {
-                names: [...new Set([...offline.names, ...online.names])],
-                addresses: [...new Set([...offline.addresses, ...online.addresses])]
-            };
-        }
-        function showLoading(show) {
-            document.getElementById('loading').style.display = show ? 'block' : 'none';
-        }
-        function showError(message) {
-            const resultsDiv = document.getElementById('results');
-            resultsDiv.innerHTML = `<div class="alert alert-danger">${message}</div>`;
-        }
-        function displayResults(data) {
-            const resultsDiv = document.getElementById('results');
-            let html = '';
-            const showCategory = (title, items, type) => {
-                if (items.length > 0) {
-                    html += `<h4 class="mt-2">${title}:</h4>`;
-                    items.forEach(item => {
-                        html += `
-                            <div class="result-card d-flex align-items-center justify-content-between">
-                                <div>
-                                    <span class="badge ${type === 'name' ? 'bg-primary' : 'bg-success'} me-2">
-                                        ${type === 'name' ? 'Name' : 'Address'}
-                                    </span>
-                                    ${item}
-                                </div>
-                                <small class="text-muted">${navigator.onLine ? '🌐 Online' : '📴 Offline'}</small>
-                            </div>
-                        `;
-                    });
-                }
-            };
-            showCategory('Detected Names', data.names, 'name');
-            showCategory('Validated Addresses', data.addresses, 'address');
-            if (!data.names.length && !data.addresses.length) {
-                html = `<div class="alert alert-warning mt-2">No names or addresses detected.</div>`;
-            }
-            resultsDiv.innerHTML = html;
-        }
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
-</body>
-</html>-->
-<!--
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TextDetect Pro - Smart Detection</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        :root {
-            --main-bg: linear-gradient(135deg, #232526, #414345);
-            --main-color: #fff;
-            --scanbox-bg: rgba(30, 30, 30, 0.92);
-            --text-color: #fff;
-            --input-bg: #212529;
-            --input-border: #0d6efd;
-            --btn-grad1: #0d6efd;
-            --btn-grad2: #4e54c8;
-            --body-font:#thin;
-        }
-        .theme-light {
-            --main-bg: linear-gradient(135deg, #e0eafc, #cfdef3);
-            --main-color: #222;
-            --scanbox-bg: rgba(255,255,255,0.97);
-            --text-color: #222;
-            --input-bg: #fff;
-            --input-border: #0d6efd;
-            --btn-grad1: #84fab0;
-            --btn-grad2: #8fd3f4;
-        }
-        body {
-            min-height: 100vh;
-            background: var(--main-bg);
-            color: var(--main-color);
-            font-family: 'Segoe UI', 'Arial', sans-serif;
-            transition: background 0.35s, color 0.25s;
-        }
-        .connection-status {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 8px 18px;
-            border-radius: 24px;
-            font-size: 0.95rem;
-            z-index: 1100;
-            color: #fff;
-        }
-        .online { background: #28a745; }
-        .offline { background: #dc3545; }
-        .main-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            justify-content: center;
-        }
-        .scan-box {
-            background: var(--scanbox-bg);
-            border-radius: 18px;
-            padding: 2rem 2.2rem;
-            box-shadow: 0 8px 32px 0 rgba(31,38,135,0.13);
-            max-width: 430px;
-            width: 100%;
-            margin: 2rem auto 0 auto;
-            color: var(--text-color);
-            transition: background 0.35s, color 0.25s;
-        }
-        .form-label {
-            color: var(--text-color);
-            font-weight: 500;
-        }
-        #inputText {
-            background: var(--input-bg);
-            color: var(--text-color);
-            border: none;
-            border-radius: 10px;
-            min-height: 120px;
-            margin-bottom: 1rem;
-            resize: vertical;
-            transition: background 0.35s, color 0.25s;
-        }
-        #inputText:focus {
-            background: #f0f8ff;
-            color: var(--main-color);
-            border: 1.5px solid var(--input-border);
-            box-shadow: 0 0 0 0.2rem rgba(13,110,253,.10);
-        }
-        .btn-detect {
-            width: 100%;
-            padding: 0.65rem 0;
-            font-weight: 500;
-            font-size: 1.1rem;
-            border-radius: 7px;
-            margin-bottom: 0.7rem;
-            background: linear-gradient(90deg,var(--btn-grad1) 30%, var(--btn-grad2) 80%);
-            transition: background 0.2s, transform 0.2s;
-            color: var(--main-color);
-        }
-        .btn-detect:hover, .btn-detect:focus {
-            background: linear-gradient(90deg,var(--btn-grad2) 30%, var(--btn-grad1) 80%);
-            transform: translateY(-2px) scale(1.03);
-            color: var(--main-color);
-        }
-        .form-switch .form-check-input {
-            background-color: #181c20;
-            border-color: #0d6efd;
-        }
-        .scan-box .spinner-border {
-            margin: 1rem 0;
-        }
-        .result-card {
-            background: rgba(255,255,255,0.08);
-            border-radius: 9px;
-            padding: 14px 20px;
-            margin: 12px 0;
-            color: var(--text-color);
-            transition: box-shadow 0.2s, color 0.25s;
-            box-shadow: 0 1px 7px rgba(0,0,0,0.07);
-        }
-        .result-card:hover {
-            box-shadow: 0 4px 20px rgba(13,110,253,0.13);
-        }
-        .badge {
-            font-size: 0.9em;
-            padding: 0.35em 0.8em;
-        }
-        #noice {
-            margin: 1.5rem 0 0 0;
-            font-size: 1rem;
-            color: var(--text-color);
-            text-align: center;
-        }
-        .toggle-theme-btn {
-            position: absolute;
-            top: 28px;
-            left: 24px;
-            z-index: 1200;
-            border-radius: 50px;
-            border: none;
-            background: linear-gradient(90deg, #212529 0%, #0d6efd 100%);
-            color: #fff;
-            font-size: 1.3em;
-            padding: 0.3em 0.7em;
-            cursor: pointer;
-            transition: background 0.2s, color 0.2s;
-        }
-        .theme-light .toggle-theme-btn {
-            background: linear-gradient(90deg, #e0eafc 0%, #8fd3f4 100%);
-            color: #222;
-        }
-        @media (max-width: 600px) {
-            .scan-box {
-                padding: 1.2rem 0.6rem;
-            }
-            .main-content {
-                padding: 0 0.5rem;
-            }
-            #inputText {
-                min-height: 80px;
-                font-size: 1rem;
-            }
-            .toggle-theme-btn {
-                top: 14px;
-                left: 10px;
-                font-size: 1em;
-                padding: 0.2em 0.6em;
-            }
-        }
-        #add-btn{
-            width:260px;
-            border:none;
-        }
-        .bi-apple,.bi-google{
-            
-        }
-    </style>
-</head>
-<body>
-    <button class="toggle-theme-btn" id="toggleThemeBtn" title="Toggle light/dark theme">
-        <span id="themeIcon" class="bi bi-moon"></span>
-    </button>
-    <div class="connection-status" id="connectionStatus"></div>
-    <div class="main-content">
-        <h1 class="mb-3 text-center" style="font-weight:700;letter-spacing:1px;">TextDetect Pro <span>🔍</span></h1>
-        <div class="scan-box">
-            <label for="inputText" class="form-label">Paste or type text below</label>
-            <textarea 
-                id="inputText" 
-                class="form-control"
-                rows="6"
-                placeholder="Paste or type text here..."
-                oninput="if(document.getElementById('autoDetect').checked){debouncedAnalyze()}"
-            ></textarea>
-            <div class="form-check form-switch my-3">
-                <input class="form-check-input" type="checkbox" id="autoDetect" checked>
-                <label class="form-check-label" for="autoDetect">Auto Detection</label>
-            </div>
-            <button type="button" class="btn btn-detect mb-2" onclick="analyzeText()">
-                <span class="bi bi-search"></span> Detect Names & Addresses
-            </button>
-            </hr>
-            <button class="btn btn-detect mv-2" id="addional-bnt">Retwitt</button>
-            <button class="btn btn-detect mv-2" id="addional-bnt">Post</button><button class="btn btn-detect mv-2" id="addional-bnt">Twitt</button>
-       
-            
-            <div id="loading" class="text-center" style="display:none;">
-                <div class="spinner-border text-primary" role="status">
-                    <span class="visually-hidden">Loading...</span>
-                </div>
-            </div>
-            
-            
-            <div id="results" class="mt-3"></div>
-        </div>
-        <br><br>
-        
-             <button class="btn btn-detect mv-2" id="add-btn">
-         <span class="bi bi-apple"></span> Sign in with apple
-     </button>
-          <button class="byn btn-detect mv-2" id="add-btn">
-         <span class="bi bi-google"></span> Sign in with google
-     </button>
-     
-               <button class="byn btn-detect mv-2" id="add-btn">
-              <span class="bi bi-github"></span> Sign in with github
-          </button>
-     
-     
-        <p id="noice"><strong>Notice:</strong> This is a demo webpage to check names and addresses,also connect to your twitter account without going directly to it. Enter your text above.</p> <br><br>
-    </div>
-    <script>
-        // Theme toggle logic
-        const themeBtn = document.getElementById('toggleThemeBtn');
-        const themeIcon = document.getElementById('themeIcon');
-        const themeStorageKey = 'tdetect-theme';
-        function setTheme(theme) {
-            if(theme === 'light') {
-                document.body.classList.add('theme-light');
-                themeIcon.classList.remove('bi-moon');
-                themeIcon.classList.add('bi-brightness-high');
-            } else {
-                document.body.classList.remove('theme-light');
-                themeIcon.classList.remove('bi-brightness-high');
-                themeIcon.classList.add('bi-moon');
-            }
-            localStorage.setItem(themeStorageKey, theme);
-        }
-        // Set theme based on system preference or previous choice
-        function detectAndSetTheme() {
-            const stored = localStorage.getItem(themeStorageKey);
-            if(stored) {
-                setTheme(stored);
-            } else if(window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
-                setTheme('light');
-            } else {
-                setTheme('dark');
-            }
-        }
-        themeBtn.onclick = function() {
-            const isLight = document.body.classList.contains('theme-light');
-            setTheme(isLight ? 'dark' : 'light');
-        };
-        detectAndSetTheme();
-
-        // Connection Status
-        function updateConnectionStatus() {
-            const el = document.getElementById('connectionStatus');
-            const online = navigator.onLine;
-            el.textContent = online ? 'Online' : 'Offline';
-            el.className = `connection-status ${online ? 'online' : 'offline'}`;
-        }
-        window.addEventListener('load', updateConnectionStatus);
-        window.addEventListener('online', updateConnectionStatus);
-        window.addEventListener('offline', updateConnectionStatus);
-
-        // Detection logic
-        const GEOCODING_API_KEY = 'YOUR_GOOGLE_API_KEY'; // Replace with your own API key
-        let isOnline = true;
-        let cache = JSON.parse(localStorage.getItem('detectionCache')) || {};
-
-        function debounce(func, timeout = 400) {
-            let timer;
-            return (...args) => {
-                clearTimeout(timer);
-                timer = setTimeout(() => func.apply(this, args), timeout);
-            };
-        }
-        const debouncedAnalyze = debounce(analyzeText, 600);
-
-        async function analyzeText() {
-            const inputText = document.getElementById('inputText').value.trim();
-            if (!inputText) {
-                document.getElementById('results').innerHTML = '';
-                return;
-            }
-            showLoading(true);
-            try {
-                const results = await enhancedDetection(inputText);
-                displayResults(results);
-                cacheResults(inputText, results);
-            } catch (error) {
-                showError(error.message);
-            }
-            showLoading(false);
-        }
-        async function enhancedDetection(text) {
-            let results = offlineDetection(text);
-            if (navigator.onLine) {
-                try {
-                    const apiResults = await onlineEnhancement(text);
-                    results = mergeResults(results, apiResults);
-                } catch (onlineError) {
-                    console.warn('Online enhancement failed:', onlineError);
-                }
-            }
-            return results;
-        }
-        function offlineDetection(text) {
-            // Multilingual and multi-word names, simple address patterns (improvable)
-            const namePattern = /\b([A-ZÀ-Ÿ][a-zà-ÿ]+(?:[\s-][A-ZÀ-Ÿ][a-zà-ÿ]+)+)\b/g;
-            const addressPattern = /(\b\d{1,5}\s[\w\s]{3,},\s[A-Za-z\s]{3,},\s[A-Za-z]{2}\s\d{5}(?:-\d{4})?\b)|(\b\d+\s+[\w\s]+\b,\s?\w+)/gi;
-            return {
-                names: [...new Set(text.match(namePattern) || [])],
-                addresses: [...new Set(text.match(addressPattern) || [])]
-            };
-        }
-        async function onlineEnhancement(text) {
-            const addresses = offlineDetection(text).addresses;
-            const validatedAddresses = [];
-            for (const address of addresses) {
-                try {
-                    const response = await fetch(
-                        `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${GEOCODING_API_KEY}`
-                    );
-                    const data = await response.json();
-                    if (data.results && data.results.length > 0) {
-                        validatedAddresses.push(data.results[0].formatted_address);
-                    }
-                } catch (error) {
-                    console.error('Geocoding error:', error);
-                }
-            }
-            return {
-                names: offlineDetection(text).names,
-                addresses: validatedAddresses
-            };
-        }
-        function cacheResults(input, results) {
-            const cacheKey = hashString(input);
-            cache[cacheKey] = results;
-            localStorage.setItem('detectionCache', JSON.stringify(cache));
-        }
-        function hashString(str) {
-            return str.split('').reduce((a, b) => (((a << 5) - a) + b.charCodeAt(0)) | 0, 0);
-        }
-        function mergeResults(offline, online) {
-            return {
-                names: [...new Set([...offline.names, ...online.names])],
-                addresses: [...new Set([...offline.addresses, ...online.addresses])]
-            };
-        }
-        function showLoading(show) {
-            document.getElementById('loading').style.display = show ? 'block' : 'none';
-        }
-        function showError(message) {
-            const resultsDiv = document.getElementById('results');
-            resultsDiv.innerHTML = `<div class="alert alert-danger">${message}</div>`;
-        }
-        function displayResults(data) {
-            const resultsDiv = document.getElementById('results');
-            let html = '';
-            const showCategory = (title, items, type) => {
-                if (items.length > 0) {
-                    html += `<h4 class="mt-2">${title}:</h4>`;
-                    items.forEach(item => {
-                        html += `
-                            <div class="result-card d-flex align-items-center justify-content-between">
-                                <div>
-                                    <span class="badge ${type === 'name' ? 'bg-primary' : 'bg-success'} me-2">
-                                        ${type === 'name' ? 'Name' : 'Address'}
-                                    </span>
-                                    ${item}
-                                </div>
-                                <small class="text-muted">${navigator.onLine ? '🌐 Online' : '📴 Offline'}</small>
-                            </div>
-                        `;
-                    });
-                }
-            };
-            showCategory('Detected Names', data.names, 'name');
-            showCategory('Validated Addresses', data.addresses, 'address');
-            if (!data.names.length && !data.addresses.length) {
-                html = `<div class="alert alert-warning mt-2">No names or addresses detected.</div>`;
-            }
-            resultsDiv.innerHTML = html;
-        }
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
-</body>
-</html>-->
-
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Ben4you Technology - 2026 main page">
-    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
-    <meta name="generator" content="Hugo 0.104.2">
-    <title>Ben4you Technology - 2026</title>
-
-    <link rel="canonical" href="https://getbootstrap.com/docs/5.2/examples/album/">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-
-    <style>
-      .bd-placeholder-img {
-        font-size: 1.125rem;
-        text-anchor: middle;
-        user-select: none;
-      }
-      @media (min-width: 768px) {
-        .bd-placeholder-img-lg {
-          font-size: 3.5rem;
-        }
-      }
-      .b-example-divider {
-        height: 3rem;
-        background-color: rgba(0, 0, 0, .1);
-        border: solid rgba(0, 0, 0, .15);
-        border-width: 1px 0;
-        box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
-      }
-      .b-example-vr {
-        flex-shrink: 0;
-        width: 1.5rem;
-        height: 100vh;
-      }
-      .bi {
-        color: cornflowerblue;
-        vertical-align: -.125em;
-        fill: currentColor;
-      }
-      .list-unstyled li a{
-        text-decoration: none;
-      }
-    </style>
-</head>
-<body>
-<header>
-  <div class="collapse bg-info-dark" id="navbarHeader">
-    <div class="container">
-      <div class="row">
-        <div class="col-sm-8 col-md-7 py-4">
-          <h4 class="text-dark">
-            <a href="index.html">
-              <i class="bi bi-file-earmark-person-fill" id="earmark-person"></i>
-              About | Ben4you Technology
-            </a>
-          </h4>
-          <p class="text-muted">
-            Add some information about the album below, the author, or any other background context. Make it a few sentences long so folks can pick up some informative tidbits.
-          </p>
-          <h3>
-            <i class="bi bi-code" style="color:cornflowerblue"></i>
-            Development is our priority and our mission
-          </h3>
-          <p>
-            To make softwares and web Applications become more and more user friendly again.
-          </p>
-          <h3>
-            <i class="bi bi-eye" style="color:cornflowerblue"></i>
-            Our Vision
-          </h3>
-          <p>
-            Is to go beyond what we are working on to become more innovative and evolutive in developing technologies that will fix complex and outside world problems for a better and beautiful world.
-          </p>
-          <h3>Links for more detailed information</h3>
-          <ul class="list-unstyled">
-            <li><a href="#about" class="text-butterflyblue">About Us</a></li>
-            <li><a href="#" class="text-butterflyblue">Software & Networking</a></li>
-            <li><a href="#" class="text-butterflyblue">Web Applications</a></li>
-            <li><a href="#" class="text-butterflyblue">Mobile Applications</a></li>
-            <li><a href="#" class="text-butterflyblue">Cloud & Virtuality</a></li>
-            <li><a href="#" class="text-butterflyblue">Financial Advisory</a></li>
-          </ul>
-        </div>
-        <div class="col-sm-4 offset-md-1 py-4">
-          <h4 class="text-dark">
-            <i class="bi bi-person-lines-fill"></i> Contact
-          </h4>
-          <ul class="list-unstyled">
-            <li>
-              <a href="https://x.com/supr7500?s=21" class="text-butterflyblue" target="_blank">Follow on Twitter</a>
+  
+  <header class="bg-warning" style="padding:40px; margin-top:56px" id="home">
+  <!--
+  <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#home"><img src="/bootstrap-5.2.3-examples/cheatsheet/C.mp4" style=" width:47px; height:40px;border-radius:181px"></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+          <ul class="navbar-nav me-auto mb-2 mb-md-0">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="#home">Home</a>
             </li>
-            <li>
-              <a href="https://www.facebook.com/share/166omgxHFB/?mibextid=wwXIfr" class="text-butterflyblue" target="_blank">Like on Facebook</a>
+            <li class="nav-item">
+              <a class="nav-link" href="#about">About Us</a>
             </li>
-            <li>
-              <a href="mailto:youremail@example.com" class="text-butterflyblue">Email me</a>
+            <li class="nav-item">
+              <a class="nav-link disabled">More...</a>
             </li>
           </ul>
+         <!-- <form class="d-flex" role="search">
+            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success" type="submit">Search</button>
+          </form>
         </div>
       </div>
-    </div>
-  </div>
-  <div class="navbar navbar-dark bg-dark shadow-sm">
-    <div class="container">
-      <a href="index.html" class="navbar-brand d-flex align-items-center" style="color:cornflowerblue">
-        <i class="bi bi-house" style="font-size:39px;margin:4px; margin-left:-8px"></i>
-        <strong>Ben4you Technology</strong>
-      </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
+      </nav>-->
+      <main>
+   <nav class="navbar navbar-expand-lg bg-dark navbar-dark fixed-top" aria-label=" Offcanvas navbar large">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#"><img src="/bootstrap-5.2.3-examples/cheatsheet/C.mp4" style="width:45px;height:45px;border-radius:176px"></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar2" aria-controls="offcanvasNavbar2">
         <span class="navbar-toggler-icon"></span>
       </button>
-    </div>
-  </div>
-</header>
-
-<main>
-  <section class="py-5 text-center container">
-    <div class="row py-lg-5">
-      <div class="col-lg-6 col-md-8 mx-auto">
-        <h1 class="fw-light">
-          <i class="bi bi-code" style="font-size:80px"></i>
-        </h1>
-        <p class="lead text-muted">
-          Something short and leading about the collection below—its contents, the creator, etc. Make it short and sweet, but not too short so folks don’t simply skip over it entirely.
-        </p>
-        <p>
-          <a href="#" class="btn btn-warning my-2">Applications - Web - Mobile Application</a>
-          <a href="#" class="btn btn-info my-2">Software Development</a>
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <div class="album py-5 bg-light">
-    <div class="container">
-      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-        <!-- Card 1 -->
-        <div class="col">
-          <div class="card shadow-sm">
-            <img src="/bootstrap-5.2.3-examples/album/imaj/IMG_1475.jpeg" alt="Profile" style="height:310px; object-fit:cover;" class="card-img-top">
-            <div class="card-header">Profile</div>
-            <div class="card-body">
-              <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-              <div class="d-flex justify-content-between align-items-center">
-                <div class="btn-group">
-                  <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                  <button type="button" class="btn btn-sm btn-outline-primary">Edit</button>
-                </div>
-                <small class="text-muted">9 mins</small>
-              </div>
-            </div>
-          </div>
+      <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="offcanvasNavbar2" aria-labelledby="offcanvasNavbar2Label">
+        <div class="offcanvas-header">
+          <h5 class="offcanvas-title" id="offcanvasNavbar2Label"><a href="/bootstrap-5.2.3-examples/cheatsheet/bxc.html " class="text-decoration-none text-white">Ben4you Technology</a></h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
-        <!-- Card 2 -->
-        <div class="col">
-          <div class="card shadow-sm">
-            <img src="/bootstrap-5.2.3-examples/album/imaj/252b079b904747f3b4b93e9e311a0e3b.mp4" alt="Works and Places" style="height:320px; object-fit:cover;" class="card-img-top">
-            <div class="card-header">Works and Places</div>
-            <div class="card-body">
-              <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-              <div class="d-flex justify-content-between align-items-center">
-                <div class="btn-group">
-                  <button type="button" class="btn btn-sm btn-outline-primary">View</button>
-                  <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                </div>
-                <small class="text-muted">9 mins</small>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- Card 3 -->
-        <div class="col">
-          <div class="card shadow-sm">
-            <img src="https://github.com/ben4you2/projectBen/blob/gh-pages/IMG_1565.jpeg?raw=true" alt="Applications and Content" style="height:320px; object-fit:cover;" class="card-img-top">
-            <div class="card-header">Applications and Content</div>
-            <div class="card-body">
-              <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-              <div class="d-flex justify-content-between align-items-center">
-                <div class="btn-group">
-                  <button type="button" class="btn btn-sm btn-outline-primary">View</button>
-                  <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                </div>
-                <small class="text-muted">9 mins</small>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- Card 4 -->
-        <div class="col">
-          <div class="card shadow-sm">
-            <img src="/bootstrap-5.2.3-examples/album/imaj/IMG_1327.jpeg" alt="Cloud" style="height:225px; object-fit:cover;" class="card-img-top">
-            <div class="card-header">Cloud</div>
-            <div class="card-body">
-              <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-              <div class="d-flex justify-content-between align-items-center">
-                <div class="btn-group">
-                  <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                  <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                </div>
-                <small class="text-muted">9 mins</small>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- Card 5 -->
-        <div class="col">
-          <div class="card shadow-sm">
-            <img src="/bootstrap-5.2.3-examples/album/imaj/C.mp4" alt="Ben4you Technology" style="height:225px; object-fit:cover;" class="card-img-top">
-            <div class="card-header">Ben4you Technology</div>
-            <div class="card-body">
-              <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-              <div class="d-flex justify-content-between align-items-center">
-                <div class="btn-group">
-                  <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                  <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                </div>
-                <small class="text-muted">9 mins</small>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- Card 6 -->
-        <div class="col">
-          <div class="card shadow-sm">
-            <img src="/bootstrap-5.2.3-examples/album/imaj/IMG_1328.jpeg" alt="Web Content Design" style="height:225px; object-fit:cover;" class="card-img-top">
-            <div class="card-header"></div>
-            <div class="card-body">
-              <p class="card-text">
-                This is a web content design to implement some other layout for showing a better look at the web page.
-              </p>
-              <div class="d-flex justify-content-between align-items-center">
-                <div class="btn-group">
-                  <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                  <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                </div>
-                <small class="text-muted">9 mins</small>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- Card 7 -->
-        <div class="col">
-          <div class="card shadow-sm">
-            <img src="/bootstrap-5.2.3-examples/album/imaj/IMG_1565.jpeg" alt="News and informations" style="height:322px; object-fit:cover;" class="card-img-top">
-            <div class="card-header">News and informations</div>
-            <div class="card-body">
-              <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-              <div class="d-flex justify-content-between align-items-center">
-                <div class="btn-group">
-                  <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                  <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                </div>
-                <small class="text-muted">9 mins</small>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- Card 8 -->
-        <div class="col">
-          <div class="card shadow-sm">
-            <img src="/bootstrap-5.2.3-examples/album/imaj/IMG_1259.jpeg" alt="Programming and Development" style="height:225px; object-fit:cover;" class="card-img-top">
-            <div class="card-header">Programming and Development</div>
-            <div class="card-body">
-              <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-              <div class="d-flex justify-content-between align-items-center">
-                <div class="btn-group">
-                  <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                  <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                </div>
-                <small class="text-muted">9 mins</small>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- Card 9 -->
-        <div class="col">
-          <div class="card shadow-sm">
-            <img src="/bootstrap-5.2.3-examples/album/imaj/DE8946CC-F5A8-470B-84E7-495B5779EEBA.png" alt="Home Applications" style="height:225px; object-fit:cover;" class="card-img-top">
-            <div class="card-header">Home Applications</div>
-            <div class="card-body">
-              <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-              <div class="d-flex justify-content-between align-items-center">
-                <div class="btn-group">
-                  <button type="button" class="btn btn-sm btn-outline-primary">View</button>
-                  <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                </div>
-                <small class="text-muted">9 mins</small>
-              </div>
-            </div>
-          </div>
+        <div class="offcanvas-body">
+          <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="#home">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#about">About Us</a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                News
+              </a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#">2021</a></li>
+                <li><a class="dropdown-item" href="#">2022</a></li>
+                <li>
+                  <hr class="dropdown-divider">
+                </li>
+                <li><a class="dropdown-item" href="#">2023</a></li>
+                <li><a class="dropdown-item" href="#">2024</a></li>
+                <li><a class="dropdown-item" href="#">2025</a></li>
+              </ul>
+            </li>
+          </ul>
+        <!--  <form class="d-flex mt-3 mt-lg-0" role="search">
+            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success" type="submit">Search</button>
+          </form>-->
+          <br>
+          
+          <small>The ben4you technology company <br> &copy; 2026 All rights reserved</small>
         </div>
       </div>
-
-      <div class="mt-5">
-        <h2>Programs and Projects</h2>
-        <p>
-          That is from projects that we have to develop and design for users that are requesting products for their use or needs. Friends were supposed to be good friends, not people that abuse or exploit friendship.
-        </p>
-        <h3>Friendship Advice</h3>
-        <p class="card-text">
-          This is to inform people out there: you have to embrace and love friendship and never pretend being friends with someone. I repeat, never pretend to be friends of someone if you don't mean it.
-        </p>
+    </div>
+  </nav></main>
+      
+ <a href="/bootstrap-5.2.3-examples/cheatsheet/bxc.html" class="text-decoration-none text-dark"><h2>
+      Ben4you Technology
+    </h2></a>
+    </header>
+    
+  <div class="bg-dark text-secondary px-4 py-5 text-center">
+    <div class="py-5">
+      <h1 class="display-5 fw-bold text-white">Delmas and Delmas 65</h1>
+      <div class="col-lg-6 mx-auto">
+        <p class="fs-5 mb-4"><!--Quickly design and customize responsive mobile-first sites with Bootstrap, the world’s most popular front-end open source toolkit, featuring Sass variables and mixins, responsive grid system, extensive prebuilt components, and powerful JavaScript plugins.--> This is a mayor and important thing to considere as a problem and as a way of determinging the effect of bad things that are going on in the background and also the mindset of the people of the communal or main communal places and the mayor office.</p>
+        <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+          <button type="button" class="btn btn-outline-info btn-lg px-4 me-sm-3 fw-bold"><a href="#about" class="text-decoration-none text-white px-4 me-sm-3 ">Read More...</a></button>
+          <button type="button" class="btn btn-outline-light btn-lg px-4"><a href="#" class="text-decoration-none text-info px-4 me-sm-3">Main Office</a></button>
+        </div>
       </div>
-
     </div>
   </div>
-</main>
-
-<footer class="text-muted py-5 bg-dark">
-  <div class="container">
-    <p class="float-end mb-1">
-      <a href="#">Back to top</a>
-    </p>
-    <p class="mb-1">
-      Ben4you Technology is &copy; a company that is to offer technological services, Applications, Installations and
-      <button type="button" class="btn btn-primary">More...</button>
-    </p>
-    <p class="mb-0">
-      Do you want to know more about us? Click this link
-      <a href="#earmark-person">More... Info</a>
-      about what our mission and vision are.
-    </p>
+  
+  
+  <!--color mode-->
+  
+  
+    <div class="text-secondary px-4 py-5 text-center" style="background-color:darkgrey">
+    <div class="py-5">
+      <h1 class="display-5 fw-bold text-white">Weeks and week-ends</h1>
+      <div class="col-lg-6 mx-auto">
+        <p class="fs-5 mb-4">Quickly design and customize responsive mobile-first sites with Bootstrap, the world’s most popular front-end open source toolkit, featuring Sass variables and mixins, responsive grid system, extensive prebuilt components, and powerful JavaScript plugins.</p> 
+        <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+          <button type="button" class="btn btn-outline-info btn-lg px-4 me-sm-3 fw-bold">News and Conputer Technologies</button>
+          <button type="button" class="btn btn-outline-light btn-lg px-4">Information and Development</button>
+        </div>
+      </div>
+    </div>
   </div>
-</footer>
+  
+      <div style="margin:23px">
+        
+        <div class="bd-example-snippet bd-code-snippet"><div class="bd-example">
+        <div class="d-flex justify-content-between flex-wrap">
+         <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModalDefault">
+            Launch demo modal
+          </button>
+          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdropLive">
+            Launch static backdrop modal
+          </button>-->
+          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModalCenteredScrollable">
+           That is a Vertically centered scrollable modal for displaying the modal.
+          </button>
+        <!--  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModalFullscreen">
+            Full screen
+          </button>-->
+        </div>
+        </div>
+        </div>
+        
+        
+        <div class="modal fade" id="exampleModalCenteredScrollable" tabindex="-1" aria-labelledby="exampleModalCenteredScrollableTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalCenteredScrollableTitle">Modal title</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      
+      <div class="modal-body">
+        <p>This is some placeholder content to show the scrolling behavior for modals. We use repeated line breaks to demonstrate how content can exceed minimum inner height, thereby showing inner scrolling. When content becomes longer than the predefined max-height of modal, content will be cropped and scrollable within the modal.</p>
+        
+    <br><br>
+    <h2>Register to get more info</h2>
+     <form class="p-4 p-md-5 border rounded-3 bg-light">
+       <div class="form-floating mb-3">
+         <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
+         <label for="floatingInput">Email address</label>
+       </div>
+       <div class="form-floating mb-3">
+         <input type="password" class="form-control" id="floatingPassword" placeholder="Password">
+         <label for="floatingPassword">Password</label>
+       </div>
+       
+       <div class="form-floating mb-3">
+         <input type="username" class="form-control" id="floatingUsername" placeholder="Username">
+         <label for="floatingUsername">Username</label>
+       </div>
+       <div class="checkbox mb-3">
+         <label>
+           <input type="checkbox" value="remember-me"> Remember me
+         </label>
+       </div>
+       <button class="w-100 btn btn-lg btn-primary" type="submit">Sign up</button>
+       <hr class="my-4">
+       <small class="text-muted">By clicking Sign up, you agree to the terms of use. And already have an account?</small> <a href="/bootstrap-5.2.3-examples/cheatsheet/signIn.html">Sign In</a>
+     </form>
+  
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
+        
+        
+        <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+        <p>This content should appear at the bottom after you scroll.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+      </div>
+
+  
+  
+  <!--Color mode-->
+  
+  
+    <div class="bg-darkgray text-secondary px-4 py-5 text-center">
+    <div class="py-5">
+      <h1 class="display-5 fw-bold text-info">Making him get out of his house, making him get upset or mad and death threat</h1>
+      <div class="col-lg-6 mx-auto">
+        <p class="fs-5 mb-4"><!--Quickly design and customize responsive mobile-first sites with Bootstrap, the world’s most popular front-end open source toolkit, featuring Sass variables and mixins, responsive grid system, extensive prebuilt components, and powerful JavaScript plugins.--> 
+        They have been hurting his mind and head and threatning him and bothering to make him get out if his house so tjey can ve ahowng theselves so other that are far seeing in his o install themselves asang member and also make ohers go and sit or sleep so  they can get to my house to hurt me and look for people helping meor those wanting to speakingor be with me in a moment in private. They throw their minds towards the house to look for me specificly where i am sitting and or spelling.</p> 
+        <div class="d-grid gap-2 d-sm-flex justify-content-sm-center"> <button type="button" class="btn btn-outline-info btn-lg px-4 me-sm-3 fw-bold">Services and Responsive behavior</button>
+          <button type="button" class="btn btn-outline-warning btn-lg px-4">Neighbors and law enforcement</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+<div class="px-4 py-5">
+      <h1 class="display-5 fw-bold" id="about">About Us</h1>
+      <p class="fs-5 mb-4">The problem with their enforcement and the society is tat they are linked to crimes and that assassination and also linked to gangs.They spy on me a lot to hurt and plan assassination and also think about me as a criminals while i a victim of physical , mental abuse and death threats,impunity,injustice. They know about me and all my complains and also inreceived threat to my family member they are not able to take no step because they have in their mind that will not be possible as they will be in war wanting to hurt citizen of other country helping their own family or fix the own family member problem. Speaking about law enforcement of haiti that is having affairs with gang chief and gang members.</p>
+    </div>
+  
+      <div class="px-4 py-5">
+      <h1 class="display-5 fw-bold" id="about">Pricing</h1>
+      <p class="fs-5 mb-4">The problem with theaw endorcement and the society is tat they areinked to crimes and assassination and alao linked to gangs.Thy spy on me a lot to hurt and plan assassination and alao think about me as a criminals while i a a victim of physical and mental abuse and death theeats,impuity,injustice. They know about me and all my complains and also inreceived threat to my fanily member they are not able to take no step because they have in their mind that will not be possible as they eill be inwar wantingto huet cotizen pf other countri helping their own gamily or fix the own faily memver problem. Speaking about law endorcementof haiti that is having affairs with gang chief and gang memebers.</p>
+      </div>
+      
+          <div class="px-4 py-5">
+      <h1 class="display-5 fw-bold" id="about">FAQs</h1>
+      <p class="fs-5 mb-4">The problem with theaw endorcement and the society is tat they areinked to crimes and assassination and alao linked to gangs.Thy spy on me a lot to hurt and plan assassination and alao think about me as a criminals while i a a victim of physical and mental abuse and death theeats,impuity,injustice. They know about me and all my complains and also inreceived threat to my fanily member they are not able to take no step because they have in their mind that will not be possible as they eill be inwar wantingto huet cotizen pf other countri helping their own gamily or fix the own faily memver problem. Speaking about law endorcementof haiti that is having affairs with gang chief and gang memebers.</p>
+      </div>
+  
+  
+  
+  <div class="px-4 py-5">
+    <h1 class="display-5 fw-bold">Law enforcement in haiti</h1>
+    <p class="fs-5 mb-4">The problem with law  enforcement and the society is that they are linked to crimes and assassination and also linked to gangs.They spy on me a lot to hurt and plan assassination and also think about me as a criminals while i am a victim of physical and mental abuse and death theeats,impunity,injustice. They know about me and all my complains and also received threat to my family member which they are not able to do taking no step because they have in their mind that it will not be possible as they will be in war wanting to hurt citizens of other country that are helping their own family or fix their own family member problem. Speaking about law enforcement of haiti that is having affairs with gang chief and gang members. They have to not think about me and nor my family members those mentioned people above</p>
+    </div>
+    
+    
+      <div class="px-4 py-5">
+    <h1 class="display-5 fw-bold">Justice System and Authorities</h1>
+    <p class="fs-5 mb-4">The problem with justice system and the society is that they are linked to crimes and  corruption and bribery and also linked to criminals groups or organization.They ignore and violate human rights a lot to hurt and plan alao tonthink about letting criminals do wharter they want while  victims  of physical and mental abuse and death theeats,impuity,injustice getting hurt ,killed and disappear. They know about me and all my complains and also i received death threat to my family member which they are not able to take no step because they have in their mind that it will not be possible as they will be in war wanting to hurt citizens of other country helping their own family or fix their own family member problem. Speaking about law enforcement of haiti that is having affairs with gang chief and gang members.</p>
+  </div>
+  
+    <div class="py-3 my-4"></div>
+    
+
+<div class="container">
+  <footer class="py-3 my-4">
+    <ul class="nav justify-content-center border-bottom pb-3 mb-3">
+      <li class="nav-item"><a href="#home" class="nav-link px-2 text-muted">Home</a></li>
+      <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Features</a></li>
+      <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Pricing</a></li>
+      <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">FAQs</a></li>
+      <li class="nav-item"><a href="#about" class="nav-link px-2 text-muted">About</a></li>
+    </ul>
+    <p class="text-center text-muted">&copy; 2026 Ben4you Technology, Inc</p>
+    
+    <p class="text-center text-muted">
+      <small>Ben4you Technology, the best and the one that is the top of the list of he best company in trchnology</small>
+    </p>
+    
+    <a href="#"><i class="bi bi-top-arrow" style="margin-left:260px"></i>Go-Up</a>
+  </footer>
+</div>
+<!--
+<div class="b-example-divider"></div>-->
+<!--
+<div class="container">
+  <footer class="row row-cols-1 row-cols-sm-2 row-cols-md-5 py-5 my-5 border-top">
+    <div class="col mb-3">
+      <a href="/" class="d-flex align-items-center mb-3 link-dark text-decoration-none">
+        <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
+      </a>
+      <p class="text-muted">&copy; 2022</p>
+    </div>
+
+    <div class="col mb-3">
+
+    </div>
+
+    <div class="col mb-3">
+      <h5>Section</h5>
+      <ul class="nav flex-column">
+        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Home</a></li>
+        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Features</a></li>
+        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Pricing</a></li>
+        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">FAQs</a></li>
+        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">About</a></li>
+      </ul>
+    </div>
+
+    <div class="col mb-3">
+      <h5>Section</h5>
+      <ul class="nav flex-column">
+        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Home</a></li>
+        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Features</a></li>
+        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Pricing</a></li>
+        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">FAQs</a></li>
+        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">About</a></li>
+      </ul>
+    </div>
+
+    <div class="col mb-3">
+      <h5>Section</h5>
+      <ul class="nav flex-column">
+        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Home</a></li>
+        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Features</a></li>
+        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Pricing</a></li>
+        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">FAQs</a></li>
+        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">About</a></li>
+      </ul>
+    </div>
+  </footer>
+</div>-->
+
+    <script src="../assets/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
-
-
-
-
-
-
- 
